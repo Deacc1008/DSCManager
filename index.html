@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KDK Spectrum Cloud - Clients without DSC</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
+    }
+  }
+}
+</script>
+<style>
+  body { font-family: Inter, ui-sans-serif, system-ui; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:8px; }
+  .sidebar-item.active { background:#1261e8; color:white; }
+  .sidebar-item:hover:not(.active) { background:#eef5ff; }
+</style>
+</head>
+<body class="bg-[#f7faff] text-slate-800">
+
+<div class="min-h-screen flex">
+  <!-- Sidebar -->
+  <aside class="w-[220px] bg-white border-r border-slate-200 fixed inset-y-0 left-0 z-20">
+    <div class="h-[62px] flex items-center px-5 border-b border-slate-100">
+      <div class="text-2xl font-extrabold tracking-tight text-[#1261e8]">KDK</div>
+      <div class="ml-2 text-lg font-semibold text-slate-700">Spectrum Cloud</div>
+    </div>
+
+    <div class="px-4 pt-5">
+      <div class="text-[13px] font-semibold text-slate-500 mb-3">Office Management</div>
+      <nav class="space-y-1">
+        <div class="sidebar-item rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-medium">▦ <span>Dashboard</span></div>
+        <div class="sidebar-item rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-medium">▣ <span>DSCs</span></div>
+        <div class="sidebar-item rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-medium">♙ <span>Signatory Registration</span></div>
+        <div class="sidebar-item active rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-semibold">♙ <span>Clients without DSC</span></div>
+        <div class="sidebar-item rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-medium">♧ <span>Alerts</span></div>
+        <div class="sidebar-item rounded-lg px-3 py-2.5 flex gap-3 items-center text-sm font-medium">⚙ <span>Settings</span></div>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="ml-[220px] flex-1">
+    <!-- Header -->
+    <header class="h-[62px] bg-white border-b border-slate-200 flex items-center justify-between px-7 sticky top-0 z-10">
+      <div class="w-[500px]">
+        <div class="h-10 border border-slate-300 rounded-lg flex items-center px-3 text-sm text-slate-400 bg-white">
+          <span class="text-lg mr-2">⌕</span>
+          <input class="outline-none flex-1" placeholder="Search clients, PAN, GSTIN, TAN..." />
+        </div>
+      </div>
+      <div class="flex items-center gap-5">
+        <div class="relative text-xl">♧<span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">3</span></div>
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-semibold text-slate-600">SK</div>
+          <div>
+            <div class="text-sm font-semibold">Saurabh Kumar</div>
+            <div class="text-xs text-slate-500">KDK & Co.</div>
+          </div>
+          <span>⌄</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="p-7">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="text-sm text-slate-500 mb-2">Office Management &nbsp;›&nbsp; DSC Management &nbsp;›&nbsp; Clients without DSC</div>
+          <h1 class="text-[29px] leading-tight font-bold text-[#10295c]">Clients without DSC</h1>
+          <p class="text-sm text-slate-500 mt-1">
+            List of clients for whom no DSC is available in DSC Management.
+            <span class="text-[#1261e8]">Add DSC</span> to manage and track certificates for these clients.
+          </p>
+        </div>
+        <button class="border border-slate-300 bg-white rounded-lg px-4 py-2 text-sm font-medium text-[#1261e8]">ⓘ &nbsp; View Help</button>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="grid grid-cols-3 gap-5 mt-6">
+        <div class="bg-white border border-blue-100 rounded-xl p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">♙</div>
+          <div><div class="text-3xl font-bold">154</div><div class="text-sm text-slate-500">Total Clients</div></div>
+        </div>
+        <div class="bg-white border border-red-100 rounded-xl p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-red-50 text-red-600 flex items-center justify-center text-xl">▣</div>
+          <div><div id="withoutCount" class="text-3xl font-bold text-red-700">42</div><div class="text-sm text-slate-500">Clients without DSC</div></div>
+        </div>
+        <div class="bg-white border border-emerald-100 rounded-xl p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">✓</div>
+          <div><div class="text-3xl font-bold">112</div><div class="text-sm text-slate-500">Clients with DSC</div></div>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="mt-7 border-b border-slate-200 flex gap-7">
+        <button id="tabWithout" class="tab-btn px-2 pb-3 text-sm font-semibold text-[#1261e8] border-b-2 border-[#1261e8]">Clients without DSC (42)</button>
+        <button id="tabAll" class="tab-btn px-2 pb-3 text-sm text-slate-500">All Clients (154)</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white border border-slate-200 rounded-xl mt-5 p-5">
+        <div class="flex justify-end mb-3">
+          <button id="exportBtn" class="border border-slate-300 rounded-lg px-4 py-2 text-sm font-semibold text-[#1261e8]">▣ &nbsp; Export to Excel</button>
+        </div>
+        <div class="grid grid-cols-[1.8fr_1fr_1fr_1fr_auto_auto] gap-4 items-end">
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Search</label>
+            <div class="mt-1 h-10 border border-slate-300 rounded-lg flex items-center px-3">
+              <span class="text-slate-400 mr-2">⌕</span>
+              <input id="search" class="outline-none text-sm w-full" placeholder="Search by client name, PAN, GSTIN, TAN..." />
+            </div>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Organisation Type</label>
+            <select id="org" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
+              <option>All</option><option>Company</option><option>Partnership Firm</option><option>Proprietorship</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">State</label>
+            <select id="state" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
+              <option>All</option><option>Delhi</option><option>Gujarat</option><option>Karnataka</option><option>Maharashtra</option><option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Uttar Pradesh</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-600">Client Status</label>
+            <select id="status" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
+              <option>Active</option><option>Inactive</option><option>All</option>
+            </select>
+          </div>
+          <button id="applyBtn" class="h-10 bg-[#1261e8] text-white rounded-lg px-5 text-sm font-semibold">Apply</button>
+          <button id="clearBtn" class="h-10 border border-[#1261e8] text-[#1261e8] rounded-lg px-5 text-sm font-semibold">Clear</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-[#f5f8fc] text-slate-700">
+              <tr>
+                <th class="px-4 py-3 text-left"><input id="selectAll" type="checkbox"></th>
+                <th class="px-3 py-3 text-left">#</th>
+                <th class="px-3 py-3 text-left">Client Name ↕</th>
+                <th class="px-3 py-3 text-left">PAN</th>
+                <th class="px-3 py-3 text-left">GSTIN</th>
+                <th class="px-3 py-3 text-left">TAN</th>
+                <th class="px-3 py-3 text-left">Organisation Type</th>
+                <th class="px-3 py-3 text-left">State</th>
+                <th class="px-3 py-3 text-left">Client Status</th>
+                <th class="px-3 py-3 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
+          </table>
+        </div>
+
+        <div class="flex items-center justify-between px-5 py-5">
+          <div id="rangeText" class="text-sm text-slate-500"></div>
+          <div class="flex items-center gap-2">
+            <select id="pageSize" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white">
+              <option>10</option><option>20</option><option>50</option>
+            </select>
+            <button id="prev" class="page-btn">‹</button>
+            <div id="pages" class="flex gap-2"></div>
+            <button id="next" class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Add DSC modal -->
+<div id="modal" class="hidden fixed inset-0 bg-slate-900/40 z-50 items-center justify-center">
+  <div class="bg-white w-[520px] rounded-2xl shadow-2xl p-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="text-xl font-bold text-[#10295c]">Add DSC</h2>
+        <p id="modalClient" class="text-sm text-slate-500 mt-1"></p>
+      </div>
+      <button id="closeModal" class="text-2xl text-slate-400">×</button>
+    </div>
+    <div class="mt-5 bg-blue-50 rounded-xl p-4 text-sm text-slate-700">
+      Connect the client's DSC token and use the existing <b>Add DSC</b> flow to read the certificate details.
+    </div>
+    <div class="mt-5 space-y-3">
+      <div class="border border-slate-200 rounded-lg p-4">
+        <div class="font-semibold">1. Connect DSC Token</div>
+        <div class="text-xs text-slate-500 mt-1">Ensure the token is connected and KDK Connector is running.</div>
+      </div>
+      <div class="border border-slate-200 rounded-lg p-4">
+        <div class="font-semibold">2. Read Certificate</div>
+        <div class="text-xs text-slate-500 mt-1">Certificate information will be fetched automatically.</div>
+      </div>
+    </div>
+    <div class="flex justify-end gap-3 mt-6">
+      <button id="cancelModal" class="border border-slate-300 rounded-lg px-4 py-2 text-sm">Cancel</button>
+      <button class="bg-[#1261e8] text-white rounded-lg px-5 py-2 text-sm font-semibold" onclick="alert('This mock would open the existing Add DSC flow.')">Continue</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const baseClients = [
+ ["Sharma & Associates","ABFPS6789G","-","-","Partnership Firm","Delhi","Active"],
+ ["Mehta Consulting","AAPFM1234L","-","-","Partnership Firm","Karnataka","Active"],
+ ["Patel & Co.","AALFP3344P","-","-","Partnership Firm","Gujarat","Active"],
+ ["Gupta Enterprises","AAGPG1122Q","-","-","Company","Uttar Pradesh","Active"],
+ ["N D Associates","AADPN5567R","-","-","Partnership Firm","Maharashtra","Active"],
+ ["R K Traders","AAFRK7789T","-","-","Proprietorship","Rajasthan","Active"],
+ ["Sunrise Industries","AAGTS1122N","27AAGTS1122N1Z9","-","Company","Maharashtra","Active"],
+ ["Kiran Enterprises","ABTPK5566Q","27ABTPK5566Q1Z3","PUNPK5566Q","Proprietorship","Punjab","Active"],
+ ["Vision Services","AAVPV7788R","27AAVPV7788R1Z8","-","Company","Tamil Nadu","Active"],
+ ["Global Solutions","AAAGC9987M","-","DELGG9987M","Company","Delhi","Active"],
+ ["R K Enterprises","AFZPR4321K","27AFZPR4321K1Z1","-","Proprietorship","Gujarat","Active"],
+ ["ABC Traders","AAQFA1234D","-","-","Company","Rajasthan","Active"],
+ ["Blue Star Services","AABFB4455E","27AABFB4455E1Z5","MUMAB4455E","Company","Maharashtra","Active"],
+ ["Pioneer & Co.","AAEFP6677H","-","-","Partnership Firm","Delhi","Active"],
+ ["Apex Solutions","AACPA8899J","27AACPA8899J1Z2","-","Company","Karnataka","Active"],
+ ["Rajasthan Tax Consultants","AAKFR2233L","-","-","Proprietorship","Rajasthan","Active"],
+ ["Digital Ledger Pvt Ltd","AAGCD4455P","27AAGCD4455P1Z7","DELGC4455P","Company","Delhi","Active"],
+ ["Maa Shakti Enterprises","ABGFM6677N","-","-","Proprietorship","Gujarat","Active"],
+ ["North Star Associates","AAJFN8899R","-","-","Partnership Firm","Punjab","Active"],
+ ["KDK Business Services","AATFK1122S","27AATFK1122S1Z6","-","Company","Maharashtra","Active"]
+];
+
+// Create enough mock rows to demonstrate pagination.
+const clients = Array.from({length:42}, (_,i) => {
+  if (i < baseClients.length) return baseClients[i];
+  const states=["Delhi","Gujarat","Karnataka","Maharashtra","Rajasthan","Punjab","Tamil Nadu","Uttar Pradesh"];
+  const types=["Company","Partnership Firm","Proprietorship"];
+  return [
+    `Client ${String(i+1).padStart(2,"0")}`,
+    `AABPC${String(1000+i)}`,
+    i%2===0 ? `27AABPC${String(1000+i)}1Z5` : "-",
+    i%3===0 ? `DELT${String(2000+i)}` : "-",
+    types[i%3],
+    states[i%states.length],
+    i%9===0 ? "Inactive" : "Active"
+  ];
+});
+
+let filtered = [...clients];
+let page = 1;
+let pageSize = 10;
+
+function render(){
+  const start=(page-1)*pageSize, end=Math.min(start+pageSize, filtered.length);
+  const rows=filtered.slice(start,end);
+  document.getElementById("tbody").innerHTML=rows.map((c,i)=>`
+    <tr class="hover:bg-blue-50/40">
+      <td class="px-4 py-3"><input type="checkbox" class="rowCheck"></td>
+      <td class="px-3 py-3 text-slate-500">${start+i+1}</td>
+      <td class="px-3 py-3 font-medium">${c[0]}</td>
+      <td class="px-3 py-3">${c[1]}</td>
+      <td class="px-3 py-3">${c[2]}</td>
+      <td class="px-3 py-3">${c[3]}</td>
+      <td class="px-3 py-3">${c[4]}</td>
+      <td class="px-3 py-3">${c[5]}</td>
+      <td class="px-3 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold ${c[6]==="Active"?"bg-emerald-100 text-emerald-700":"bg-slate-100 text-slate-600"}">${c[6]}</span></td>
+      <td class="px-3 py-3"><button class="addBtn border border-[#1261e8] text-[#1261e8] rounded-lg px-3 py-1.5 font-semibold text-xs" data-client="${c[0]}">＋ Add DSC</button></td>
+    </tr>`).join("");
+
+  document.querySelectorAll(".addBtn").forEach(btn => btn.onclick=()=>{
+    document.getElementById("modalClient").textContent="Client: "+btn.dataset.client;
+    document.getElementById("modal").classList.remove("hidden");
+    document.getElementById("modal").classList.add("flex");
+  });
+
+  document.getElementById("rangeText").textContent =
+    filtered.length ? `Showing ${start+1} - ${end} of ${filtered.length} clients` : "No clients found";
+
+  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
+  document.getElementById("pages").innerHTML=Array.from({length:Math.min(totalPages,7)},(_,i)=>`
+    <button class="w-9 h-9 rounded-lg border ${page===i+1?"bg-[#1261e8] text-white border-[#1261e8]":"border-slate-300 bg-white"}" onclick="goPage(${i+1})">${i+1}</button>`).join("");
+  document.getElementById("prev").disabled=page===1;
+  document.getElementById("next").disabled=page===totalPages;
+  document.getElementById("prev").className="page-btn w-9 h-9 rounded-lg border border-slate-300 bg-white disabled:opacity-40";
+  document.getElementById("next").className="page-btn w-9 h-9 rounded-lg border border-slate-300 bg-white disabled:opacity-40";
+}
+function goPage(p){page=p;render();window.scrollTo({top:0,behavior:"smooth"});}
+function apply(){
+  const q=document.getElementById("search").value.toLowerCase().trim();
+  const org=document.getElementById("org").value;
+  const state=document.getElementById("state").value;
+  const status=document.getElementById("status").value;
+  filtered=clients.filter(c=>{
+    const text=c.join(" ").toLowerCase();
+    return (!q||text.includes(q)) && (org==="All"||c[4]===org) && (state==="All"||c[5]===state) && (status==="All"||c[6]===status);
+  });
+  page=1; render();
+}
+document.getElementById("applyBtn").onclick=apply;
+document.getElementById("search").addEventListener("keyup",e=>{if(e.key==="Enter")apply()});
+document.getElementById("clearBtn").onclick=()=>{
+  document.getElementById("search").value="";
+  document.getElementById("org").value="All";
+  document.getElementById("state").value="All";
+  document.getElementById("status").value="Active";
+  apply();
+};
+document.getElementById("pageSize").onchange=e=>{pageSize=+e.target.value;page=1;render()};
+document.getElementById("prev").onclick=()=>{if(page>1)goPage(page-1)};
+document.getElementById("next").onclick=()=>{if(page<Math.ceil(filtered.length/pageSize))goPage(page+1)};
+document.getElementById("selectAll").onchange=e=>document.querySelectorAll(".rowCheck").forEach(x=>x.checked=e.target.checked);
+
+document.getElementById("tabAll").onclick=()=>{
+  document.getElementById("tabAll").className="tab-btn px-2 pb-3 text-sm font-semibold text-[#1261e8] border-b-2 border-[#1261e8]";
+  document.getElementById("tabWithout").className="tab-btn px-2 pb-3 text-sm text-slate-500";
+  alert("All Clients view can be connected to the complete client master API.");
+};
+document.getElementById("tabWithout").onclick=()=>{
+  document.getElementById("tabWithout").className="tab-btn px-2 pb-3 text-sm font-semibold text-[#1261e8] border-b-2 border-[#1261e8]";
+  document.getElementById("tabAll").className="tab-btn px-2 pb-3 text-sm text-slate-500";
+};
+
+function closeModal(){document.getElementById("modal").classList.add("hidden");document.getElementById("modal").classList.remove("flex")}
+document.getElementById("closeModal").onclick=closeModal;
+document.getElementById("cancelModal").onclick=closeModal;
+
+document.getElementById("exportBtn").onclick=()=>{
+  const header=["Client Name","PAN","GSTIN","TAN","Organisation Type","State","Client Status"];
+  const csv=[header,...filtered.map(x=>x)].map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="clients_without_dsc.csv"; a.click();
+};
+
+render();
+</script>
+</body>
+</html>
