@@ -57,3 +57,13 @@ Example:
 This lets the user see both sides of the reconciliation:
 - Portal signatory without DSC
 - DSC available without a matching portal signatory
+
+
+## UI change – Unmapped DSC moved to Client Details
+The main screen no longer displays a separate Unmapped DSC section or KPI. This avoids clutter and keeps the main screen focused on **Clients with No DSC**.
+
+When a user selects a client, the Client Details screen shows:
+- Portal-wise fetched Authorised Signatories
+- DSC Available / DSC Not Available
+- Add DSC for missing signatories
+- **DSCs Available but Not Found in Portal Signatory List** for DSCs that exist in DSC Management but could not be matched to any fetched signatory
