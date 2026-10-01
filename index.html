@@ -21,6 +21,8 @@ tailwind.config = {
   .sidebar-item:hover:not(.active){background:#eef5ff}
   .modal{display:none}
   .modal.open{display:flex}
+  .demo-input{margin-top:4px;width:100%;height:40px;border:1px solid #cbd5e1;border-radius:8px;padding:0 10px;font-size:14px;outline:none;background:white}
+  .demo-input:focus{border-color:#1261e8;box-shadow:0 0 0 3px rgba(18,97,232,.08)}
 </style>
 </head>
 
@@ -71,7 +73,10 @@ tailwind.config = {
         Shows authorised signatories fetched from the portal for whom a DSC is not available in DSC Management.
       </p>
     </div>
-    <button class="border border-slate-300 bg-white rounded-lg px-4 py-2 text-sm font-medium text-[#1261e8]">ⓘ &nbsp; View Help</button>
+    <div class="flex gap-2">
+      <button onclick="openDemoData()" class="border border-emerald-300 bg-emerald-50 rounded-lg px-4 py-2 text-sm font-semibold text-emerald-700">＋ Demo Data</button>
+      <button class="border border-slate-300 bg-white rounded-lg px-4 py-2 text-sm font-medium text-[#1261e8]">ⓘ &nbsp; View Help</button>
+    </div>
   </div>
 
   <!-- SUMMARY -->
@@ -120,6 +125,12 @@ tailwind.config = {
         </select>
       </div>
       <div>
+        <label class="text-xs font-semibold text-slate-600">Portal</label>
+        <select id="portal" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
+          <option>All</option><option>GST</option><option>TDS</option><option>ITR</option>
+        </select>
+      </div>
+      <div>
         <label class="text-xs font-semibold text-slate-600">Client Status</label>
         <select id="status" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
           <option>Active</option><option>Inactive</option><option>All</option>
@@ -130,7 +141,13 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- TABLE -->
+  
+<div class="mt-4 bg-indigo-50 border border-indigo-100 rounded-xl px-5 py-3 text-sm text-indigo-800">
+  <b>Multi-portal example:</b> A single client can have different authorised signatories on GST, TDS and ITR.
+  Each missing signatory is shown as a separate row with its <b>Portal</b>, while the client remains grouped together.
+</div>
+
+<!-- TABLE -->
   <div class="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
     <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
       <div>
@@ -146,6 +163,7 @@ tailwind.config = {
           <tr>
             <th class="px-4 py-3 text-left">#</th>
             <th class="px-3 py-3 text-left">Client Name</th>
+            <th class="px-3 py-3 text-left">Portal</th>
             <th class="px-3 py-3 text-left">Authorised Signatory</th>
             <th class="px-3 py-3 text-left">PAN</th>
             <th class="px-3 py-3 text-left">GSTIN</th>
@@ -175,6 +193,55 @@ tailwind.config = {
 </main>
 </div>
 
+
+<!-- INTERACTIVE DEMO DATA MODAL -->
+<div id="demoModal" class="modal fixed inset-0 bg-slate-900/50 z-[70] items-center justify-center p-6">
+  <div class="bg-white w-full max-w-[720px] rounded-2xl shadow-2xl p-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <div class="text-xs text-emerald-600 font-bold uppercase">Interactive Demo</div>
+        <h2 class="text-xl font-bold text-[#10295c] mt-1">Add Dummy Client / Signatory</h2>
+        <p class="text-sm text-slate-500 mt-1">Add portal-specific authorised signatories and demonstrate GST / TDS / ITR coverage.</p>
+      </div>
+      <button onclick="closeDemoData()" class="text-2xl text-slate-400">×</button>
+    </div>
+
+    <div class="mt-5 grid grid-cols-2 gap-3">
+      <button onclick="showDemoTab('client')" id="tabClient" class="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Client</button>
+      <button onclick="showDemoTab('signatory')" id="tabSignatory" class="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold">Add Signatory to Client</button>
+    </div>
+
+    <div id="demoClientForm" class="mt-5">
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs font-semibold">Client Name *</label><input id="demoClientName" class="demo-input" placeholder="e.g. ABC Industries"></div>
+        <div><label class="text-xs font-semibold">Organisation Type</label><select id="demoOrg" class="demo-input"><option>Company</option><option>Partnership Firm</option><option>Proprietorship</option></select></div>
+        <div><label class="text-xs font-semibold">PAN</label><input id="demoPan" class="demo-input" placeholder="AABCA1234A"></div>
+        <div><label class="text-xs font-semibold">GSTIN</label><input id="demoGstin" class="demo-input" placeholder="27AABCA1234A1Z5"></div>
+        <div><label class="text-xs font-semibold">TAN</label><input id="demoTan" class="demo-input" placeholder="DELA12345B"></div>
+        <div><label class="text-xs font-semibold">State</label><select id="demoState" class="demo-input"><option>Maharashtra</option><option>Delhi</option><option>Gujarat</option><option>Rajasthan</option><option>Karnataka</option><option>Tamil Nadu</option></select></div>
+      </div>
+      <button onclick="addDemoClient()" class="mt-5 w-full bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Dummy Client</button>
+    </div>
+
+    <div id="demoSignatoryForm" class="mt-5 hidden">
+      <div class="mb-4">
+        <label class="text-xs font-semibold">Select Client *</label>
+        <select id="demoClientSelect" class="demo-input"></select>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div><label class="text-xs font-semibold">Authorised Signatory Name *</label><input id="demoSignatoryName" class="demo-input" placeholder="e.g. Neeraj Sharma"></div>
+        <div><label class="text-xs font-semibold">Designation</label><input id="demoDesignation" class="demo-input" value="Authorised Signatory"></div>
+        <div><label class="text-xs font-semibold">PAN</label><input id="demoSignatoryPan" class="demo-input" placeholder="ABCDE1234F"></div>
+        <div><label class="text-xs font-semibold">Portal</label><select id="demoPortal" class="demo-input"><option>GST</option><option>TDS</option><option>ITR</option></select></div>
+      </div>
+      <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
+        New signatories are added as <b>DSC Not Available</b>. You can add different signatories for <b>GST, TDS and ITR</b> under the same client.
+      </div>
+      <button onclick="addDemoSignatory()" class="mt-5 w-full bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Authorised Signatory</button>
+    </div>
+  </div>
+</div>
+
 <!-- CLIENT DETAIL MODAL -->
 <div id="detailModal" class="modal fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-6">
   <div class="bg-[#f7faff] w-full max-w-[1180px] max-h-[92vh] overflow-y-auto rounded-2xl shadow-2xl">
@@ -183,6 +250,7 @@ tailwind.config = {
         <div class="text-xs text-slate-500">DSC Management › Client Details</div>
         <h2 id="detailTitle" class="text-2xl font-bold text-[#10295c] mt-1"></h2>
         <div id="detailIdentifiers" class="text-sm text-slate-500 mt-1"></div>
+        <div id="detailPortals" class="flex gap-2 mt-3"></div>
       </div>
       <button onclick="closeDetail()" class="text-3xl text-slate-400 hover:text-slate-700">×</button>
     </div>
@@ -279,12 +347,8 @@ const clients = [
   {
     id:"C001",
     name:"3 Aces Brand Solutions",
-    pan:"AAACA1234A",
-    gstin:"27AAACA1234A1Z5",
-    tan:"MUMA12345E",
-    org:"Company",
-    state:"Maharashtra",
-    status:"Active",
+    pan:"AAACA1234A", gstin:"27AAACA1234A1Z5", tan:"MUMA12345E",
+    org:"Company", state:"Maharashtra", status:"Active",
     authorisedSignatories:[
       {id:"S001",name:"Rahul Sharma",pan:"ABCDE1234F",designation:"Authorised Signatory",portal:"GST",dscPresent:false},
       {id:"S002",name:"Priya Sharma",pan:"FGHIJ5678K",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
@@ -294,29 +358,53 @@ const clients = [
   {
     id:"C002",
     name:"ABC Private Limited",
-    pan:"AABCA1122B",
-    gstin:"27AABCA1122B1Z8",
-    tan:"MUMA2211B",
-    org:"Company",
-    state:"Maharashtra",
-    status:"Active",
+    pan:"AABCA1122B", gstin:"27AABCA1122B1Z8", tan:"MUMA2211B",
+    org:"Company", state:"Maharashtra", status:"Active",
     authorisedSignatories:[
       {id:"S003",name:"Amit Mehta",pan:"ABCDE1111A",designation:"Director",portal:"GST",dscPresent:true},
       {id:"S004",name:"Neha Mehta",pan:"ABCDE2222B",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
     ],
     dscs:[
-      {holder:"Amit Mehta",serial:"45A8-29F1-7C20",status:"Active",expiry:"15 Aug 2027"}
+      {holder:"Amit Mehta",portal:"GST",serial:"45A8-29F1-7C20",status:"Active",expiry:"15 Aug 2027"}
     ]
   },
+
+  /* IMPORTANT MULTI-PORTAL CUSTOMER */
+  {
+    id:"C007",
+    name:"Vertex Business Solutions Pvt. Ltd.",
+    pan:"AAACV7788P", gstin:"27AAACV7788P1Z2", tan:"DELV7788P",
+    org:"Company", state:"Delhi", status:"Active",
+    authorisedSignatories:[
+      {id:"S011",name:"Arjun Kapoor",pan:"AAAPA1111A",designation:"Authorised Signatory",portal:"GST",dscPresent:false},
+      {id:"S012",name:"Meera Kapoor",pan:"AAAPM2222B",designation:"Authorised Signatory",portal:"TDS",dscPresent:false},
+      {id:"S013",name:"Vikram Shah",pan:"AAAPS3333C",designation:"Authorised Signatory",portal:"ITR",dscPresent:false}
+    ],
+    dscs:[]
+  },
+
+  /* Multi-portal customer where one portal signatory already has DSC */
+  {
+    id:"C008",
+    name:"Nexus Technologies India Pvt. Ltd.",
+    pan:"AABCN4455Q", gstin:"29AABCN4455Q1Z7", tan:"BLRN4455Q",
+    org:"Company", state:"Karnataka", status:"Active",
+    authorisedSignatories:[
+      {id:"S014",name:"Sanjay Rao",pan:"AARPS1111D",designation:"Director",portal:"GST",dscPresent:true},
+      {id:"S015",name:"Kavita Rao",pan:"AARPK2222E",designation:"Authorised Signatory",portal:"TDS",dscPresent:false},
+      {id:"S016",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR",dscPresent:true}
+    ],
+    dscs:[
+      {holder:"Sanjay Rao",portal:"GST",serial:"GST-98BC-12EF",status:"Active",expiry:"20 Dec 2027"},
+      {holder:"Rohit Rao",portal:"ITR",serial:"ITR-71AD-55CD",status:"Expiring Soon",expiry:"18 Nov 2026"}
+    ]
+  },
+
   {
     id:"C003",
     name:"Sharma & Associates",
-    pan:"ABFPS6789G",
-    gstin:"-",
-    tan:"-",
-    org:"Partnership Firm",
-    state:"Delhi",
-    status:"Active",
+    pan:"ABFPS6789G", gstin:"-", tan:"-",
+    org:"Partnership Firm", state:"Delhi", status:"Active",
     authorisedSignatories:[
       {id:"S005",name:"Rakesh Sharma",pan:"ABCPR1234D",designation:"Partner",portal:"TDS",dscPresent:false}
     ],
@@ -325,47 +413,24 @@ const clients = [
   {
     id:"C004",
     name:"Global Tax Solutions",
-    pan:"AAACG7788L",
-    gstin:"27AAACG7788L1Z3",
-    tan:"DELG7788L",
-    org:"Company",
-    state:"Delhi",
-    status:"Active",
+    pan:"AAACG7788L", gstin:"27AAACG7788L1Z3", tan:"DELG7788L",
+    org:"Company", state:"Delhi", status:"Active",
     authorisedSignatories:[
-      {id:"S006",name:"Karan Gupta",pan:"AAAPK3456M",designation:"Director",portal:"Income Tax",dscPresent:true},
-      {id:"S007",name:"Simran Gupta",pan:"AAAPS7890N",designation:"Authorised Signatory",portal:"Income Tax",dscPresent:true}
+      {id:"S006",name:"Karan Gupta",pan:"AAAPK3456M",designation:"Director",portal:"ITR",dscPresent:true},
+      {id:"S007",name:"Simran Gupta",pan:"AAAPS7890N",designation:"Authorised Signatory",portal:"GST",dscPresent:true}
     ],
     dscs:[
-      {holder:"Karan Gupta",serial:"98BC-12EF-440A",status:"Active",expiry:"20 Dec 2027"},
-      {holder:"Simran Gupta",serial:"71AD-55CD-8831",status:"Expiring Soon",expiry:"18 Nov 2026"}
+      {holder:"Karan Gupta",portal:"ITR",serial:"98BC-12EF-440A",status:"Active",expiry:"20 Dec 2027"},
+      {holder:"Simran Gupta",portal:"GST",serial:"71AD-55CD-8831",status:"Expiring Soon",expiry:"18 Nov 2026"}
     ]
   },
   {
     id:"C005",
     name:"R K Enterprises",
-    pan:"AFZPR4321K",
-    gstin:"27AFZPR4321K1Z1",
-    tan:"-",
-    org:"Proprietorship",
-    state:"Gujarat",
-    status:"Active",
+    pan:"AFZPR4321K", gstin:"27AFZPR4321K1Z1", tan:"-",
+    org:"Proprietorship", state:"Gujarat", status:"Active",
     authorisedSignatories:[
       {id:"S008",name:"Rajesh Kumar",pan:"AFZPR4321K",designation:"Proprietor",portal:"GST",dscPresent:false}
-    ],
-    dscs:[]
-  },
-  {
-    id:"C006",
-    name:"Sunrise Industries",
-    pan:"AAGTS1122N",
-    gstin:"27AAGTS1122N1Z9",
-    tan:"-",
-    org:"Company",
-    state:"Maharashtra",
-    status:"Active",
-    authorisedSignatories:[
-      {id:"S009",name:"Anil Verma",pan:"AAGPV1234Q",designation:"Director",portal:"GST",dscPresent:false},
-      {id:"S010",name:"Pooja Verma",pan:"AAGPV5678R",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
     ],
     dscs:[]
   }
@@ -391,14 +456,17 @@ function applyFilters(){
   const q=document.getElementById("search").value.trim().toLowerCase();
   const org=document.getElementById("org").value;
   const state=document.getElementById("state").value;
+  const portal=document.getElementById("portal").value;
   const status=document.getElementById("status").value;
 
   filtered=visibleClients().filter(c=>{
-    const signatoryText=c.authorisedSignatories.map(s=>`${s.name} ${s.pan}`).join(" ").toLowerCase();
+    const missing=missingSignatories(c);
+    const signatoryText=missing.map(s=>`${s.name} ${s.pan} ${s.portal}`).join(" ").toLowerCase();
     const searchable=`${c.name} ${c.pan} ${c.gstin} ${c.tan} ${signatoryText}`.toLowerCase();
     return (!q || searchable.includes(q))
       && (org==="All" || c.org===org)
       && (state==="All" || c.state===state)
+      && (portal==="All" || missing.some(s=>s.portal===portal))
       && (status==="All" || c.status===status);
   });
 
@@ -412,18 +480,11 @@ function renderTable(){
   const tbody=document.getElementById("tbody");
 
   if(!pageClients.length){
-    tbody.innerHTML=`<tr><td colspan="9" class="px-5 py-12 text-center text-slate-500">No clients found.</td></tr>`;
+    tbody.innerHTML=`<tr><td colspan="10" class="px-5 py-12 text-center text-slate-500">No clients found.</td></tr>`;
   } else {
     let html="";
     pageClients.forEach((client,index)=>{
       const missing=missingSignatories(client);
-
-      /*
-        IMPORTANT:
-        If 2 authorised signatories are missing, 2 signatory rows
-        are rendered under the SAME client.
-        If only 1 is missing, only that signatory is rendered.
-      */
       missing.forEach((s,si)=>{
         html += `
         <tr class="hover:bg-blue-50/40">
@@ -435,6 +496,13 @@ function renderTable(){
             </button>
             <div class="text-xs text-slate-400 mt-1">${client.gstin}</div>
           </td>` : ""}
+          <td class="px-3 py-3">
+            <span class="px-2.5 py-1 rounded-full ${
+              s.portal==='GST'?'bg-blue-100 text-blue-700':
+              s.portal==='TDS'?'bg-purple-100 text-purple-700':
+              'bg-orange-100 text-orange-700'
+            } text-xs font-bold">${s.portal}</span>
+          </td>
           <td class="px-3 py-3">
             <div class="font-medium">${s.name}</div>
             <div class="text-xs text-slate-500">${s.designation}</div>
@@ -488,6 +556,8 @@ function openDetail(id){
   const c=clients.find(x=>x.id===id);
   document.getElementById("detailTitle").textContent=c.name;
   document.getElementById("detailIdentifiers").textContent=`PAN: ${c.pan}   •   GSTIN: ${c.gstin}   •   TAN: ${c.tan}`;
+  const detailPortals=[...new Set(c.authorisedSignatories.map(s=>s.portal))];
+  document.getElementById("detailPortals").innerHTML=detailPortals.map(p=>`<span class="px-2.5 py-1 rounded-full text-xs font-bold ${p==="GST"?"bg-blue-100 text-blue-700":p==="TDS"?"bg-purple-100 text-purple-700":"bg-orange-100 text-orange-700"}">${p}</span>`).join("");
 
   const active=c.dscs.filter(x=>x.status==="Active").length;
   const expiring=c.dscs.filter(x=>x.status==="Expiring Soon").length;
@@ -500,32 +570,59 @@ function openDetail(id){
 
   document.getElementById("fetchTime").textContent="Last fetched: 01 Oct 2026, 04:45 PM";
 
-  /* Fetched authorised signatory section */
-  document.getElementById("signatoryCards").innerHTML=c.authorisedSignatories.map(s=>{
-    const has=s.dscPresent;
-    return `
-    <div class="border rounded-xl p-4 ${has?'border-emerald-200':'border-red-200'}">
-      <div class="flex justify-between items-start">
-        <div class="flex gap-3">
-          <div class="w-10 h-10 rounded-full bg-blue-50 text-[#1261e8] flex items-center justify-center font-bold">
-            ${s.name.split(" ").map(x=>x[0]).slice(0,2).join("")}
-          </div>
-          <div>
-            <div class="font-semibold">${s.name}</div>
-            <div class="text-xs text-slate-500">${s.designation}</div>
-          </div>
+  /* Fetched authorised signatory section, grouped by portal */
+  const portalOrder=["GST","TDS","ITR"];
+  const groups=portalOrder.map(p=>({
+    portal:p,
+    signatories:c.authorisedSignatories.filter(s=>s.portal===p)
+  })).filter(g=>g.signatories.length);
+
+  document.getElementById("signatoryCards").innerHTML=groups.map(g=>`
+    <div class="md:col-span-2 border rounded-xl overflow-hidden">
+      <div class="px-4 py-3 ${
+        g.portal==='GST'?'bg-blue-50 border-blue-100':
+        g.portal==='TDS'?'bg-purple-50 border-purple-100':
+        'bg-orange-50 border-orange-100'
+      } border-b flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="px-3 py-1 rounded-full text-xs font-bold ${
+            g.portal==='GST'?'bg-blue-100 text-blue-700':
+            g.portal==='TDS'?'bg-purple-100 text-purple-700':
+            'bg-orange-100 text-orange-700'
+          }">${g.portal}</span>
+          <span class="font-semibold">${g.portal==="GST"?"GST Portal":g.portal==="TDS"?"TDS Portal":"Income Tax / ITR Portal"}</span>
         </div>
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${has?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">
-          ${has?'DSC Available':'DSC Not Available'}
-        </span>
+        <span class="text-xs text-slate-500">${g.signatories.length} signatory${g.signatories.length>1?'ies':''}</span>
       </div>
-      <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
-        <div><div class="text-xs text-slate-400">PAN</div><div class="font-medium">${s.pan}</div></div>
-        <div><div class="text-xs text-slate-400">Portal</div><div class="font-medium">${s.portal}</div></div>
+      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${g.signatories.map(s=>{
+          const has=s.dscPresent;
+          return `
+          <div class="border rounded-xl p-4 ${has?'border-emerald-200':'border-red-200'}">
+            <div class="flex justify-between items-start">
+              <div class="flex gap-3">
+                <div class="w-10 h-10 rounded-full bg-blue-50 text-[#1261e8] flex items-center justify-center font-bold">
+                  ${s.name.split(" ").map(x=>x[0]).slice(0,2).join("")}
+                </div>
+                <div>
+                  <div class="font-semibold">${s.name}</div>
+                  <div class="text-xs text-slate-500">${s.designation}</div>
+                </div>
+              </div>
+              <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${has?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">
+                ${has?'DSC Available':'DSC Not Available'}
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+              <div><div class="text-xs text-slate-400">PAN</div><div class="font-medium">${s.pan}</div></div>
+              <div><div class="text-xs text-slate-400">Portal</div><div class="font-medium">${s.portal}</div></div>
+            </div>
+            ${!has ? `<button onclick="closeDetail();openAdd('${c.id}','${s.id}')" class="mt-4 w-full border border-[#1261e8] text-[#1261e8] rounded-lg py-2 text-sm font-semibold">＋ Add DSC for ${s.name}</button>` : ""}
+          </div>`;
+        }).join("")}
       </div>
-      ${!has ? `<button onclick="closeDetail();openAdd('${c.id}','${s.id}')" class="mt-4 w-full border border-[#1261e8] text-[#1261e8] rounded-lg py-2 text-sm font-semibold">＋ Add DSC for ${s.name}</button>` : ""}
-    </div>`;
-  }).join("");
+    </div>
+  `).join("");
 
   /* Current DSCs section */
   if(!c.dscs.length){
@@ -543,7 +640,7 @@ function openDetail(id){
           <div class="flex justify-between">
             <div>
               <div class="font-semibold">${d.holder}</div>
-              <div class="text-xs text-slate-400 mt-1">Serial: ${d.serial}</div>
+              <div class="text-xs text-slate-500 mt-1">${d.portal || "DSC Management"} &nbsp;•&nbsp; Serial: ${d.serial}</div>
             </div>
             <span class="text-xs px-2 py-1 rounded-full ${d.status==='Active'?'bg-emerald-100 text-emerald-700':d.status==='Expiring Soon'?'bg-amber-100 text-amber-700':'bg-red-100 text-red-700'}">${d.status}</span>
           </div>
@@ -569,6 +666,7 @@ document.getElementById("clearBtn").onclick=()=>{
   document.getElementById("search").value="";
   document.getElementById("org").value="All";
   document.getElementById("state").value="All";
+  document.getElementById("portal").value="All";
   document.getElementById("status").value="Active";
   applyFilters();
 };
@@ -577,13 +675,118 @@ document.getElementById("prev").onclick=()=>{if(page>1)goPage(page-1)};
 document.getElementById("next").onclick=()=>{if(page<Math.ceil(filtered.length/pageSize))goPage(page+1)};
 
 document.getElementById("exportBtn").onclick=()=>{
-  const rows=[["Client Name","Authorised Signatory","PAN","GSTIN","Organisation Type","State","DSC Status"]];
-  filtered.forEach(c=>missingSignatories(c).forEach(s=>rows.push([c.name,s.name,s.pan,c.gstin,c.org,c.state,"DSC Not Available"])));
+  const rows=[["Client Name","Portal","Authorised Signatory","PAN","GSTIN","Organisation Type","State","DSC Status"]];
+  filtered.forEach(c=>missingSignatories(c).forEach(s=>rows.push([c.name,s.portal,s.name,s.pan,c.gstin,c.org,c.state,"DSC Not Available"])));
   const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
   const a=document.createElement("a");
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download="clients_with_no_dsc.csv";
   a.click();
+};
+
+
+function openDemoData(){
+  refreshDemoClientSelect();
+  showDemoTab('client');
+  document.getElementById("demoModal").classList.add("open");
+}
+function closeDemoData(){document.getElementById("demoModal").classList.remove("open");}
+
+function showDemoTab(tab){
+  const client=document.getElementById("demoClientForm");
+  const sign=document.getElementById("demoSignatoryForm");
+  const tc=document.getElementById("tabClient");
+  const ts=document.getElementById("tabSignatory");
+  if(tab==="client"){
+    client.classList.remove("hidden"); sign.classList.add("hidden");
+    tc.className="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold";
+    ts.className="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold";
+  } else {
+    client.classList.add("hidden"); sign.classList.remove("hidden");
+    ts.className="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold";
+    tc.className="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold";
+  }
+}
+
+function refreshDemoClientSelect(){
+  const select=document.getElementById("demoClientSelect");
+  select.innerHTML=clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
+}
+
+function addDemoClient(){
+  const name=document.getElementById("demoClientName").value.trim();
+  if(!name){alert("Please enter Client Name.");return;}
+  const id="DEMO"+String(Date.now()).slice(-6);
+  clients.push({
+    id,
+    name,
+    pan:document.getElementById("demoPan").value.trim() || "AABCD1234A",
+    gstin:document.getElementById("demoGstin").value.trim() || "-",
+    tan:document.getElementById("demoTan").value.trim() || "-",
+    org:document.getElementById("demoOrg").value,
+    state:document.getElementById("demoState").value,
+    status:"Active",
+    authorisedSignatories:[],
+    dscs:[]
+  });
+  filtered=visibleClients();
+  page=1;
+  renderTable();
+  refreshDemoClientSelect();
+  document.getElementById("demoClientName").value="";
+  alert("Dummy client added. Now use 'Add Signatory to Client' to add one or more authorised signatories.");
+  showDemoTab("signatory");
+}
+
+function addDemoSignatory(){
+  const clientId=document.getElementById("demoClientSelect").value;
+  const name=document.getElementById("demoSignatoryName").value.trim();
+  if(!clientId || !name){alert("Please select a client and enter the signatory name.");return;}
+  const c=clients.find(x=>x.id===clientId);
+  const sid="DEMO-S"+String(Date.now()).slice(-7);
+  c.authorisedSignatories.push({
+    id:sid,
+    name,
+    pan:document.getElementById("demoSignatoryPan").value.trim() || "ABCDE1234F",
+    designation:document.getElementById("demoDesignation").value.trim() || "Authorised Signatory",
+    portal:document.getElementById("demoPortal").value,
+    dscPresent:false
+  });
+  filtered=visibleClients();
+  page=1;
+  renderTable();
+  document.getElementById("demoSignatoryName").value="";
+  document.getElementById("demoSignatoryPan").value="";
+  alert("Authorised signatory added as 'DSC Not Available'. It will now appear in the list.");
+}
+
+function demoAddDSC(clientId, signatoryId){
+  const c=clients.find(x=>x.id===clientId);
+  const s=c.authorisedSignatories.find(x=>x.id===signatoryId);
+  s.dscPresent=true;
+  c.dscs.push({
+    holder:s.name,
+    portal:s.portal,
+    serial:"DEMO-"+Math.random().toString(16).slice(2,10).toUpperCase(),
+    status:"Active",
+    expiry:"01 Oct 2027"
+  });
+  filtered=visibleClients();
+  renderTable();
+  openDetail(clientId);
+}
+
+/* Make the mock Add DSC action actually demonstrate the data change. */
+const originalOpenAdd = openAdd;
+openAdd = function(clientId, signatoryId){
+  const c=clients.find(x=>x.id===clientId);
+  const s=c.authorisedSignatories.find(x=>x.id===signatoryId);
+  document.getElementById("addClient").textContent=`Client: ${c.name}`;
+  document.getElementById("addSignatory").textContent=`Authorised Signatory: ${s.name}`;
+  document.getElementById("addModal").classList.add("open");
+
+  const continueBtn=document.querySelector("#addModal button.bg-\\[\\#1261e8\\]");
+  continueBtn.onclick=function(){ demoAddDSC(clientId,signatoryId); closeAdd(); };
 };
 
 renderTable();

@@ -1,29 +1,40 @@
-# DSC Management – Clients with No DSC
+# DSC Management – Interactive Demo V3
 
-This version implements the requested flow:
+This version is interactive for BRD/demo purposes.
 
-1. **List of Clients with No DSC**
-2. Multiple authorised signatories per client are supported.
-3. If two authorised signatories do not have DSCs, both names appear under the same client.
-4. If only one signatory is missing a DSC, only that signatory is displayed and the row has **Add DSC**.
-5. The client list remains the main view.
-6. Clicking a client opens the client detail view, including the existing DSC summary cards.
-7. The fetched authorised signatories are displayed in the client detail view with:
-   - Name
-   - Designation
-   - PAN
-   - Source portal
-   - DSC Available / DSC Not Available
-   - Add DSC action for missing DSCs
-8. Existing DSC certificates are shown separately in the DSC Management section.
+### Demo flow
+1. Click **+ Demo Data**.
+2. Add a dummy client.
+3. Select **Add Signatory to Client**.
+4. Add 1 or more authorised signatories.
+5. Each new signatory is created with **DSC Not Available** and appears in the missing-DSC list.
+6. Click **Add DSC** against a signatory.
+7. Click Continue in the Add DSC popup.
+8. The demo marks that signatory as having a DSC:
+   - it disappears from the missing-DSC list if no other signatory is missing;
+   - it remains if another signatory is still missing;
+   - the DSC appears in the client's DSC Management section.
+9. Click the client name to open the detailed client view and see all fetched signatories, including those with and without DSC.
 
-## API integration
-The mock uses JavaScript data in the `clients` array.
+This is dummy-data behavior only. Replace the JavaScript `clients` array and add DSC callback with the actual APIs when the API contracts are available.
 
-Replace that data with the API response:
-- `authorisedSignatories` = portal/API response
-- `dscs` = DSC Management response
 
-The UI automatically calculates the missing DSC list by comparing `dscPresent` / DSC records.
+## Multi-portal customer example
+The demo now includes **Vertex Business Solutions Pvt. Ltd.** where:
+- GST → Arjun Kapoor
+- TDS → Meera Kapoor
+- ITR → Vikram Shah
 
-Upload `index.html` to the root of a GitHub Pages repository.
+All three can be missing a DSC and are shown as separate rows in the main list, with the same client grouped using row spans.
+
+The client detail view groups fetched signatories under:
+- GST Portal
+- TDS Portal
+- Income Tax / ITR Portal
+
+Another example, **Nexus Technologies India Pvt. Ltd.**, demonstrates a mixed state:
+- GST → DSC Available
+- TDS → DSC Not Available
+- ITR → DSC Available
+
+This demonstrates that only the missing TDS signatory appears in the missing-DSC list.
