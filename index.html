@@ -143,8 +143,38 @@ tailwind.config = {
 
   
 <div class="mt-4 bg-indigo-50 border border-indigo-100 rounded-xl px-5 py-3 text-sm text-indigo-800">
-  <b>Multi-portal example:</b> A single client can have different authorised signatories on GST, TDS and ITR.
-  Each missing signatory is shown as a separate row with its <b>Portal</b>, while the client remains grouped together.
+  <b>Multi-portal + unmatched DSC:</b> A client can have different authorised signatories on GST, TDS and ITR.
+  The screen also identifies DSCs already present in DSC Management that <b>cannot be matched to any fetched portal signatory</b>.
+</div>
+
+
+<div class="mt-5 bg-white border border-amber-200 rounded-2xl shadow-sm overflow-hidden">
+  <div class="px-5 py-4 border-b border-amber-100 bg-amber-50/50 flex items-center justify-between">
+    <div>
+      <div class="font-bold text-slate-800">DSCs Available but Not Found in Portal Signatory List</div>
+      <div class="text-xs text-slate-500 mt-1">
+        These DSCs are already available in DSC Management for the client, but their holder was not returned
+        in the GST / TDS / ITR Authorised Signatory data.
+      </div>
+    </div>
+    <span id="unmappedDscBadge" class="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">0 DSCs</span>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm">
+      <thead class="bg-slate-50 border-b">
+        <tr>
+          <th class="px-4 py-3 text-left">Client</th>
+          <th class="px-4 py-3 text-left">DSC Holder</th>
+          <th class="px-4 py-3 text-left">Portal Mapping</th>
+          <th class="px-4 py-3 text-left">Serial No.</th>
+          <th class="px-4 py-3 text-left">Status</th>
+          <th class="px-4 py-3 text-left">Expiry</th>
+          <th class="px-4 py-3 text-left">Action</th>
+        </tr>
+      </thead>
+      <tbody id="unmappedDscBody"></tbody>
+    </table>
+  </div>
 </div>
 
 <!-- TABLE -->
@@ -220,6 +250,10 @@ tailwind.config = {
         <div><label class="text-xs font-semibold">TAN</label><input id="demoTan" class="demo-input" placeholder="DELA12345B"></div>
         <div><label class="text-xs font-semibold">State</label><select id="demoState" class="demo-input"><option>Maharashtra</option><option>Delhi</option><option>Gujarat</option><option>Rajasthan</option><option>Karnataka</option><option>Tamil Nadu</option></select></div>
       </div>
+      <label class="mt-4 flex items-center gap-2 text-sm text-slate-700">
+        <input id="demoUnmappedDsc" type="checkbox" class="w-4 h-4" checked>
+        Add an extra DSC that is available in DSC Management but not present in the portal signatory list
+      </label>
       <button onclick="addDemoClient()" class="mt-5 w-full bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Dummy Client</button>
     </div>
 
@@ -365,7 +399,8 @@ const clients = [
       {id:"S004",name:"Neha Mehta",pan:"ABCDE2222B",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
     ],
     dscs:[
-      {holder:"Amit Mehta",portal:"GST",serial:"45A8-29F1-7C20",status:"Active",expiry:"15 Aug 2027"}
+      {holder:"Amit Mehta",portal:"GST",serial:"45A8-29F1-7C20",status:"Active",expiry:"15 Aug 2027",linked:true},
+      {holder:"Manish Verma",portal:"-",serial:"DSC-UNM-1021",status:"Active",expiry:"22 Jan 2028",linked:false}
     ]
   },
 
@@ -380,7 +415,9 @@ const clients = [
       {id:"S012",name:"Meera Kapoor",pan:"AAAPM2222B",designation:"Authorised Signatory",portal:"TDS",dscPresent:false},
       {id:"S013",name:"Vikram Shah",pan:"AAAPS3333C",designation:"Authorised Signatory",portal:"ITR",dscPresent:false}
     ],
-    dscs:[]
+    dscs:[
+      {holder:"Old Authorised Signatory",portal:"-",serial:"DSC-UNM-2210",status:"Expired",expiry:"12 Feb 2025",linked:false}
+    ]
   },
 
   /* Multi-portal customer where one portal signatory already has DSC */
@@ -395,8 +432,9 @@ const clients = [
       {id:"S016",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR",dscPresent:true}
     ],
     dscs:[
-      {holder:"Sanjay Rao",portal:"GST",serial:"GST-98BC-12EF",status:"Active",expiry:"20 Dec 2027"},
-      {holder:"Rohit Rao",portal:"ITR",serial:"ITR-71AD-55CD",status:"Expiring Soon",expiry:"18 Nov 2026"}
+      {holder:"Sanjay Rao",portal:"GST",serial:"GST-98BC-12EF",status:"Active",expiry:"20 Dec 2027",linked:true},
+      {holder:"Rohit Rao",portal:"ITR",serial:"ITR-71AD-55CD",status:"Expiring Soon",expiry:"18 Nov 2026",linked:true},
+      {holder:"Pooja Nair",portal:"-",serial:"DSC-UNM-3098",status:"Active",expiry:"04 May 2028",linked:false}
     ]
   },
 
@@ -452,6 +490,20 @@ let filtered = visibleClients();
 let page = 1;
 let pageSize = 10;
 
+
+function linkedDscs(c){
+  return (c.dscs || []).filter(d => d.linked !== false);
+}
+function unmappedDscs(c){
+  return (c.dscs || []).filter(d => d.linked === false);
+}
+function totalUnmappedDscs(){
+  return visibleClients().reduce((n,c)=>n+unmappedDscs(c).length,0);
+}
+function allDscCount(c){
+  return (c.dscs || []).length;
+}
+
 function applyFilters(){
   const q=document.getElementById("search").value.trim().toLowerCase();
   const org=document.getElementById("org").value;
@@ -472,6 +524,54 @@ function applyFilters(){
 
   page=1;
   renderTable();
+}
+
+
+function renderUnmappedDscs(){
+  const rows=[];
+  visibleClients().forEach(c=>{
+    unmappedDscs(c).forEach(d=>{
+      rows.push(`
+        <tr class="border-b last:border-b-0 hover:bg-amber-50/40">
+          <td class="px-4 py-3">
+            <button onclick="openDetail('${c.id}')" class="font-semibold text-[#1261e8] hover:underline">${c.name}</button>
+          </td>
+          <td class="px-4 py-3">
+            <div class="font-medium">${d.holder}</div>
+            <div class="text-xs text-slate-400">Not found in fetched signatory list</div>
+          </td>
+          <td class="px-4 py-3">
+            <span class="px-2.5 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-semibold">
+              ${d.portal && d.portal !== "-" ? d.portal : "Unmapped"}
+            </span>
+          </td>
+          <td class="px-4 py-3 font-mono text-xs">${d.serial}</td>
+          <td class="px-4 py-3">
+            <span class="px-2.5 py-1 rounded-full ${
+              d.status==="Active" ? "bg-emerald-100 text-emerald-700" :
+              d.status==="Expired" ? "bg-red-100 text-red-700" :
+              "bg-amber-100 text-amber-700"
+            } text-xs font-semibold">${d.status}</span>
+          </td>
+          <td class="px-4 py-3">${d.expiry}</td>
+          <td class="px-4 py-3">
+            <button onclick="openDetail('${c.id}')" class="border border-slate-300 rounded-lg px-3 py-1.5 text-xs font-semibold hover:bg-slate-50">
+              View DSC
+            </button>
+          </td>
+        </tr>`);
+    });
+  });
+  const body=document.getElementById("unmappedDscBody");
+  if(!rows.length){
+    body.innerHTML=`<tr><td colspan="7" class="px-5 py-8 text-center text-slate-500">All DSCs are currently matched to fetched portal signatories.</td></tr>`;
+  } else body.innerHTML=rows.join("");
+
+  const count=rows.length;
+  const badge=document.getElementById("unmappedDscBadge");
+  if(badge) badge.textContent=`${count} DSC${count===1?"":"s"}`;
+  const kpi=document.getElementById("unmappedDscCount");
+  if(kpi) kpi.textContent=count;
 }
 
 function renderTable(){
@@ -539,6 +639,7 @@ function renderTable(){
   document.getElementById("next").disabled=page===totalPages;
   document.getElementById("missingClients").textContent=visibleClients().length;
   document.getElementById("missingSignatories").textContent=visibleClients().reduce((n,c)=>n+missingSignatories(c).length,0);
+  renderUnmappedDscs();
 }
 
 function goPage(p){page=p;renderTable();}
@@ -623,6 +724,43 @@ function openDetail(id){
       </div>
     </div>
   `).join("");
+  /* DSCs already in DSC Management but not matched to any fetched portal signatory */
+  const unmapped = unmappedDscs(c);
+  const unmappedBlock = document.getElementById("unmappedDscs");
+  if(unmappedBlock){
+    unmappedBlock.innerHTML = unmapped.length ? `
+      <div class="mt-6 border border-amber-200 rounded-xl overflow-hidden">
+        <div class="px-4 py-3 bg-amber-50 border-b border-amber-100">
+          <div class="font-semibold text-amber-900">DSCs Available but Not Found in Portal Signatory List</div>
+          <div class="text-xs text-amber-700 mt-1">
+            These DSCs exist in DSC Management, but no matching GST / TDS / ITR signatory was returned.
+          </div>
+        </div>
+        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          ${unmapped.map(d=>`
+            <div class="border border-amber-200 rounded-xl p-4 bg-amber-50/30">
+              <div class="flex items-start justify-between">
+                <div>
+                  <div class="font-semibold">${d.holder}</div>
+                  <div class="text-xs text-slate-500 mt-1">Portal mapping: Unmapped</div>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${
+                  d.status==="Active"?"bg-emerald-100 text-emerald-700":
+                  d.status==="Expired"?"bg-red-100 text-red-700":
+                  "bg-amber-100 text-amber-700"
+                }">${d.status}</span>
+              </div>
+              <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
+                <div><div class="text-xs text-slate-400">Serial No.</div><div class="font-mono text-xs mt-1">${d.serial}</div></div>
+                <div><div class="text-xs text-slate-400">Expiry</div><div class="mt-1 font-medium">${d.expiry}</div></div>
+              </div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    ` : "";
+  }
+
 
   /* Current DSCs section */
   if(!c.dscs.length){
@@ -727,7 +865,14 @@ function addDemoClient(){
     state:document.getElementById("demoState").value,
     status:"Active",
     authorisedSignatories:[],
-    dscs:[]
+    dscs:document.getElementById("demoUnmappedDsc").checked ? [{
+      holder:"Unmapped DSC Holder",
+      portal:"-",
+      serial:"DEMO-UNM-"+String(Date.now()).slice(-6),
+      status:"Active",
+      expiry:"10 Oct 2028",
+      linked:false
+    }] : []
   });
   filtered=visibleClients();
   page=1;
@@ -769,6 +914,7 @@ function demoAddDSC(clientId, signatoryId){
     portal:s.portal,
     serial:"DEMO-"+Math.random().toString(16).slice(2,10).toUpperCase(),
     status:"Active",
+    linked:true,
     expiry:"01 Oct 2027"
   });
   filtered=visibleClients();

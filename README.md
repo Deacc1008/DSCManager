@@ -38,3 +38,22 @@ Another example, **Nexus Technologies India Pvt. Ltd.**, demonstrates a mixed st
 - ITR → DSC Available
 
 This demonstrates that only the missing TDS signatory appears in the missing-DSC list.
+
+
+## Unmatched / Unmapped DSC scenario
+The demo now supports DSCs that already exist in DSC Management but are not present in the fetched GST/TDS/ITR signatory list.
+
+These are marked with `linked:false` and are shown in:
+1. A dedicated **DSCs Available but Not Found in Portal Signatory List** section on the main screen.
+2. The client's **Client Details** page under the same heading.
+
+Example:
+- Client: Nexus Technologies India Pvt. Ltd.
+- GST signatory: Sanjay Rao → DSC Available
+- TDS signatory: Kavita Rao → DSC Not Available
+- ITR signatory: Rohit Rao → DSC Available
+- Extra DSC: Pooja Nair → DSC exists in DSC Management, but not found in the portal signatory response → Unmapped
+
+This lets the user see both sides of the reconciliation:
+- Portal signatory without DSC
+- DSC available without a matching portal signatory
