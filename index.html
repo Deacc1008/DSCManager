@@ -1,139 +1,499 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>DSC Management</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
-body{font-family:Inter,system-ui,sans-serif;background:#f7faff}
+body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;background:#f5f8fc}
+*{box-sizing:border-box}
+.input{width:100%;height:40px;border:1px solid #d7e0ec;border-radius:8px;padding:0 11px;outline:none;background:white;font-size:13px}
+.input:focus{border-color:#2868e8;box-shadow:0 0 0 3px rgba(40,104,232,.08)}
+.label{font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px}
 .modal{display:none}.modal.open{display:flex}
-.input{width:100%;height:42px;border:1px solid #d7e0ec;border-radius:9px;padding:0 12px;outline:none;font-size:14px;background:#fff}
-.input:focus{border-color:#2f6fec;box-shadow:0 0 0 3px rgba(47,111,236,.09)}
-.label{font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px}
+.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
 </style>
 </head>
 <body class="text-slate-800">
-<div class="min-h-screen flex">
-<aside class="w-[225px] bg-white border-r border-slate-200 fixed inset-y-0 left-0">
-<div class="h-16 flex items-center px-5 border-b"><b class="text-2xl text-blue-600">KDK</b><span class="ml-2 text-lg">Spectrum Cloud</span></div>
-<div class="px-4 pt-5">
-<div class="text-xs font-bold text-slate-400 uppercase mb-3">Office Management</div>
-<div id="navAll" onclick="showAll()" class="px-3 py-2.5 rounded-lg bg-blue-600 text-white font-semibold cursor-pointer">▣ &nbsp; All DSCs</div>
-<div class="px-3 py-2.5 rounded-lg mt-1 cursor-pointer hover:bg-blue-50">♙ &nbsp; Clients with No DSC</div>
-<div class="px-3 py-2.5 rounded-lg mt-1">♧ &nbsp; Alerts</div><div class="px-3 py-2.5 rounded-lg">⚙ &nbsp; Settings</div>
-</div></aside>
 
-<main class="ml-[225px] flex-1">
-<header class="h-16 bg-white border-b flex items-center justify-between px-7 sticky top-0 z-20">
-<div class="w-[500px] h-10 border rounded-lg flex items-center px-3"><span class="text-slate-400 mr-2">⌕</span><input id="globalSearch" class="outline-none flex-1 text-sm" placeholder="Search client, holder, PAN, serial number..."></div>
-<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-semibold">SK</div><div><b class="text-sm">Saurabh Kumar</b><div class="text-xs text-slate-500">KDK & Co.</div></div></div>
+<header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
+  <div class="flex items-center gap-3">
+    <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold">K</div>
+    <div>
+      <div class="font-bold text-slate-800">DSC Management</div>
+      <div class="text-[11px] text-slate-500">Certificate Inventory & Signatory Reconciliation</div>
+    </div>
+  </div>
+  <div class="flex items-center gap-4">
+    <div class="relative">
+      <input id="globalSearch" class="input w-[310px]" placeholder="Search client, holder, PAN, serial...">
+    </div>
+    <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold">SK</div>
+  </div>
 </header>
 
-<section class="p-7">
-<div class="flex justify-between items-start">
-<div><div class="text-sm text-slate-500 mb-2">Office Management › DSC Management</div><h1 class="text-3xl font-bold text-[#10295c]">All DSCs</h1><p class="text-sm text-slate-500 mt-1">View all Digital Signature Certificates available across customers.</p></div>
-<button onclick="openAdd()" class="bg-blue-600 text-white rounded-lg px-5 py-2.5 text-sm font-semibold">＋ Add DSC</button>
-</div>
+<main class="p-5 max-w-[1700px] mx-auto">
+  <div class="flex items-end justify-between mb-4">
+    <div>
+      <div class="text-xs text-slate-500 mb-1">Office Management › DSC Management</div>
+      <h1 class="text-2xl font-bold text-[#10295c]">DSC Management</h1>
+      <p class="text-xs text-slate-500 mt-1">
+        All DSCs available for customers and portal-wise Authorised Signatories without DSC.
+      </p>
+    </div>
+    <button onclick="openAdd()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2.5 text-sm font-semibold">
+      ＋ Add DSC
+    </button>
+  </div>
 
-<div class="grid grid-cols-4 gap-5 mt-6">
-<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Total DSCs</div><div id="total" class="text-3xl font-bold mt-1">0</div></div>
-<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Active</div><div id="active" class="text-3xl font-bold text-emerald-600 mt-1">0</div></div>
-<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Expiring Soon</div><div id="expiring" class="text-3xl font-bold text-amber-600 mt-1">0</div></div>
-<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Expired</div><div id="expired" class="text-3xl font-bold text-red-600 mt-1">0</div></div>
-</div>
+  <div class="grid grid-cols-[minmax(0,1fr)_390px] gap-4 items-start">
 
-<div class="bg-white border rounded-xl mt-6 p-5">
-<div class="grid grid-cols-[1.7fr_1fr_1fr_1fr_auto] gap-4 items-end">
-<div><label class="label">Search</label><input id="search" class="input" placeholder="Client, holder, PAN, serial number..."></div>
-<div><label class="label">Status</label><select id="status" class="input"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Expired</option></select></div>
-<div><label class="label">DSC Class</label><select id="cls" class="input"><option>All</option><option>Class 3</option><option>Class 2</option></select></div>
-<div><label class="label">Token Make</label><select id="make" class="input"><option>All</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
-<button onclick="clearFilters()" class="h-[42px] border border-blue-600 text-blue-600 rounded-lg px-5 text-sm font-semibold">Clear</button>
-</div></div>
+    <!-- LEFT: ALL DSC -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-3">
+              <h2 class="font-bold text-lg">All DSC</h2>
+              <span id="allCount" class="badge bg-blue-100 text-blue-700">0</span>
+            </div>
+            <p class="text-xs text-slate-500 mt-1">
+              Includes DSCs already available in DSC Management and portal signatories fetched from GST / TDS / ITR.
+            </p>
+          </div>
+          <button onclick="exportCSV()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold text-blue-600">Export</button>
+        </div>
 
-<div class="bg-white border rounded-xl mt-4 overflow-hidden">
-<div class="px-5 py-4 border-b flex justify-between"><div><b>All Customer DSCs</b><p class="text-xs text-slate-500 mt-1">Every DSC currently stored in DSC Management.</p></div><button onclick="exportCSV()" class="border rounded-lg px-4 py-2 text-sm text-blue-600 font-semibold">▣ Export</button></div>
-<div class="overflow-x-auto"><table class="w-full text-sm">
-<thead class="bg-slate-50"><tr>
-<th class="px-4 py-3 text-left">#</th><th class="px-3 py-3 text-left">Client</th><th class="px-3 py-3 text-left">Certificate Holder</th><th class="px-3 py-3 text-left">Serial Number</th><th class="px-3 py-3 text-left">DSC Class</th><th class="px-3 py-3 text-left">Issued By</th><th class="px-3 py-3 text-left">Token Make</th><th class="px-3 py-3 text-left">Token Color</th><th class="px-3 py-3 text-left">Expiry</th><th class="px-3 py-3 text-left">Status</th>
-</tr></thead><tbody id="body" class="divide-y"></tbody></table></div>
-<div id="count" class="px-5 py-4 text-sm text-slate-500"></div>
+        <div class="grid grid-cols-[1.5fr_130px_130px_130px_auto] gap-3 mt-4">
+          <div>
+            <label class="label">Search</label>
+            <input id="search" class="input" placeholder="Client / holder / PAN / serial">
+          </div>
+          <div>
+            <label class="label">Portal</label>
+            <select id="portalFilter" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option></select>
+          </div>
+          <div>
+            <label class="label">DSC Status</label>
+            <select id="dscStatusFilter" class="input"><option>All</option><option>Available</option><option>Not Available</option></select>
+          </div>
+          <div>
+            <label class="label">Certificate</label>
+            <select id="certFilter" class="input"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Expired</option></select>
+          </div>
+          <button onclick="clearFilters()" class="h-10 border border-blue-600 text-blue-600 rounded-lg px-4 text-xs font-semibold mt-[16px]">Clear</button>
+        </div>
+      </div>
+
+      <div class="overflow-auto max-h-[calc(100vh-245px)]">
+        <table class="w-full text-xs">
+          <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200">
+            <tr>
+              <th class="px-4 py-3 text-left">Client</th>
+              <th class="px-3 py-3 text-left">Portal</th>
+              <th class="px-3 py-3 text-left">Authorised Signatory / DSC Holder</th>
+              <th class="px-3 py-3 text-left">PAN</th>
+              <th class="px-3 py-3 text-left">DSC</th>
+              <th class="px-3 py-3 text-left">Serial / Token</th>
+              <th class="px-3 py-3 text-left">Expiry</th>
+              <th class="px-3 py-3 text-left">Action</th>
+            </tr>
+          </thead>
+          <tbody id="allBody" class="divide-y divide-slate-100"></tbody>
+        </table>
+      </div>
+      <div id="allFooter" class="px-5 py-3 border-t bg-slate-50 text-xs text-slate-500"></div>
+    </section>
+
+    <!-- RIGHT: CLIENTS WITH NO DSC -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden sticky top-[85px]">
+      <div class="px-5 py-4 border-b border-slate-200 bg-red-50/50">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="font-bold text-base">Clients with No DSC</h2>
+            <p class="text-[11px] text-slate-500 mt-1">Only clients having one or more missing signatory DSCs.</p>
+          </div>
+          <span id="missingClientCount" class="badge bg-red-100 text-red-700">0</span>
+        </div>
+      </div>
+
+      <div class="px-4 py-3 border-b bg-white">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="label">Portal</label>
+            <select id="missingPortal" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option></select>
+          </div>
+          <div>
+            <label class="label">Search Client</label>
+            <input id="missingSearch" class="input" placeholder="Client name">
+          </div>
+        </div>
+      </div>
+
+      <div id="missingList" class="max-h-[calc(100vh-265px)] overflow-y-auto p-3 space-y-3"></div>
+    </section>
+  </div>
+</main>
+
+<!-- CLIENT DETAIL -->
+<div id="detailModal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
+  <div class="bg-white w-full max-w-[850px] max-h-[92vh] rounded-2xl overflow-hidden shadow-2xl">
+    <div class="bg-[#152754] text-white px-6 py-5 flex items-start justify-between">
+      <div>
+        <div class="text-xs text-blue-200">Client Details</div>
+        <h2 id="detailName" class="text-xl font-bold mt-1"></h2>
+        <div id="detailIds" class="text-xs text-blue-100 mt-1"></div>
+      </div>
+      <button onclick="closeDetail()" class="w-8 h-8 rounded-lg bg-white/10 text-xl">×</button>
+    </div>
+    <div class="p-6 overflow-y-auto max-h-[calc(92vh-100px)]">
+      <div id="detailSummary" class="grid grid-cols-4 gap-3"></div>
+      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-slate-500 uppercase">Portal-wise Authorised Signatories</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div id="detailSignatories" class="mt-3 space-y-3"></div>
+      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-slate-500 uppercase">DSCs Available in DSC Management</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div id="detailDscs" class="mt-3"></div>
+      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-amber-600 uppercase">DSCs Not Matched to Portal Signatory</span><div class="h-px bg-amber-200 flex-1"></div></div>
+      <div id="detailUnmatched" class="mt-3"></div>
+    </div>
+  </div>
 </div>
-</section></main></div>
 
 <!-- ADD DSC -->
-<div id="modal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
-<div class="w-full max-w-[560px] max-h-[94vh] overflow-hidden rounded-[22px] bg-white shadow-2xl">
-<div class="bg-gradient-to-r from-[#152754] to-[#223e82] text-white px-6 pt-5 pb-4 relative">
-<button onclick="closeAdd()" class="absolute right-5 top-5 w-8 h-8 rounded-lg bg-white/10">×</button>
-<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div><div><b>Add DSC</b><div class="text-xs text-blue-200">Digital Signature Certificate</div></div></div>
-<div class="flex items-center mt-5 text-xs"><div class="w-7 h-7 rounded-full bg-white text-blue-800 flex items-center justify-center font-bold">1</div><b class="ml-2">Certificate</b><div class="h-px bg-white/30 flex-1 mx-3"></div><div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">2</div><span class="ml-2 opacity-60">Done</span></div>
-</div>
-<div class="p-6 overflow-y-auto max-h-[calc(94vh-112px)]">
-<h2 class="text-lg font-bold">Enter certificate details</h2><p class="text-sm text-slate-500 mt-1">Fill in the information available on the DSC certificate.</p>
+<div id="addModal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
+  <div class="w-full max-w-[560px] max-h-[94vh] overflow-hidden rounded-[22px] bg-white shadow-2xl">
+    <div class="bg-gradient-to-r from-[#152754] to-[#223e82] text-white px-6 pt-5 pb-4 relative">
+      <button onclick="closeAdd()" class="absolute right-5 top-5 w-8 h-8 rounded-lg bg-white/10 text-xl">×</button>
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div>
+        <div><div class="font-bold">Add DSC</div><div class="text-xs text-blue-200">Digital Signature Certificate</div></div>
+      </div>
+      <div class="flex items-center mt-5 text-xs">
+        <div class="w-7 h-7 rounded-full bg-white text-blue-800 flex items-center justify-center font-bold">1</div><b class="ml-2">Certificate</b>
+        <div class="h-px bg-white/30 flex-1 mx-3"></div>
+        <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">2</div><span class="ml-2 opacity-60">Done</span>
+      </div>
+    </div>
+    <div class="p-6 overflow-y-auto max-h-[calc(94vh-112px)]">
+      <h2 class="text-lg font-bold">Enter certificate details</h2>
+      <p class="text-sm text-slate-500 mt-1">Capture only the information required for DSC inventory and reconciliation.</p>
 
-<div class="mt-5 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Holder</span><div class="h-px bg-slate-200 flex-1"></div></div>
-<div class="grid grid-cols-2 gap-3 mt-3">
-<div class="col-span-2"><label class="label">Holder Name <span class="text-red-500">*</span></label><input id="holder" class="input" placeholder="Ramesh Kumar"></div>
-<div><label class="label">Organisation</label><input id="org" class="input" placeholder="ABC & Associates"></div>
-<div><label class="label">Customer <span class="text-red-500">*</span></label><select id="customer" class="input"></select></div>
-</div>
+      <div class="mt-5 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Holder</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div class="col-span-2"><label class="label">Holder Name <span class="text-red-500">*</span></label><input id="fHolder" class="input" placeholder="Ramesh Kumar"></div>
+        <div><label class="label">Organisation</label><input id="fOrg" class="input" placeholder="ABC & Associates"></div>
+        <div><label class="label">Customer <span class="text-red-500">*</span></label><select id="fCustomer" class="input"></select></div>
+      </div>
 
-<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Information</span><div class="h-px bg-slate-200 flex-1"></div></div>
-<div class="grid grid-cols-2 gap-3 mt-3">
-<div class="col-span-2"><label class="label">Serial Number <span class="text-red-500">*</span></label><input id="serial" class="input" placeholder="3AF12C9D00B4E721"></div>
-<div class="col-span-2"><label class="label">Issued By <span class="text-red-500">*</span></label><input id="issuer" class="input" placeholder="eMudhra Consumer CA 5"></div>
-<div><label class="label">DSC Class <span class="text-red-500">*</span></label><select id="class" class="input"><option>Class 3</option><option>Class 2</option></select></div>
-</div>
+      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Information</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div class="col-span-2"><label class="label">Serial Number <span class="text-red-500">*</span></label><input id="fSerial" class="input" placeholder="3AF12C9D00B4E721"></div>
+        <div class="col-span-2"><label class="label">Issued By <span class="text-red-500">*</span></label><input id="fIssuer" class="input" placeholder="eMudhra Consumer CA 5"></div>
+        <div><label class="label">DSC Class <span class="text-red-500">*</span></label><select id="fClass" class="input"><option>Class 3</option><option>Class 2</option></select></div>
+      </div>
 
-<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Validity</span><div class="h-px bg-slate-200 flex-1"></div></div>
-<div class="grid grid-cols-2 gap-3 mt-3">
-<div><label class="label">Issue Date</label><input id="issue" type="date" class="input"></div>
-<div><label class="label">Expiry Date <span class="text-red-500">*</span></label><input id="expiry" type="date" class="input"></div>
-</div>
+      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Validity</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div><label class="label">Issue Date</label><input id="fIssue" type="date" class="input"></div>
+        <div><label class="label">Expiry Date <span class="text-red-500">*</span></label><input id="fExpiry" type="date" class="input"></div>
+      </div>
 
-<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Token / Hardware</span><div class="h-px bg-slate-200 flex-1"></div></div>
-<div class="grid grid-cols-2 gap-3 mt-3">
-<div><label class="label">Token Make <span class="text-red-500">*</span></label><select id="tokenMake" class="input"><option value="">Select Make</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
-<div><label class="label">Token Color <span class="text-red-500">*</span></label><select id="tokenColor" class="input"><option value="">Select Color</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div>
-</div>
+      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Token / Hardware</span><div class="h-px bg-slate-200 flex-1"></div></div>
+      <div class="grid grid-cols-2 gap-3 mt-3">
+        <div><label class="label">Token Make <span class="text-red-500">*</span></label><select id="fMake" class="input"><option value="">Select Make</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
+        <div><label class="label">Token Color <span class="text-red-500">*</span></label><select id="fColor" class="input"><option value="">Select Color</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div>
+      </div>
 
-<div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-800">Email, Postal Code, State and Purpose have been removed from this form because they are not required for DSC inventory/reconciliation.</div>
-<div class="flex justify-between mt-6 pt-4 border-t"><button onclick="closeAdd()" class="border rounded-lg px-4 py-2.5 text-sm font-semibold">Cancel</button><button onclick="save()" class="bg-blue-600 text-white rounded-lg px-6 py-2.5 text-sm font-semibold">Save DSC</button></div>
-</div></div></div>
+      <div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-800">
+        Email, Postal Code, State and Purpose are intentionally not captured because they are not required for this DSC inventory workflow.
+      </div>
+
+      <div class="flex justify-between mt-6 pt-4 border-t">
+        <button onclick="closeAdd()" class="border rounded-lg px-4 py-2.5 text-sm font-semibold">Cancel</button>
+        <button onclick="saveDsc()" class="bg-blue-600 text-white rounded-lg px-6 py-2.5 text-sm font-semibold">Save DSC</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
-const customers=[
-{id:"C001",name:"3 Aces Brand Solutions",pan:"AAACA1234A"},{id:"C002",name:"ABC Private Limited",pan:"AABCA1122B"},
-{id:"C003",name:"Sharma & Associates",pan:"ABFPS6789G"},{id:"C004",name:"Global Tax Solutions",pan:"AAACG7788L"},
-{id:"C005",name:"R K Enterprises",pan:"AFZPR4321K"},{id:"C006",name:"Vertex Business Solutions Pvt. Ltd.",pan:"AAACV7788P"},
-{id:"C007",name:"Nexus Technologies India Pvt. Ltd.",pan:"AABCN4455Q"}];
-let dscs=[
-{id:1,clientId:"C001",client:"3 Aces Brand Solutions",holder:"Ramesh Kumar",pan:"ABCDE1234F",org:"ABC & Associates",serial:"3AF12C9D00B4E721",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2025-05-12",expiry:"2027-05-11",make:"ePass",color:"Blue",status:"Active"},
-{id:2,clientId:"C002",client:"ABC Private Limited",holder:"Amit Mehta",pan:"ABCDE1111A",org:"ABC Private Limited",serial:"45A8-29F1-7C20",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2025-08-15",expiry:"2027-08-14",make:"ProxKey",color:"Red",status:"Active"},
-{id:3,clientId:"C004",client:"Global Tax Solutions",holder:"Karan Gupta",pan:"AAAPK3456M",org:"Global Tax Solutions",serial:"98BC-12EF-440A",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2025-12-20",expiry:"2026-12-18",make:"Watchdata",color:"Black",status:"Expiring Soon"},
-{id:4,clientId:"C004",client:"Global Tax Solutions",holder:"Simran Gupta",pan:"AAAPS7890N",org:"Global Tax Solutions",serial:"71AD-55CD-8831",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2024-11-18",expiry:"2025-11-17",make:"mToken",color:"Blue",status:"Expired"},
-{id:5,clientId:"C007",client:"Nexus Technologies India Pvt. Ltd.",holder:"Pooja Nair",pan:"AARPN5555G",org:"Nexus Technologies India Pvt. Ltd.",serial:"DSC-UNM-3098",issuer:"VSign 2025",cls:"Class 3",issue:"2026-05-04",expiry:"2028-05-03",make:"ePass",color:"Green",status:"Active"},
-{id:6,clientId:"C006",client:"Vertex Business Solutions Pvt. Ltd.",holder:"Old Authorised Signatory",pan:"AAXPO7777H",org:"Vertex Business Solutions Pvt. Ltd.",serial:"DSC-UNM-2210",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2024-02-13",expiry:"2025-02-12",make:"ProxKey",color:"Black",status:"Expired"}];
+const customers = [
+ {id:"C001",name:"3 Aces Brand Solutions",pan:"AAACA1234A",gstin:"27AAACA1234A1Z5",tan:"MUMA12345E"},
+ {id:"C002",name:"ABC Private Limited",pan:"AABCA1122B",gstin:"27AABCA1122B1Z8",tan:"MUMA2211B"},
+ {id:"C003",name:"Sharma & Associates",pan:"ABFPS6789G",gstin:"-",tan:"DELS6789G"},
+ {id:"C004",name:"Global Tax Solutions",pan:"AAACG7788L",gstin:"27AAACG7788L1Z3",tan:"DELG7788L"},
+ {id:"C005",name:"R K Enterprises",pan:"AFZPR4321K",gstin:"27AFZPR4321K1Z1",tan:"-"},
+ {id:"C006",name:"Vertex Business Solutions Pvt. Ltd.",pan:"AAACV7788P",gstin:"27AAACV7788P1Z2",tan:"DELV7788P"},
+ {id:"C007",name:"Nexus Technologies India Pvt. Ltd.",pan:"AABCN4455Q",gstin:"29AABCN4455Q1Z7",tan:"BLRN4455Q"}
+];
 
-function badge(s){return `<span class="px-2.5 py-1 rounded-full text-xs font-semibold ${s==="Active"?"bg-emerald-100 text-emerald-700":s==="Expired"?"bg-red-100 text-red-700":"bg-amber-100 text-amber-700"}">${s}</span>`}
-function render(){
-let q=search.value.toLowerCase().trim(),st=status.value,cl=cls.value,mk=make.value;
-let a=dscs.filter(d=>(!q||`${d.client} ${d.holder} ${d.pan} ${d.serial} ${d.issuer}`.toLowerCase().includes(q))&&(st==="All"||d.status===st)&&(cl==="All"||d.cls===cl)&&(mk==="All"||d.make===mk));
-body.innerHTML=a.length?a.map((d,i)=>`<tr class="hover:bg-blue-50/40"><td class="px-4 py-4">${i+1}</td><td class="px-3 py-4"><b class="text-blue-600">${d.client}</b><div class="text-xs text-slate-400">${d.org}</div></td><td class="px-3 py-4"><b>${d.holder}</b><div class="text-xs text-slate-500">${d.pan}</div></td><td class="px-3 py-4 font-mono text-xs">${d.serial}</td><td class="px-3 py-4">${d.cls}</td><td class="px-3 py-4">${d.issuer}</td><td class="px-3 py-4">${d.make}</td><td class="px-3 py-4">${d.color}</td><td class="px-3 py-4">${new Date(d.expiry+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}</td><td class="px-3 py-4">${badge(d.status)}</td></tr>`).join(""):`<tr><td colspan="10" class="px-5 py-12 text-center text-slate-500">No DSCs found.</td></tr>`;
-count.textContent=`Showing ${a.length} of ${dscs.length} DSCs`;total.textContent=dscs.length;active.textContent=dscs.filter(x=>x.status==="Active").length;expiring.textContent=dscs.filter(x=>x.status==="Expiring Soon").length;expired.textContent=dscs.filter(x=>x.status==="Expired").length}
-function populate(){customer.innerHTML=customers.map(c=>`<option value="${c.id}">${c.name} — ${c.pan}</option>`).join("")}
-function openAdd(){populate();modal.classList.add("open")}
-function closeAdd(){modal.classList.remove("open")}
-function save(){
-let req=[holder.value,serial.value,issuer.value,expiry.value,tokenMake.value,tokenColor.value];
-if(req.some(x=>!x)){alert("Please fill all mandatory fields.");return}
-let c=customers.find(x=>x.id===customer.value);
-dscs.unshift({id:Date.now(),clientId:c.id,client:c.name,holder:holder.value.trim(),pan:"-",org:org.value.trim()||c.name,serial:serial.value.trim(),issuer:issuer.value.trim(),cls:document.getElementById("class").value,issue:issue.value,expiry:expiry.value,make:tokenMake.value,color:tokenColor.value,status:"Active"});
-render();closeAdd();alert("DSC added successfully.");}
-function clearFilters(){search.value="";status.value="All";cls.value="All";make.value="All";render()}
-function exportCSV(){let rows=[["Client","Holder","PAN","Serial Number","DSC Class","Issued By","Token Make","Token Color","Expiry","Status"]];dscs.forEach(d=>rows.push([d.client,d.holder,d.pan,d.serial,d.cls,d.issuer,d.make,d.color,d.expiry,d.status]));let csv=rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="all_dscs.csv";a.click()}
-[search,status,cls,make].forEach(x=>x.addEventListener(x===search?"keyup":"change",render));globalSearch.addEventListener("keyup",()=>{search.value=globalSearch.value;render()});render();
+const signatories = [
+ {id:"S001",clientId:"C001",name:"Rahul Sharma",pan:"ABCDE1234F",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S002",clientId:"C001",name:"Priya Sharma",pan:"FGHIJ5678K",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S003",clientId:"C002",name:"Amit Mehta",pan:"ABCDE1111A",designation:"Director",portal:"GST"},
+ {id:"S004",clientId:"C002",name:"Neha Mehta",pan:"ABCDE2222B",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S005",clientId:"C003",name:"Rakesh Sharma",pan:"ABCPR1234D",designation:"Partner",portal:"TDS"},
+ {id:"S006",clientId:"C004",name:"Karan Gupta",pan:"AAAPK3456M",designation:"Director",portal:"ITR"},
+ {id:"S007",clientId:"C004",name:"Simran Gupta",pan:"AAAPS7890N",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S008",clientId:"C005",name:"Rajesh Kumar",pan:"AFZPR4321K",designation:"Proprietor",portal:"GST"},
+
+ // Same customer, different signatories on different portals
+ {id:"S009",clientId:"C006",name:"Arjun Kapoor",pan:"AAAPA1111A",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S010",clientId:"C006",name:"Meera Kapoor",pan:"AAAPM2222B",designation:"Authorised Signatory",portal:"TDS"},
+ {id:"S011",clientId:"C006",name:"Vikram Shah",pan:"AAAPS3333C",designation:"Authorised Signatory",portal:"ITR"},
+
+ // Mixed availability example
+ {id:"S012",clientId:"C007",name:"Sanjay Rao",pan:"AARPS1111D",designation:"Director",portal:"GST"},
+ {id:"S013",clientId:"C007",name:"Kavita Rao",pan:"AARPK2222E",designation:"Authorised Signatory",portal:"TDS"},
+ {id:"S014",clientId:"C007",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR"}
+];
+
+let dscs = [
+ {id:1,clientId:"C001",holder:"Ramesh Kumar",pan:"ABCDE9999X",serial:"3AF12C9D00B4E721",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-05-11",make:"ePass",color:"Blue",status:"Active",portal:null},
+ {id:2,clientId:"C002",holder:"Amit Mehta",pan:"ABCDE1111A",serial:"45A8-29F1-7C20",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-08-14",make:"ProxKey",color:"Red",status:"Active",portal:"GST",signatoryId:"S003"},
+ {id:3,clientId:"C004",holder:"Karan Gupta",pan:"AAAPK3456M",serial:"98BC-12EF-440A",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2026-12-18",make:"Watchdata",color:"Black",status:"Expiring Soon",portal:"ITR",signatoryId:"S006"},
+ {id:4,clientId:"C004",holder:"Simran Gupta",pan:"AAAPS7890N",serial:"71AD-55CD-8831",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2025-11-17",make:"mToken",color:"Blue",status:"Expired",portal:"GST",signatoryId:"S007"},
+
+ // Customer has a DSC, but it is not mapped to any portal signatory
+ {id:5,clientId:"C006",holder:"Old Authorised Signatory",pan:"AAXPO7777H",serial:"DSC-UNM-2210",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2028-02-12",make:"ProxKey",color:"Black",status:"Active",portal:null,signatoryId:null},
+
+ {id:6,clientId:"C007",holder:"Pooja Nair",pan:"AARPN5555G",serial:"DSC-UNM-3098",issuer:"VSign 2025",cls:"Class 3",expiry:"2028-05-03",make:"ePass",color:"Green",status:"Active",portal:null,signatoryId:null},
+
+ // Multi-portal customer: only TDS missing
+ {id:7,clientId:"C007",holder:"Sanjay Rao",pan:"AARPS1111D",serial:"GST-98BC-12EF",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-12-20",make:"ePass",color:"Blue",status:"Active",portal:"GST",signatoryId:"S012"},
+ {id:8,clientId:"C007",holder:"Rohit Rao",pan:"AARPR3333F",serial:"ITR-71AD-55CD",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2026-11-18",make:"Watchdata",color:"Red",status:"Expiring Soon",portal:"ITR",signatoryId:"S014"}
+];
+
+function client(id){return customers.find(c=>c.id===id)}
+function linkedDscForSignatory(s){return dscs.find(d=>d.signatoryId===s.id)}
+function missingSignatories(){return signatories.filter(s=>!linkedDscForSignatory(s))}
+function statusBadge(s){
+ return `<span class="badge ${s==="Active"?"bg-emerald-100 text-emerald-700":s==="Expired"?"bg-red-100 text-red-700":"bg-amber-100 text-amber-700"}">${s}</span>`;
+}
+function portalBadge(p){
+ const cls=p==="GST"?"bg-blue-100 text-blue-700":p==="TDS"?"bg-purple-100 text-purple-700":"bg-orange-100 text-orange-700";
+ return `<span class="badge ${cls}">${p}</span>`;
+}
+
+function buildRows(){
+ const q=document.getElementById("search").value.toLowerCase().trim();
+ const pf=document.getElementById("portalFilter").value;
+ const sf=document.getElementById("dscStatusFilter").value;
+ const cf=document.getElementById("certFilter").value;
+ const rows=[];
+
+ // Every actual DSC in DSC Management
+ dscs.forEach(d=>{
+   const c=client(d.clientId);
+   rows.push({
+     type:"actual",client:c,portal:d.portal||"—",holder:d.holder,pan:d.pan,dsc:"Available",
+     serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,
+     dscId:d.id,signatoryId:d.signatoryId
+   });
+ });
+
+ // Every fetched authorised signatory is also represented.
+ // If a DSC is linked, it is shown with the DSC details; otherwise it is shown as Not Available.
+ signatories.forEach(s=>{
+   const c=client(s.clientId);
+   const d=linkedDscForSignatory(s);
+   if(d) {
+     // Do not duplicate if the exact DSC already exists in actual rows.
+     return;
+   }
+   rows.push({
+     type:"signatory",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:"Not Available",
+     serial:"—",expiry:"—",status:"Not Available",make:"—",color:"—",issuer:"—",
+     dscId:null,signatoryId:s.id,designation:s.designation
+   });
+ });
+
+ return rows.filter(r=>{
+   const text=`${r.client.name} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer}`.toLowerCase();
+   return (!q||text.includes(q))
+    && (pf==="All"||r.portal===pf)
+    && (sf==="All"||r.dsc===sf)
+    && (cf==="All"||r.status===cf);
+ });
+}
+
+function renderAll(){
+ const rows=buildRows();
+ document.getElementById("allCount").textContent=rows.length;
+ document.getElementById("allBody").innerHTML=rows.length?rows.map(r=>`
+ <tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/30":""}">
+   <td class="px-4 py-3">
+     <button onclick="openDetail('${r.client.id}')" class="font-semibold text-blue-600 hover:underline text-left">${r.client.name}</button>
+     <div class="text-[10px] text-slate-400 mt-1">${r.client.pan}</div>
+   </td>
+   <td class="px-3 py-3">${r.portal==="—"?"<span class='text-slate-400'>—</span>":portalBadge(r.portal)}</td>
+   <td class="px-3 py-3">
+     <div class="font-semibold">${r.holder}</div>
+     ${r.designation?`<div class="text-[10px] text-slate-500">${r.designation}</div>`:""}
+     ${r.type==="actual"&&r.signatoryId?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:
+       r.type==="actual"?`<div class="text-[10px] text-amber-600 mt-1">DSC in DSC Management • No portal match</div>`:
+       `<div class="text-[10px] text-red-600 mt-1">Fetched signatory • DSC missing</div>`}
+   </td>
+   <td class="px-3 py-3">${r.pan}</td>
+   <td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td>
+   <td class="px-3 py-3">
+     <div class="font-mono text-[10px]">${r.serial}</div>
+     ${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}
+   </td>
+   <td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td>
+   <td class="px-3 py-3">
+     ${r.dsc==="Not Available"
+       ?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`
+       :`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}
+   </td>
+ </tr>`).join("")
+ :`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found.</td></tr>`;
+
+ document.getElementById("allFooter").textContent=`Showing ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
+}
+
+function renderMissing(){
+ const pf=document.getElementById("missingPortal").value;
+ const q=document.getElementById("missingSearch").value.toLowerCase().trim();
+ const groups={};
+
+ missingSignatories().filter(s=>{
+   const c=client(s.clientId);
+   return (pf==="All"||s.portal===pf)&&(!q||c.name.toLowerCase().includes(q));
+ }).forEach(s=>{
+   if(!groups[s.clientId])groups[s.clientId]=[];
+   groups[s.clientId].push(s);
+ });
+
+ const ids=Object.keys(groups);
+ document.getElementById("missingClientCount").textContent=ids.length;
+
+ document.getElementById("missingList").innerHTML=ids.length?ids.map(id=>{
+   const c=client(id), ss=groups[id];
+   return `<div class="border border-red-200 rounded-xl overflow-hidden">
+     <div class="px-3 py-3 bg-red-50 flex items-start justify-between">
+       <div>
+         <button onclick="openDetail('${c.id}')" class="font-bold text-blue-600 hover:underline text-left text-sm">${c.name}</button>
+         <div class="text-[10px] text-slate-500 mt-1">${c.pan} • ${c.gstin}</div>
+       </div>
+       <span class="badge bg-red-100 text-red-700">${ss.length} missing</span>
+     </div>
+     <div class="divide-y">
+       ${ss.map(s=>`<div class="px-3 py-3">
+         <div class="flex items-start justify-between gap-2">
+           <div>
+             <div class="font-semibold text-sm">${s.name}</div>
+             <div class="text-[10px] text-slate-500">${s.designation} • PAN ${s.pan}</div>
+             <div class="mt-2">${portalBadge(s.portal)}</div>
+           </div>
+           <button onclick="openAddFor('${c.id}','${s.id}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[10px] font-semibold whitespace-nowrap">Add DSC</button>
+         </div>
+       </div>`).join("")}
+     </div>
+   </div>`;
+ }).join(""):`<div class="py-12 text-center text-slate-500 text-sm">No clients with missing DSC.</div>`;
+}
+
+function openDetail(id){
+ const c=client(id);
+ const ss=signatories.filter(s=>s.clientId===id);
+ const ds=dscs.filter(d=>d.clientId===id);
+ const matched=ds.filter(d=>d.signatoryId);
+ const unmatched=ds.filter(d=>!d.signatoryId);
+
+ document.getElementById("detailName").textContent=c.name;
+ document.getElementById("detailIds").textContent=`PAN: ${c.pan} • GSTIN: ${c.gstin} • TAN: ${c.tan}`;
+
+ document.getElementById("detailSummary").innerHTML=`
+ <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Total DSCs</div><div class="text-xl font-bold mt-1">${ds.length}</div></div>
+ <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Signatories</div><div class="text-xl font-bold mt-1">${ss.length}</div></div>
+ <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">DSC Missing</div><div class="text-xl font-bold text-red-600 mt-1">${ss.filter(s=>!linkedDscForSignatory(s)).length}</div></div>
+ <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Unmatched DSC</div><div class="text-xl font-bold text-amber-600 mt-1">${unmatched.length}</div></div>`;
+
+ const portals=["GST","TDS","ITR"];
+ document.getElementById("detailSignatories").innerHTML=portals.map(p=>{
+   const arr=ss.filter(s=>s.portal===p);
+   if(!arr.length)return "";
+   return `<div class="border rounded-xl overflow-hidden">
+     <div class="px-4 py-2.5 bg-slate-50 border-b flex justify-between">${portalBadge(p)}<span class="text-[10px] text-slate-500">${arr.length} signatory</span></div>
+     ${arr.map(s=>{
+       const d=linkedDscForSignatory(s);
+       return `<div class="px-4 py-3 border-b last:border-b-0 flex items-center justify-between">
+         <div><div class="font-semibold text-sm">${s.name}</div><div class="text-[10px] text-slate-500">${s.designation} • ${s.pan}</div></div>
+         ${d?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<button onclick="closeDetail();openAddFor('${c.id}','${s.id}')" class="border border-blue-600 text-blue-600 rounded-lg px-3 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`}
+       </div>`;
+     }).join("")}
+   </div>`;
+ }).join("");
+
+ document.getElementById("detailDscs").innerHTML=ds.length?`<div class="border rounded-xl overflow-hidden"><table class="w-full text-xs"><thead class="bg-slate-50"><tr><th class="p-3 text-left">Holder</th><th class="p-3 text-left">Portal</th><th class="p-3 text-left">Serial</th><th class="p-3 text-left">Make / Color</th><th class="p-3 text-left">Status</th></tr></thead><tbody>${ds.map(d=>`<tr class="border-t"><td class="p-3">${d.holder}</td><td class="p-3">${d.portal?portalBadge(d.portal):"—"}</td><td class="p-3 font-mono">${d.serial}</td><td class="p-3">${d.make} / ${d.color}</td><td class="p-3">${statusBadge(d.status)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="border rounded-xl p-5 text-sm text-slate-500">No DSC is currently stored for this client.</div>`;
+
+ document.getElementById("detailUnmatched").innerHTML=unmatched.length?`<div class="border border-amber-200 bg-amber-50/50 rounded-xl p-4">${unmatched.map(d=>`<div class="flex justify-between items-center ${unmatched.indexOf(d)>0?"border-t border-amber-200 pt-3 mt-3":""}"><div><div class="font-semibold text-sm">${d.holder}</div><div class="text-[10px] text-slate-500">Serial ${d.serial} • ${d.make} • ${d.color}</div></div><span class="badge bg-amber-100 text-amber-700">No Portal Match</span></div>`).join("")}</div>`:`<div class="text-sm text-slate-400">No unmatched DSCs for this client.</div>`;
+
+ document.getElementById("detailModal").classList.add("open");
+}
+
+function openAddFor(clientId,signatoryId){
+ openAdd();
+ document.getElementById("fCustomer").value=clientId;
+ const s=signatories.find(x=>x.id===signatoryId);
+ if(s){
+   document.getElementById("fHolder").value=s.name;
+   document.getElementById("fHolder").dataset.signatoryId=s.id;
+   document.getElementById("fOrg").value=client(clientId).name;
+ }
+}
+function closeDetail(){document.getElementById("detailModal").classList.remove("open")}
+
+function populateCustomers(){
+ document.getElementById("fCustomer").innerHTML=customers.map(c=>`<option value="${c.id}">${c.name} — ${c.pan}</option>`).join("");
+}
+function openAdd(){populateCustomers();document.getElementById("addModal").classList.add("open")}
+function closeAdd(){document.getElementById("addModal").classList.remove("open")}
+
+function saveDsc(){
+ const holder=document.getElementById("fHolder").value.trim();
+ const serial=document.getElementById("fSerial").value.trim();
+ const issuer=document.getElementById("fIssuer").value.trim();
+ const expiry=document.getElementById("fExpiry").value;
+ const make=document.getElementById("fMake").value;
+ const color=document.getElementById("fColor").value;
+ const clientId=document.getElementById("fCustomer").value;
+ if(!holder||!serial||!issuer||!expiry||!make||!color){alert("Please fill all mandatory fields.");return}
+ const c=client(clientId);
+ const sid=document.getElementById("fHolder").dataset.signatoryId || null;
+ const sig=sid?signatories.find(s=>s.id===sid):null;
+ dscs.unshift({
+   id:Date.now(),clientId,holder,pan:sig?sig.pan:"-",serial,issuer,
+   cls:document.getElementById("fClass").value,expiry,make,color,
+   status:"Active",portal:sig?sig.portal:null,signatoryId:sid
+ });
+ delete document.getElementById("fHolder").dataset.signatoryId;
+ closeAdd();renderAll();renderMissing();
+ alert("DSC added successfully.");
+}
+
+function formatDate(v){return v==="—"?"—":new Date(v+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}
+function clearFilters(){search.value="";portalFilter.value="All";dscStatusFilter.value="All";certFilter.value="All";renderAll()}
+function exportCSV(){
+ const rows=[["Client","Portal","Authorised Signatory / DSC Holder","PAN","DSC Status","Serial","Expiry","Token Make","Token Color","Certificate Status"]];
+ buildRows().forEach(r=>rows.push([r.client.name,r.portal,r.holder,r.pan,r.dsc,r.serial,r.expiry,r.make,r.color,r.status]));
+ const csv=rows.map(x=>x.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
+ const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="DSC_Management.csv";a.click();
+}
+
+["search","portalFilter","dscStatusFilter","certFilter"].forEach(id=>{
+ document.getElementById(id).addEventListener(id==="search"?"keyup":"change",()=>{renderAll();});
+});
+["missingPortal"].forEach(id=>document.getElementById(id).addEventListener("change",renderMissing));
+document.getElementById("missingSearch").addEventListener("keyup",renderMissing);
+document.getElementById("globalSearch").addEventListener("keyup",e=>{
+ document.getElementById("search").value=e.target.value;renderAll();
+});
+
+populateCustomers();
+renderAll();
+renderMissing();
 </script>
-</body></html>
+</body>
+</html>

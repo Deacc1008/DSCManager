@@ -1,43 +1,45 @@
-# DSC Management UI – V7
+# DSC Management – Combined UI V8
 
-This version contains the requested DSC Management UI.
+Single-screen design with two side-by-side areas:
 
-## Screen 1 – All DSCs
-Shows DSCs for all customers with:
-- Client
-- Certificate Holder
+## All DSC
+Large left panel containing:
+- Every DSC currently available in DSC Management
+- Every fetched GST/TDS/ITR Authorised Signatory
+- Portal-specific signatory rows
+- DSC Available / DSC Not Available status
+- Matched DSC details
+- Unmatched DSCs already in DSC Management
+- Add DSC action for missing signatories
+- Search and filters
+- Export
+
+## Clients with No DSC
+Smaller right panel containing only customers with at least one portal signatory whose DSC is missing.
+
+Each client is grouped and shows:
+- Portal
+- Signatory
 - PAN
-- Serial Number
-- DSC Class
-- Issued By
-- Token Make
-- Token Color
-- Expiry
-- Status
+- Designation
+- Add DSC
 
-Filters: Search, Status, DSC Class, Token Make.
+## Client Details
+Click a client to see:
+- Client identifiers
+- DSC/signatory summary
+- GST/TDS/ITR signatories
+- Which signatories have DSC
+- Which signatories need DSC
+- All DSCs available for the client
+- DSCs that cannot be matched to a portal signatory
 
-## Screen 2 – Add DSC
-The Add DSC form is simplified from the supplied UI.
+## Demo scenarios
+The dummy data includes:
+1. Multiple signatories under one portal.
+2. Different signatories for GST, TDS and ITR for the same client.
+3. A customer having DSCs not present in the portal signatory response.
+4. A mixed case where GST and ITR have DSCs but TDS does not.
+5. Add DSC flow from a missing signatory row.
 
-Included:
-- Holder Name *
-- Organisation
-- Customer *
-- Serial Number *
-- Issued By *
-- DSC Class *
-- Issue Date
-- Expiry Date *
-- Token Make *
-- Token Color *
-
-Removed:
-- Email
-- Postal Code
-- State
-- Purpose
-
-Token Make and Token Color are captured explicitly.
-
-The Add DSC flow is interactive for demo purposes. Saved dummy records appear immediately in All DSCs.
+The UI is a prototype. Replace the in-memory arrays and save function with production APIs/database services.
