@@ -1,5 +1,12 @@
-# DSC Management UI V10
+# DSC Management – V12
 
-One screen with two switchable tabs: All Clients and Clients with No DSC.
+Interactive HTML prototype for DSC Management.
 
-In All Clients, every client is shown under one heading. All records for that client appear together: GST/TDS/ITR signatories with or without DSC, plus DSCs in DSC Management that have no portal match. Such unmatched DSCs are categorised as Others instead of --. Available and Not Available records are not separated into different sections.
+## Included
+- 15 dummy clients in **All Clients**.
+- Exactly 6 clients currently appear in **Clients with No DSC**.
+- All client records remain grouped under one client heading.
+- Manual **Add DSC** works and immediately updates the reconciliation and missing-DSC views.
+- **Scan DSC** is a demo scanner: it auto-populates dummy certificate details; click **Save DSC** to add it.
+- Filters and search from V11 are retained.
+- No backend/API is connected; data is maintained in browser memory for prototype testing.

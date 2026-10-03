@@ -133,9 +133,12 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;backgrou
   <div class="w-full max-w-[560px] max-h-[94vh] overflow-hidden rounded-[22px] bg-white shadow-2xl">
     <div class="bg-gradient-to-r from-[#152754] to-[#223e82] text-white px-6 pt-5 pb-4 relative">
       <button onclick="closeAdd()" class="absolute right-5 top-5 w-8 h-8 rounded-lg bg-white/10 text-xl">×</button>
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div>
-        <div><div class="font-bold">Add DSC</div><div class="text-xs text-blue-200">Digital Signature Certificate</div></div>
+      <div class="flex items-center justify-between gap-3 pr-10">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div>
+          <div><div class="font-bold">Add DSC</div><div class="text-xs text-blue-200">Digital Signature Certificate</div></div>
+        </div>
+        <button onclick="scanDemoDsc()" class="bg-white text-blue-800 rounded-lg px-3 py-2 text-xs font-bold shadow-sm hover:bg-blue-50">⌁ Scan DSC</button>
       </div>
       <div class="flex items-center mt-5 text-xs">
         <div class="w-7 h-7 rounded-full bg-white text-blue-800 flex items-center justify-center font-bold">1</div><b class="ml-2">Certificate</b>
@@ -193,7 +196,15 @@ const customers = [
  {id:"C004",name:"Global Tax Solutions",pan:"AAACG7788L",gstin:"27AAACG7788L1Z3",tan:"DELG7788L"},
  {id:"C005",name:"R K Enterprises",pan:"AFZPR4321K",gstin:"27AFZPR4321K1Z1",tan:"-"},
  {id:"C006",name:"Vertex Business Solutions Pvt. Ltd.",pan:"AAACV7788P",gstin:"27AAACV7788P1Z2",tan:"DELV7788P"},
- {id:"C007",name:"Nexus Technologies India Pvt. Ltd.",pan:"AABCN4455Q",gstin:"29AABCN4455Q1Z7",tan:"BLRN4455Q"}
+ {id:"C007",name:"Nexus Technologies India Pvt. Ltd.",pan:"AABCN4455Q",gstin:"29AABCN4455Q1Z7",tan:"BLRN4455Q"},
+ {id:"C008",name:"Brightwave Consulting Pvt. Ltd.",pan:"AABCB8899R",gstin:"27AABCB8899R1Z4",tan:"MUMB8899R"},
+ {id:"C009",name:"Aarav Industries",pan:"AAHFA5566S",gstin:"24AAHFA5566S1Z6",tan:"AHMA5566S"},
+ {id:"C010",name:"FinEdge Advisory LLP",pan:"AAFFF6677T",gstin:"29AAFFF6677T1Z8",tan:"BLRF6677T"},
+ {id:"C011",name:"Sunrise Pharma India Pvt. Ltd.",pan:"AAKCS7788U",gstin:"06AAKCS7788U1Z2",tan:"DELS7788U"},
+ {id:"C012",name:"BlueSky Logistics Pvt. Ltd.",pan:"AABCB9900V",gstin:"09AABCB9900V1Z5",tan:"LKNB9900V"},
+ {id:"C013",name:"Mehta Legal & Tax Advisors",pan:"ABCPM1122W",gstin:"27ABCPM1122W1Z9",tan:"MUMM1122W"},
+ {id:"C014",name:"Orion Retail Ventures",pan:"AABCO2233X",gstin:"27AABCO2233X1Z7",tan:"MUMO2233X"},
+ {id:"C015",name:"Pragati Engineering Works",pan:"AABFP3344Y",gstin:"08AABFP3344Y1Z1",tan:"JPRP3344Y"}
 ];
 
 const signatories = [
@@ -205,16 +216,29 @@ const signatories = [
  {id:"S006",clientId:"C004",name:"Karan Gupta",pan:"AAAPK3456M",designation:"Director",portal:"ITR"},
  {id:"S007",clientId:"C004",name:"Simran Gupta",pan:"AAAPS7890N",designation:"Authorised Signatory",portal:"GST"},
  {id:"S008",clientId:"C005",name:"Rajesh Kumar",pan:"AFZPR4321K",designation:"Proprietor",portal:"GST"},
-
- // Same customer, different signatories on different portals
  {id:"S009",clientId:"C006",name:"Arjun Kapoor",pan:"AAAPA1111A",designation:"Authorised Signatory",portal:"GST"},
  {id:"S010",clientId:"C006",name:"Meera Kapoor",pan:"AAAPM2222B",designation:"Authorised Signatory",portal:"TDS"},
  {id:"S011",clientId:"C006",name:"Vikram Shah",pan:"AAAPS3333C",designation:"Authorised Signatory",portal:"ITR"},
-
- // Mixed availability example
  {id:"S012",clientId:"C007",name:"Sanjay Rao",pan:"AARPS1111D",designation:"Director",portal:"GST"},
  {id:"S013",clientId:"C007",name:"Kavita Rao",pan:"AARPK2222E",designation:"Authorised Signatory",portal:"TDS"},
- {id:"S014",clientId:"C007",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR"}
+ {id:"S014",clientId:"C007",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR"},
+ {id:"S015",clientId:"C008",name:"Nitin Bansal",pan:"AAAPB4455Z",designation:"Director",portal:"GST"},
+ {id:"S016",clientId:"C008",name:"Ananya Bansal",pan:"AAAPB5566A",designation:"Authorised Signatory",portal:"TDS"},
+ {id:"S017",clientId:"C009",name:"Vivek Shah",pan:"AABPS6677B",designation:"Director",portal:"GST"},
+ {id:"S018",clientId:"C009",name:"Pallavi Shah",pan:"AABPS7788C",designation:"Authorised Signatory",portal:"ITR"},
+ {id:"S019",clientId:"C010",name:"Rohan Malhotra",pan:"AAEPM8899D",designation:"Partner",portal:"TDS"},
+ {id:"S020",clientId:"C010",name:"Isha Malhotra",pan:"AAEPM9900E",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S021",clientId:"C011",name:"Aditya Verma",pan:"AAAPV1010F",designation:"Director",portal:"GST"},
+ {id:"S022",clientId:"C011",name:"Sneha Verma",pan:"AAAPV2020G",designation:"Authorised Signatory",portal:"TDS"},
+ {id:"S023",clientId:"C011",name:"Kunal Verma",pan:"AAAPV3030H",designation:"Authorised Signatory",portal:"ITR"},
+ {id:"S024",clientId:"C012",name:"Manish Arora",pan:"AABPA4141J",designation:"Director",portal:"GST"},
+ {id:"S025",clientId:"C012",name:"Neha Arora",pan:"AABPA5252K",designation:"Authorised Signatory",portal:"ITR"},
+ {id:"S026",clientId:"C013",name:"Siddharth Mehta",pan:"ABCPM6363L",designation:"Partner",portal:"TDS"},
+ {id:"S027",clientId:"C013",name:"Riya Mehta",pan:"ABCPM7474M",designation:"Authorised Signatory",portal:"GST"},
+ {id:"S028",clientId:"C014",name:"Akash Jain",pan:"AABPJ8585N",designation:"Director",portal:"GST"},
+ {id:"S029",clientId:"C014",name:"Tanya Jain",pan:"AABPJ9696P",designation:"Authorised Signatory",portal:"TDS"},
+ {id:"S030",clientId:"C015",name:"Deepak Sharma",pan:"AABPS1717Q",designation:"Proprietor",portal:"GST"},
+ {id:"S031",clientId:"C015",name:"Mansi Sharma",pan:"AABPS2828R",designation:"Authorised Signatory",portal:"ITR"}
 ];
 
 let dscs = [
@@ -230,7 +254,24 @@ let dscs = [
 
  // Multi-portal customer: only TDS missing
  {id:7,clientId:"C007",holder:"Sanjay Rao",pan:"AARPS1111D",serial:"GST-98BC-12EF",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-12-20",make:"ePass",color:"Blue",status:"Active",portal:"GST",signatoryId:"S012"},
- {id:8,clientId:"C007",holder:"Rohit Rao",pan:"AARPR3333F",serial:"ITR-71AD-55CD",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2026-11-18",make:"Watchdata",color:"Red",status:"Expiring Soon",portal:"ITR",signatoryId:"S014"}
+ {id:8,clientId:"C007",holder:"Rohit Rao",pan:"AARPR3333F",serial:"ITR-71AD-55CD",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2026-11-18",make:"Watchdata",color:"Red",status:"Expiring Soon",portal:"ITR",signatoryId:"S014"},
+ {id:9,clientId:"C008",holder:"Nitin Bansal",pan:"AAAPB4455Z",serial:"DSC-C008-001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2028-01-15",make:"ePass",color:"Blue",status:"Active",portal:"GST",signatoryId:"S015"},
+ {id:10,clientId:"C008",holder:"Ananya Bansal",pan:"AAAPB5566A",serial:"DSC-C008-002",issuer:"VSign 2025",cls:"Class 3",expiry:"2027-09-21",make:"ProxKey",color:"Red",status:"Active",portal:"TDS",signatoryId:"S016"},
+ {id:11,clientId:"C009",holder:"Vivek Shah",pan:"AABPS6677B",serial:"DSC-C009-001",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2027-10-08",make:"Watchdata",color:"Black",status:"Active",portal:"GST",signatoryId:"S017"},
+ {id:12,clientId:"C009",holder:"Pallavi Shah",pan:"AABPS7788C",serial:"DSC-C009-002",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-06-30",make:"mToken",color:"Blue",status:"Active",portal:"ITR",signatoryId:"S018"},
+ {id:13,clientId:"C010",holder:"Rohan Malhotra",pan:"AAEPM8899D",serial:"DSC-C010-001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2028-03-11",make:"ePass",color:"Green",status:"Active",portal:"TDS",signatoryId:"S019"},
+ {id:14,clientId:"C010",holder:"Isha Malhotra",pan:"AAEPM9900E",serial:"DSC-C010-002",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2027-12-02",make:"ProxKey",color:"Black",status:"Active",portal:"GST",signatoryId:"S020"},
+ {id:15,clientId:"C011",holder:"Aditya Verma",pan:"AAAPV1010F",serial:"DSC-C011-001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2028-04-18",make:"ePass",color:"Blue",status:"Active",portal:"GST",signatoryId:"S021"},
+ {id:16,clientId:"C011",holder:"Sneha Verma",pan:"AAAPV2020G",serial:"DSC-C011-002",issuer:"VSign 2025",cls:"Class 3",expiry:"2027-08-29",make:"mToken",color:"White",status:"Active",portal:"TDS",signatoryId:"S022"},
+ {id:17,clientId:"C011",holder:"Kunal Verma",pan:"AAAPV3030H",serial:"DSC-C011-003",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2026-12-10",make:"Watchdata",color:"Red",status:"Expiring Soon",portal:"ITR",signatoryId:"S023"},
+ {id:18,clientId:"C012",holder:"Manish Arora",pan:"AABPA4141J",serial:"DSC-C012-001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2028-02-25",make:"ProxKey",color:"Blue",status:"Active",portal:"GST",signatoryId:"S024"},
+ {id:19,clientId:"C012",holder:"Neha Arora",pan:"AABPA5252K",serial:"DSC-C012-002",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2027-11-16",make:"ePass",color:"Orange",status:"Active",portal:"ITR",signatoryId:"S025"},
+ {id:20,clientId:"C013",holder:"Siddharth Mehta",pan:"ABCPM6363L",serial:"DSC-C013-001",issuer:"VSign 2025",cls:"Class 3",expiry:"2028-06-05",make:"mToken",color:"Black",status:"Active",portal:"TDS",signatoryId:"S026"},
+ {id:21,clientId:"C013",holder:"Riya Mehta",pan:"ABCPM7474M",serial:"DSC-C013-002",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-09-14",make:"ePass",color:"Green",status:"Active",portal:"GST",signatoryId:"S027"},
+ {id:22,clientId:"C014",holder:"Akash Jain",pan:"AABPJ8585N",serial:"DSC-C014-001",issuer:"Capricorn CA 2024",cls:"Class 3",expiry:"2028-01-27",make:"Watchdata",color:"Black",status:"Active",portal:"GST",signatoryId:"S028"},
+ {id:23,clientId:"C014",holder:"Tanya Jain",pan:"AABPJ9696P",serial:"DSC-C014-002",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2027-10-19",make:"ProxKey",color:"Red",status:"Active",portal:"TDS",signatoryId:"S029"},
+ {id:24,clientId:"C015",holder:"Deepak Sharma",pan:"AABPS1717Q",serial:"DSC-C015-001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",expiry:"2028-05-12",make:"ePass",color:"Blue",status:"Active",portal:"GST",signatoryId:"S030"},
+ {id:25,clientId:"C015",holder:"Mansi Sharma",pan:"AABPS2828R",serial:"DSC-C015-002",issuer:"VSign 2025",cls:"Class 3",expiry:"2027-07-23",make:"mToken",color:"White",status:"Active",portal:"ITR",signatoryId:"S031"}
 ];
 
 function client(id){return customers.find(c=>c.id===id)}
@@ -251,28 +292,27 @@ function buildRows(){
  const cf=document.getElementById("certFilter").value;
  const rows=[];
  customers.forEach(c=>{
-   const ss=signatories.filter(s=>s.clientId===c.id);
-   const ds=dscs.filter(d=>d.clientId===c.id);
-   ss.forEach(s=>{
-     const d=linkedDscForSignatory(s);
-     rows.push({type:d?"matched":"missing",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:d?"Available":"Not Available",serial:d?d.serial:"—",expiry:d?d.expiry:"—",status:d?d.status:"Not Available",make:d?d.make:"—",color:d?d.color:"—",issuer:d?d.issuer:"—",dscId:d?d.id:null,signatoryId:s.id,designation:s.designation});
-   });
-   ds.filter(d=>!d.signatoryId).forEach(d=>{
-     rows.push({type:"other",client:c,portal:"Others",holder:d.holder,pan:d.pan,dsc:"Available",serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,dscId:d.id,signatoryId:null,designation:"DSC Holder"});
-   });
+   const ss=signatories.filter(x=>x.clientId===c.id);
+   const ds=dscs.filter(x=>x.clientId===c.id);
+   ss.forEach(s=>{const d=linkedDscForSignatory(s); rows.push({type:d?"matched":"missing",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:d?"Available":"Not Available",serial:d?d.serial:"—",expiry:d?d.expiry:"—",status:d?d.status:"Not Available",make:d?d.make:"—",color:d?d.color:"—",issuer:d?d.issuer:"—",dscId:d?d.id:null,signatoryId:s.id,designation:s.designation});});
+   ds.filter(d=>!d.signatoryId).forEach(d=>rows.push({type:"other",client:c,portal:"Others",holder:d.holder,pan:d.pan,dsc:"Available",serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,dscId:d.id,signatoryId:null,designation:"DSC Holder"}));
  });
- return rows.filter(r=>{const text=`${r.client.name} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer}`.toLowerCase();return (!q||text.includes(q))&&(pf==="All"||r.portal===pf)&&(sf==="All"||r.dsc===sf)&&(cf==="All"||r.status===cf);});
+ return rows.filter(r=>{
+   const text=`${r.client.name} ${r.client.pan} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer} ${r.make} ${r.color}`.toLowerCase();
+   return (!q||text.includes(q)) && (pf==="All"||r.portal===pf) && (sf==="All"||r.dsc===sf) && (cf==="All"||r.status===cf);
+ });
 }
-
 function renderAll(){
- const rows=buildRows(); const grouped={}; rows.forEach(r=>(grouped[r.client.id]??=[]).push(r));
- const ids=Object.keys(grouped); document.getElementById("allCount").textContent=ids.length; document.getElementById("tabAllCount").textContent=customers.length;
- let body=""; ids.forEach(id=>{const c=client(id),rs=grouped[id];
- body+=`<tr class="bg-slate-100 border-t-2 border-slate-200"><td colspan="8" class="px-4 py-3"><div class="flex items-center justify-between"><div><button onclick="openDetail('${c.id}')" class="font-bold text-blue-700 hover:underline">${c.name}</button><span class="ml-2 text-[10px] text-slate-500">PAN: ${c.pan}</span><span class="ml-2 badge bg-slate-200 text-slate-700">${rs.length} record${rs.length===1?"":"s"}</span></div><div class="text-[10px] text-slate-500">${rs.filter(x=>x.dsc==="Available").length} Available • ${rs.filter(x=>x.dsc==="Not Available").length} Not Available</div></div></td></tr>`;
- rs.forEach(r=>{body+=`<tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/20":""}"><td class="px-4 py-3 pl-8"><div class="text-[10px] text-slate-400">↳ ${c.name}</div></td><td class="px-3 py-3">${r.portal==="Others"?`<span class="badge bg-slate-100 text-slate-700">Others</span>`:portalBadge(r.portal)}</td><td class="px-3 py-3"><div class="font-semibold">${r.holder}</div><div class="text-[10px] text-slate-500">${r.designation}</div>${r.type==="matched"?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:r.type==="other"?`<div class="text-[10px] text-slate-500 mt-1">DSC available in DSC Management • No portal signatory</div>`:`<div class="text-[10px] text-red-600 mt-1">Portal signatory • DSC missing</div>`}</td><td class="px-3 py-3">${r.pan}</td><td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td><td class="px-3 py-3"><div class="font-mono text-[10px]">${r.serial}</div>${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}</td><td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td><td class="px-3 py-3">${r.dsc==="Not Available"?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`:`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}</td></tr>`});});
- document.getElementById("allBody").innerHTML=body||`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found.</td></tr>`; document.getElementById("allFooter").textContent=`Showing ${ids.length} clients • ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
+ const rows=buildRows(), grouped={};
+ rows.forEach(r=>{(grouped[r.client.id]??=[]).push(r);});
+ const ids=Object.keys(grouped);
+ document.getElementById("allCount").textContent=ids.length;
+ document.getElementById("tabAllCount").textContent=customers.length;
+ let body="";
+ ids.forEach(id=>{const c=client(id),rs=grouped[id]; body+=`<tr class="bg-slate-100 border-t-2 border-slate-200"><td colspan="8" class="px-4 py-3"><div class="flex items-center justify-between"><div><button onclick="openDetail('${c.id}')" class="font-bold text-blue-700 hover:underline text-left">${c.name}</button><span class="ml-2 text-[10px] text-slate-500">PAN: ${c.pan}</span><span class="ml-2 badge bg-slate-200 text-slate-700">${rs.length} record${rs.length===1?"":"s"}</span></div><div class="text-[10px] text-slate-500">${rs.filter(x=>x.dsc==="Available").length} Available • ${rs.filter(x=>x.dsc==="Not Available").length} Not Available</div></div></td></tr>`; rs.forEach(r=>{body+=`<tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/20":""}"><td class="px-4 py-3 pl-8"><div class="text-[10px] text-slate-400">↳ ${c.name}</div></td><td class="px-3 py-3">${r.portal==="Others"?`<span class="badge bg-slate-100 text-slate-700">Others</span>`:portalBadge(r.portal)}</td><td class="px-3 py-3"><div class="font-semibold">${r.holder}</div><div class="text-[10px] text-slate-500">${r.designation}</div>${r.type==="matched"?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:r.type==="other"?`<div class="text-[10px] text-slate-500 mt-1">DSC available in DSC Management • No portal signatory</div>`:`<div class="text-[10px] text-red-600 mt-1">Portal signatory • DSC missing</div>`}</td><td class="px-3 py-3">${r.pan}</td><td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td><td class="px-3 py-3"><div class="font-mono text-[10px]">${r.serial}</div>${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}</td><td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td><td class="px-3 py-3">${r.dsc==="Not Available"?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`:`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}</td></tr>`;});});
+ document.getElementById("allBody").innerHTML=body||`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found for the selected filters.</td></tr>`;
+ document.getElementById("allFooter").textContent=`Showing ${ids.length} clients • ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
 }
-
 function renderMissing(){
  const pf=document.getElementById("missingPortal").value;
  const q=document.getElementById("missingSearch").value.toLowerCase().trim();
@@ -367,8 +407,37 @@ function closeDetail(){document.getElementById("detailModal").classList.remove("
 function populateCustomers(){
  document.getElementById("fCustomer").innerHTML=customers.map(c=>`<option value="${c.id}">${c.name} — ${c.pan}</option>`).join("");
 }
-function openAdd(){populateCustomers();document.getElementById("addModal").classList.add("open")}
+function resetAddForm(){
+ ["fHolder","fOrg","fSerial","fIssuer","fIssue","fExpiry"].forEach(id=>document.getElementById(id).value="");
+ document.getElementById("fClass").value="Class 3";
+ document.getElementById("fMake").value="";
+ document.getElementById("fColor").value="";
+ document.getElementById("fHolder").dataset.signatoryId="";
+}
+function openAdd(){populateCustomers();resetAddForm();document.getElementById("fCustomer").value=customers[0]?.id||"";document.getElementById("addModal").classList.add("open")}
 function closeAdd(){document.getElementById("addModal").classList.remove("open")}
+
+const demoScanDscs=[
+ {holder:"Demo DSC Holder 01",org:"Demo Industries Pvt. Ltd.",clientId:"C008",serial:"SCAN-DEMO-1001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"ePass",color:"Blue"},
+ {holder:"Demo DSC Holder 02",org:"Demo Tax Associates",clientId:"C011",serial:"SCAN-DEMO-1002",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"ProxKey",color:"Red"},
+ {holder:"Demo DSC Holder 03",org:"Demo Compliance Services",clientId:"C014",serial:"SCAN-DEMO-1003",issuer:"VSign 2025",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"mToken",color:"Black"}
+];
+let demoScanIndex=0;
+function scanDemoDsc(){
+ const d=demoScanDscs[demoScanIndex%demoScanDscs.length]; demoScanIndex++;
+ document.getElementById("fHolder").value=d.holder;
+ document.getElementById("fOrg").value=d.org;
+ document.getElementById("fCustomer").value=d.clientId;
+ document.getElementById("fSerial").value=d.serial;
+ document.getElementById("fIssuer").value=d.issuer;
+ document.getElementById("fClass").value=d.cls;
+ document.getElementById("fIssue").value=d.issue;
+ document.getElementById("fExpiry").value=d.expiry;
+ document.getElementById("fMake").value=d.make;
+ document.getElementById("fColor").value=d.color;
+ document.getElementById("fHolder").dataset.signatoryId="";
+ alert("Demo DSC scanned successfully. Dummy certificate details have been populated.");
+}
 
 function saveDsc(){
  const holder=document.getElementById("fHolder").value.trim();
@@ -393,7 +462,7 @@ function saveDsc(){
 }
 
 function formatDate(v){return v==="—"?"—":new Date(v+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}
-function clearFilters(){search.value="";portalFilter.value="All";dscStatusFilter.value="All";certFilter.value="All";renderAll()}
+function clearFilters(){document.getElementById("search").value="";document.getElementById("globalSearch").value="";document.getElementById("portalFilter").value="All";document.getElementById("dscStatusFilter").value="All";document.getElementById("certFilter").value="All";renderAll();}
 function exportCSV(){
  const rows=[["Client","Portal","Authorised Signatory / DSC Holder","PAN","DSC Status","Serial","Expiry","Token Make","Token Color","Certificate Status"]];
  buildRows().forEach(r=>rows.push([r.client.name,r.portal,r.holder,r.pan,r.dsc,r.serial,r.expiry,r.make,r.color,r.status]));
@@ -401,15 +470,13 @@ function exportCSV(){
  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="DSC_Management.csv";a.click();
 }
 
-["search","portalFilter","dscStatusFilter","certFilter"].forEach(id=>{
- document.getElementById(id).addEventListener(id==="search"?"keyup":"change",()=>{renderAll();});
-});
-["missingPortal"].forEach(id=>document.getElementById(id).addEventListener("change",renderMissing));
-document.getElementById("missingSearch").addEventListener("keyup",renderMissing);
-document.getElementById("globalSearch").addEventListener("keyup",e=>{
- document.getElementById("search").value=e.target.value;renderAll();
-});
-
+document.getElementById("search").addEventListener("input",renderAll);
+document.getElementById("portalFilter").addEventListener("change",renderAll);
+document.getElementById("dscStatusFilter").addEventListener("change",renderAll);
+document.getElementById("certFilter").addEventListener("change",renderAll);
+document.getElementById("missingPortal").addEventListener("change",renderMissing);
+document.getElementById("missingSearch").addEventListener("input",renderMissing);
+document.getElementById("globalSearch").addEventListener("input",e=>{document.getElementById("search").value=e.target.value;renderAll();});
 populateCustomers();
 renderAll();
 renderMissing();
