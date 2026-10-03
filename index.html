@@ -1,862 +1,139 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSC Management - Clients with No DSC</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DSC Management</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] }
-    }
-  }
-}
-</script>
 <style>
-  body{font-family:Inter,ui-sans-serif,system-ui;background:#f7faff}
-  ::-webkit-scrollbar{width:8px;height:8px}
-  ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
-  .sidebar-item:hover:not(.active){background:#eef5ff}
-  .modal{display:none}
-  .modal.open{display:flex}
-  .demo-input{margin-top:4px;width:100%;height:40px;border:1px solid #cbd5e1;border-radius:8px;padding:0 10px;font-size:14px;outline:none;background:white}
-  .demo-input:focus{border-color:#1261e8;box-shadow:0 0 0 3px rgba(18,97,232,.08)}
+body{font-family:Inter,system-ui,sans-serif;background:#f7faff}
+.modal{display:none}.modal.open{display:flex}
+.input{width:100%;height:42px;border:1px solid #d7e0ec;border-radius:9px;padding:0 12px;outline:none;font-size:14px;background:#fff}
+.input:focus{border-color:#2f6fec;box-shadow:0 0 0 3px rgba(47,111,236,.09)}
+.label{font-size:12px;font-weight:700;color:#475569;display:block;margin-bottom:5px}
 </style>
 </head>
-
 <body class="text-slate-800">
 <div class="min-h-screen flex">
+<aside class="w-[225px] bg-white border-r border-slate-200 fixed inset-y-0 left-0">
+<div class="h-16 flex items-center px-5 border-b"><b class="text-2xl text-blue-600">KDK</b><span class="ml-2 text-lg">Spectrum Cloud</span></div>
+<div class="px-4 pt-5">
+<div class="text-xs font-bold text-slate-400 uppercase mb-3">Office Management</div>
+<div id="navAll" onclick="showAll()" class="px-3 py-2.5 rounded-lg bg-blue-600 text-white font-semibold cursor-pointer">▣ &nbsp; All DSCs</div>
+<div class="px-3 py-2.5 rounded-lg mt-1 cursor-pointer hover:bg-blue-50">♙ &nbsp; Clients with No DSC</div>
+<div class="px-3 py-2.5 rounded-lg mt-1">♧ &nbsp; Alerts</div><div class="px-3 py-2.5 rounded-lg">⚙ &nbsp; Settings</div>
+</div></aside>
 
-<!-- SIDEBAR -->
-<aside class="w-[220px] bg-white border-r border-slate-200 fixed inset-y-0 left-0 z-30">
-  <div class="h-[62px] flex items-center px-5 border-b border-slate-100">
-    <div class="text-2xl font-extrabold text-[#1261e8]">KDK</div>
-    <div class="ml-2 text-lg font-semibold text-slate-700">Spectrum Cloud</div>
-  </div>
-  <div class="px-4 pt-5">
-    <div class="text-[13px] font-semibold text-slate-500 mb-3">Office Management</div>
-    <nav class="space-y-1 text-sm">
-      <div class="sidebar-item rounded-lg px-3 py-2.5">▦ &nbsp; Dashboard</div>
-      <div class="sidebar-item rounded-lg px-3 py-2.5">▣ &nbsp; DSCs</div>
-      <div class="sidebar-item rounded-lg px-3 py-2.5">♙ &nbsp; Signatory Registration</div>
-      <div class="sidebar-item active bg-[#1261e8] text-white rounded-lg px-3 py-2.5 font-semibold">♙ &nbsp; Clients with No DSC</div>
-      <div class="sidebar-item rounded-lg px-3 py-2.5">♧ &nbsp; Alerts</div>
-      <div class="sidebar-item rounded-lg px-3 py-2.5">⚙ &nbsp; Settings</div>
-    </nav>
-  </div>
-</aside>
-
-<main class="ml-[220px] flex-1">
-<header class="h-[62px] bg-white border-b border-slate-200 flex items-center justify-between px-7 sticky top-0 z-20">
-  <div class="w-[500px] h-10 border border-slate-300 rounded-lg flex items-center px-3 bg-white">
-    <span class="text-lg mr-2 text-slate-400">⌕</span>
-    <input id="globalSearch" class="outline-none flex-1 text-sm" placeholder="Search clients, PAN, GSTIN, TAN...">
-  </div>
-  <div class="flex items-center gap-5">
-    <div class="relative text-xl">♧<span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] rounded-full w-4 h-4 flex items-center justify-center">3</span></div>
-    <div class="flex items-center gap-3">
-      <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-semibold">SK</div>
-      <div><div class="text-sm font-semibold">Saurabh Kumar</div><div class="text-xs text-slate-500">KDK & Co.</div></div>
-      <span>⌄</span>
-    </div>
-  </div>
+<main class="ml-[225px] flex-1">
+<header class="h-16 bg-white border-b flex items-center justify-between px-7 sticky top-0 z-20">
+<div class="w-[500px] h-10 border rounded-lg flex items-center px-3"><span class="text-slate-400 mr-2">⌕</span><input id="globalSearch" class="outline-none flex-1 text-sm" placeholder="Search client, holder, PAN, serial number..."></div>
+<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center font-semibold">SK</div><div><b class="text-sm">Saurabh Kumar</b><div class="text-xs text-slate-500">KDK & Co.</div></div></div>
 </header>
 
 <section class="p-7">
-  <div class="flex justify-between items-start">
-    <div>
-      <div class="text-sm text-slate-500 mb-2">Office Management › DSC Management › Clients with No DSC</div>
-      <h1 class="text-[29px] font-bold text-[#10295c]">List of Clients with No DSC</h1>
-      <p class="text-sm text-slate-500 mt-1">
-        Shows authorised signatories fetched from the portal for whom a DSC is not available in DSC Management.
-      </p>
-    </div>
-    <div class="flex gap-2">
-      <button onclick="openDemoData()" class="border border-emerald-300 bg-emerald-50 rounded-lg px-4 py-2 text-sm font-semibold text-emerald-700">＋ Demo Data</button>
-      <button class="border border-slate-300 bg-white rounded-lg px-4 py-2 text-sm font-medium text-[#1261e8]">ⓘ &nbsp; View Help</button>
-    </div>
-  </div>
-
-  <!-- SUMMARY -->
-  <div class="grid grid-cols-4 gap-5 mt-6">
-    <div class="bg-white border border-blue-100 rounded-xl p-5">
-      <div class="text-xs text-slate-500">Total Clients</div>
-      <div id="totalClients" class="text-3xl font-bold mt-1">154</div>
-    </div>
-    <div class="bg-white border border-red-100 rounded-xl p-5">
-      <div class="text-xs text-slate-500">Clients with Missing DSC</div>
-      <div id="missingClients" class="text-3xl font-bold text-red-700 mt-1">42</div>
-    </div>
-    <div class="bg-white border border-amber-100 rounded-xl p-5">
-      <div class="text-xs text-slate-500">Authorised Signatories Missing DSC</div>
-      <div id="missingSignatories" class="text-3xl font-bold text-amber-600 mt-1">57</div>
-    </div>
-    <div class="bg-white border border-emerald-100 rounded-xl p-5">
-      <div class="text-xs text-slate-500">Clients Fully Covered</div>
-      <div class="text-3xl font-bold text-emerald-600 mt-1">112</div>
-    </div>
-  </div>
-
-  <!-- FILTERS -->
-  <div class="bg-white border border-slate-200 rounded-xl mt-6 p-5">
-    <div class="flex justify-end mb-3">
-      <button id="exportBtn" class="border border-slate-300 rounded-lg px-4 py-2 text-sm font-semibold text-[#1261e8]">▣ &nbsp; Export to Excel</button>
-    </div>
-    <div class="grid grid-cols-[1.8fr_1fr_1fr_1fr_auto_auto] gap-4 items-end">
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Search</label>
-        <div class="mt-1 h-10 border border-slate-300 rounded-lg flex items-center px-3">
-          <span class="text-slate-400 mr-2">⌕</span>
-          <input id="search" class="outline-none text-sm w-full" placeholder="Client, authorised signatory, PAN, GSTIN...">
-        </div>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Organisation Type</label>
-        <select id="org" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
-          <option>All</option><option>Company</option><option>Partnership Firm</option><option>Proprietorship</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">State</label>
-        <select id="state" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
-          <option>All</option><option>Delhi</option><option>Gujarat</option><option>Karnataka</option><option>Maharashtra</option><option>Punjab</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Uttar Pradesh</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Portal</label>
-        <select id="portal" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
-          <option>All</option><option>GST</option><option>TDS</option><option>ITR</option>
-        </select>
-      </div>
-      <div>
-        <label class="text-xs font-semibold text-slate-600">Client Status</label>
-        <select id="status" class="mt-1 h-10 border border-slate-300 rounded-lg px-3 text-sm w-full bg-white">
-          <option>Active</option><option>Inactive</option><option>All</option>
-        </select>
-      </div>
-      <button id="applyBtn" class="h-10 bg-[#1261e8] text-white rounded-lg px-5 text-sm font-semibold">Apply</button>
-      <button id="clearBtn" class="h-10 border border-[#1261e8] text-[#1261e8] rounded-lg px-5 text-sm font-semibold">Clear</button>
-    </div>
-  </div>
-
-  
-<div class="mt-4 bg-indigo-50 border border-indigo-100 rounded-xl px-5 py-3 text-sm text-indigo-800">
-  <b>Multi-portal + unmatched DSC:</b> A client can have different authorised signatories on GST, TDS and ITR.
-  Any DSC already present in DSC Management that <b>cannot be matched to a fetched portal signatory</b> is shown only inside that client's details.
-</div>
-<!-- TABLE -->
-  <div class="bg-white border border-slate-200 rounded-xl mt-4 overflow-hidden">
-    <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
-      <div>
-        <h2 class="font-semibold text-slate-800">Clients with No DSC</h2>
-        <p class="text-xs text-slate-500 mt-1">Only signatories without a DSC are displayed.</p>
-      </div>
-      <div class="text-xs text-slate-500">Source: Signatory Registration + DSC Management</div>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="w-full text-sm">
-        <thead class="bg-[#f5f8fc]">
-          <tr>
-            <th class="px-4 py-3 text-left">#</th>
-            <th class="px-3 py-3 text-left">Client Name</th>
-            <th class="px-3 py-3 text-left">Portal</th>
-            <th class="px-3 py-3 text-left">Authorised Signatory</th>
-            <th class="px-3 py-3 text-left">PAN</th>
-            <th class="px-3 py-3 text-left">GSTIN</th>
-            <th class="px-3 py-3 text-left">Organisation Type</th>
-            <th class="px-3 py-3 text-left">State</th>
-            <th class="px-3 py-3 text-left">DSC Status</th>
-            <th class="px-3 py-3 text-left">Action</th>
-          </tr>
-        </thead>
-        <tbody id="tbody" class="divide-y divide-slate-100"></tbody>
-      </table>
-    </div>
-
-    <div class="flex items-center justify-between px-5 py-5">
-      <div id="rangeText" class="text-sm text-slate-500"></div>
-      <div class="flex items-center gap-2">
-        <select id="pageSize" class="border border-slate-300 rounded-lg px-3 py-2 text-sm bg-white">
-          <option>10</option><option>20</option><option>50</option>
-        </select>
-        <button id="prev" class="w-9 h-9 rounded-lg border border-slate-300 bg-white">‹</button>
-        <div id="pages" class="flex gap-2"></div>
-        <button id="next" class="w-9 h-9 rounded-lg border border-slate-300 bg-white">›</button>
-      </div>
-    </div>
-  </div>
-</section>
-</main>
+<div class="flex justify-between items-start">
+<div><div class="text-sm text-slate-500 mb-2">Office Management › DSC Management</div><h1 class="text-3xl font-bold text-[#10295c]">All DSCs</h1><p class="text-sm text-slate-500 mt-1">View all Digital Signature Certificates available across customers.</p></div>
+<button onclick="openAdd()" class="bg-blue-600 text-white rounded-lg px-5 py-2.5 text-sm font-semibold">＋ Add DSC</button>
 </div>
 
-
-<!-- INTERACTIVE DEMO DATA MODAL -->
-<div id="demoModal" class="modal fixed inset-0 bg-slate-900/50 z-[70] items-center justify-center p-6">
-  <div class="bg-white w-full max-w-[720px] rounded-2xl shadow-2xl p-6">
-    <div class="flex items-start justify-between">
-      <div>
-        <div class="text-xs text-emerald-600 font-bold uppercase">Interactive Demo</div>
-        <h2 class="text-xl font-bold text-[#10295c] mt-1">Add Dummy Client / Signatory</h2>
-        <p class="text-sm text-slate-500 mt-1">Add portal-specific authorised signatories and demonstrate GST / TDS / ITR coverage.</p>
-      </div>
-      <button onclick="closeDemoData()" class="text-2xl text-slate-400">×</button>
-    </div>
-
-    <div class="mt-5 grid grid-cols-2 gap-3">
-      <button onclick="showDemoTab('client')" id="tabClient" class="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Client</button>
-      <button onclick="showDemoTab('signatory')" id="tabSignatory" class="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold">Add Signatory to Client</button>
-    </div>
-
-    <div id="demoClientForm" class="mt-5">
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="text-xs font-semibold">Client Name *</label><input id="demoClientName" class="demo-input" placeholder="e.g. ABC Industries"></div>
-        <div><label class="text-xs font-semibold">Organisation Type</label><select id="demoOrg" class="demo-input"><option>Company</option><option>Partnership Firm</option><option>Proprietorship</option></select></div>
-        <div><label class="text-xs font-semibold">PAN</label><input id="demoPan" class="demo-input" placeholder="AABCA1234A"></div>
-        <div><label class="text-xs font-semibold">GSTIN</label><input id="demoGstin" class="demo-input" placeholder="27AABCA1234A1Z5"></div>
-        <div><label class="text-xs font-semibold">TAN</label><input id="demoTan" class="demo-input" placeholder="DELA12345B"></div>
-        <div><label class="text-xs font-semibold">State</label><select id="demoState" class="demo-input"><option>Maharashtra</option><option>Delhi</option><option>Gujarat</option><option>Rajasthan</option><option>Karnataka</option><option>Tamil Nadu</option></select></div>
-      </div>
-      <label class="mt-4 flex items-center gap-2 text-sm text-slate-700">
-        <input id="demoUnmappedDsc" type="checkbox" class="w-4 h-4" checked>
-        Add an extra DSC that is available in DSC Management but not present in the portal signatory list
-      </label>
-      <button onclick="addDemoClient()" class="mt-5 w-full bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Dummy Client</button>
-    </div>
-
-    <div id="demoSignatoryForm" class="mt-5 hidden">
-      <div class="mb-4">
-        <label class="text-xs font-semibold">Select Client *</label>
-        <select id="demoClientSelect" class="demo-input"></select>
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div><label class="text-xs font-semibold">Authorised Signatory Name *</label><input id="demoSignatoryName" class="demo-input" placeholder="e.g. Neeraj Sharma"></div>
-        <div><label class="text-xs font-semibold">Designation</label><input id="demoDesignation" class="demo-input" value="Authorised Signatory"></div>
-        <div><label class="text-xs font-semibold">PAN</label><input id="demoSignatoryPan" class="demo-input" placeholder="ABCDE1234F"></div>
-        <div><label class="text-xs font-semibold">Portal</label><select id="demoPortal" class="demo-input"><option>GST</option><option>TDS</option><option>ITR</option></select></div>
-      </div>
-      <div class="mt-4 bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-800">
-        New signatories are added as <b>DSC Not Available</b>. You can add different signatories for <b>GST, TDS and ITR</b> under the same client.
-      </div>
-      <button onclick="addDemoSignatory()" class="mt-5 w-full bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold">Add Authorised Signatory</button>
-    </div>
-  </div>
+<div class="grid grid-cols-4 gap-5 mt-6">
+<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Total DSCs</div><div id="total" class="text-3xl font-bold mt-1">0</div></div>
+<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Active</div><div id="active" class="text-3xl font-bold text-emerald-600 mt-1">0</div></div>
+<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Expiring Soon</div><div id="expiring" class="text-3xl font-bold text-amber-600 mt-1">0</div></div>
+<div class="bg-white border rounded-xl p-5"><div class="text-xs text-slate-500">Expired</div><div id="expired" class="text-3xl font-bold text-red-600 mt-1">0</div></div>
 </div>
 
-<!-- CLIENT DETAIL MODAL -->
-<div id="detailModal" class="modal fixed inset-0 bg-slate-900/50 z-50 items-center justify-center p-6">
-  <div class="bg-[#f7faff] w-full max-w-[1180px] max-h-[92vh] overflow-y-auto rounded-2xl shadow-2xl">
-    <div class="bg-white px-7 py-5 border-b flex items-center justify-between sticky top-0 z-10">
-      <div>
-        <div class="text-xs text-slate-500">DSC Management › Client Details</div>
-        <h2 id="detailTitle" class="text-2xl font-bold text-[#10295c] mt-1"></h2>
-        <div id="detailIdentifiers" class="text-sm text-slate-500 mt-1"></div>
-        <div id="detailPortals" class="flex gap-2 mt-3"></div>
-      </div>
-      <button onclick="closeDetail()" class="text-3xl text-slate-400 hover:text-slate-700">×</button>
-    </div>
+<div class="bg-white border rounded-xl mt-6 p-5">
+<div class="grid grid-cols-[1.7fr_1fr_1fr_1fr_auto] gap-4 items-end">
+<div><label class="label">Search</label><input id="search" class="input" placeholder="Client, holder, PAN, serial number..."></div>
+<div><label class="label">Status</label><select id="status" class="input"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Expired</option></select></div>
+<div><label class="label">DSC Class</label><select id="cls" class="input"><option>All</option><option>Class 3</option><option>Class 2</option></select></div>
+<div><label class="label">Token Make</label><select id="make" class="input"><option>All</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
+<button onclick="clearFilters()" class="h-[42px] border border-blue-600 text-blue-600 rounded-lg px-5 text-sm font-semibold">Clear</button>
+</div></div>
 
-    <div class="p-7">
-      <!-- SAME TYPE OF SUMMARY AS THE PROVIDED SCREENSHOT -->
-      <div class="grid grid-cols-4 gap-4">
-        <div class="rounded-xl p-5 text-white bg-gradient-to-r from-[#5d8ff1] to-[#8b7cf2]">
-          <div class="text-xs uppercase font-bold opacity-90">Total</div>
-          <div id="dTotal" class="text-4xl font-bold mt-4">0</div>
-          <div class="text-xs mt-1 opacity-90">for this client</div>
-        </div>
-        <div class="rounded-xl p-5 text-white bg-gradient-to-r from-[#2ac9ad] to-[#25c4df]">
-          <div class="text-xs uppercase font-bold opacity-90">Active</div>
-          <div id="dActive" class="text-4xl font-bold mt-4">0</div>
-          <div class="text-xs mt-1 opacity-90">valid certificates</div>
-        </div>
-        <div class="rounded-xl p-5 text-white bg-gradient-to-r from-[#ffb21b] to-[#ff9b2f]">
-          <div class="text-xs uppercase font-bold opacity-90">Expiring Soon</div>
-          <div id="dExpiring" class="text-4xl font-bold mt-4">0</div>
-          <div class="text-xs mt-1 opacity-90">within 90 days</div>
-        </div>
-        <div class="rounded-xl p-5 text-white bg-gradient-to-r from-[#fa6b7b] to-[#f56f78]">
-          <div class="text-xs uppercase font-bold opacity-90">Expired</div>
-          <div id="dExpired" class="text-4xl font-bold mt-4">0</div>
-          <div class="text-xs mt-1 opacity-90">require renewal</div>
-        </div>
-      </div>
+<div class="bg-white border rounded-xl mt-4 overflow-hidden">
+<div class="px-5 py-4 border-b flex justify-between"><div><b>All Customer DSCs</b><p class="text-xs text-slate-500 mt-1">Every DSC currently stored in DSC Management.</p></div><button onclick="exportCSV()" class="border rounded-lg px-4 py-2 text-sm text-blue-600 font-semibold">▣ Export</button></div>
+<div class="overflow-x-auto"><table class="w-full text-sm">
+<thead class="bg-slate-50"><tr>
+<th class="px-4 py-3 text-left">#</th><th class="px-3 py-3 text-left">Client</th><th class="px-3 py-3 text-left">Certificate Holder</th><th class="px-3 py-3 text-left">Serial Number</th><th class="px-3 py-3 text-left">DSC Class</th><th class="px-3 py-3 text-left">Issued By</th><th class="px-3 py-3 text-left">Token Make</th><th class="px-3 py-3 text-left">Token Color</th><th class="px-3 py-3 text-left">Expiry</th><th class="px-3 py-3 text-left">Status</th>
+</tr></thead><tbody id="body" class="divide-y"></tbody></table></div>
+<div id="count" class="px-5 py-4 text-sm text-slate-500"></div>
+</div>
+</section></main></div>
 
-      <!-- FETCHED AUTHORISED SIGNATORIES -->
-      <div class="bg-white border border-slate-200 rounded-xl mt-5">
-        <div class="px-6 py-4 border-b">
-          <div class="flex justify-between items-center">
-            <div>
-              <h3 class="font-bold text-lg">Authorised Signatories</h3>
-              <p class="text-xs text-slate-500 mt-1">Fetched from the supported portal(s).</p>
-            </div>
-            <span id="fetchTime" class="text-xs text-slate-400"></span>
-          </div>
-        </div>
-        <div id="signatoryCards" class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-      </div>
+<!-- ADD DSC -->
+<div id="modal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
+<div class="w-full max-w-[560px] max-h-[94vh] overflow-hidden rounded-[22px] bg-white shadow-2xl">
+<div class="bg-gradient-to-r from-[#152754] to-[#223e82] text-white px-6 pt-5 pb-4 relative">
+<button onclick="closeAdd()" class="absolute right-5 top-5 w-8 h-8 rounded-lg bg-white/10">×</button>
+<div class="flex items-center gap-3"><div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div><div><b>Add DSC</b><div class="text-xs text-blue-200">Digital Signature Certificate</div></div></div>
+<div class="flex items-center mt-5 text-xs"><div class="w-7 h-7 rounded-full bg-white text-blue-800 flex items-center justify-center font-bold">1</div><b class="ml-2">Certificate</b><div class="h-px bg-white/30 flex-1 mx-3"></div><div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">2</div><span class="ml-2 opacity-60">Done</span></div>
+</div>
+<div class="p-6 overflow-y-auto max-h-[calc(94vh-112px)]">
+<h2 class="text-lg font-bold">Enter certificate details</h2><p class="text-sm text-slate-500 mt-1">Fill in the information available on the DSC certificate.</p>
 
-      <!-- DSC MANAGEMENT -->
-      <div class="bg-white border border-slate-200 rounded-xl mt-5">
-        <div class="px-6 py-4 border-b">
-          <h3 class="font-bold text-lg">DSC Management</h3>
-          <p class="text-xs text-slate-500 mt-1">Certificates currently available for this client.</p>
-        </div>
-        <div id="certificateArea" class="p-6"></div>
-      </div>
-    </div>
-  </div>
+<div class="mt-5 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Holder</span><div class="h-px bg-slate-200 flex-1"></div></div>
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div class="col-span-2"><label class="label">Holder Name <span class="text-red-500">*</span></label><input id="holder" class="input" placeholder="Ramesh Kumar"></div>
+<div><label class="label">Organisation</label><input id="org" class="input" placeholder="ABC & Associates"></div>
+<div><label class="label">Customer <span class="text-red-500">*</span></label><select id="customer" class="input"></select></div>
 </div>
 
-<!-- ADD DSC MODAL -->
-<div id="addModal" class="modal fixed inset-0 bg-slate-900/50 z-[60] items-center justify-center p-6">
-  <div class="bg-white w-[520px] rounded-2xl shadow-2xl p-6">
-    <div class="flex justify-between">
-      <div>
-        <h2 class="text-xl font-bold text-[#10295c]">Add DSC</h2>
-        <p id="addClient" class="text-sm text-slate-500 mt-1"></p>
-        <p id="addSignatory" class="text-sm font-semibold text-slate-700 mt-1"></p>
-      </div>
-      <button onclick="closeAdd()" class="text-2xl text-slate-400">×</button>
-    </div>
-    <div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm">
-      Connect the signatory's DSC token and continue with the existing <b>Add DSC</b> flow. The certificate will then be associated with this client/signatory.
-    </div>
-    <div class="mt-4 border rounded-xl p-4">
-      <div class="font-semibold">1. Connect DSC Token</div>
-      <div class="text-xs text-slate-500 mt-1">Ensure the token is connected and KDK Connector is running.</div>
-    </div>
-    <div class="mt-3 border rounded-xl p-4">
-      <div class="font-semibold">2. Read Certificate</div>
-      <div class="text-xs text-slate-500 mt-1">Certificate details will be fetched automatically.</div>
-    </div>
-    <div class="flex justify-end gap-3 mt-6">
-      <button onclick="closeAdd()" class="border rounded-lg px-4 py-2 text-sm">Cancel</button>
-      <button onclick="alert('Mock: Existing Add DSC flow would open here.')" class="bg-[#1261e8] text-white rounded-lg px-5 py-2 text-sm font-semibold">Continue</button>
-    </div>
-  </div>
+<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Information</span><div class="h-px bg-slate-200 flex-1"></div></div>
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div class="col-span-2"><label class="label">Serial Number <span class="text-red-500">*</span></label><input id="serial" class="input" placeholder="3AF12C9D00B4E721"></div>
+<div class="col-span-2"><label class="label">Issued By <span class="text-red-500">*</span></label><input id="issuer" class="input" placeholder="eMudhra Consumer CA 5"></div>
+<div><label class="label">DSC Class <span class="text-red-500">*</span></label><select id="class" class="input"><option>Class 3</option><option>Class 2</option></select></div>
 </div>
+
+<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Validity</span><div class="h-px bg-slate-200 flex-1"></div></div>
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div><label class="label">Issue Date</label><input id="issue" type="date" class="input"></div>
+<div><label class="label">Expiry Date <span class="text-red-500">*</span></label><input id="expiry" type="date" class="input"></div>
+</div>
+
+<div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Token / Hardware</span><div class="h-px bg-slate-200 flex-1"></div></div>
+<div class="grid grid-cols-2 gap-3 mt-3">
+<div><label class="label">Token Make <span class="text-red-500">*</span></label><select id="tokenMake" class="input"><option value="">Select Make</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
+<div><label class="label">Token Color <span class="text-red-500">*</span></label><select id="tokenColor" class="input"><option value="">Select Color</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div>
+</div>
+
+<div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-800">Email, Postal Code, State and Purpose have been removed from this form because they are not required for DSC inventory/reconciliation.</div>
+<div class="flex justify-between mt-6 pt-4 border-t"><button onclick="closeAdd()" class="border rounded-lg px-4 py-2.5 text-sm font-semibold">Cancel</button><button onclick="save()" class="bg-blue-600 text-white rounded-lg px-6 py-2.5 text-sm font-semibold">Save DSC</button></div>
+</div></div></div>
 
 <script>
-/*
-  DATA MODEL:
-  - authorisedSignatories = fetched from portal API
-  - dscs = DSC records already available in DSC Management
-  - A client appears in this list if at least one authorised signatory
-    has no matching DSC.
-*/
-const clients = [
-  {
-    id:"C001",
-    name:"3 Aces Brand Solutions",
-    pan:"AAACA1234A", gstin:"27AAACA1234A1Z5", tan:"MUMA12345E",
-    org:"Company", state:"Maharashtra", status:"Active",
-    authorisedSignatories:[
-      {id:"S001",name:"Rahul Sharma",pan:"ABCDE1234F",designation:"Authorised Signatory",portal:"GST",dscPresent:false},
-      {id:"S002",name:"Priya Sharma",pan:"FGHIJ5678K",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
-    ],
-    dscs:[]
-  },
-  {
-    id:"C002",
-    name:"ABC Private Limited",
-    pan:"AABCA1122B", gstin:"27AABCA1122B1Z8", tan:"MUMA2211B",
-    org:"Company", state:"Maharashtra", status:"Active",
-    authorisedSignatories:[
-      {id:"S003",name:"Amit Mehta",pan:"ABCDE1111A",designation:"Director",portal:"GST",dscPresent:true},
-      {id:"S004",name:"Neha Mehta",pan:"ABCDE2222B",designation:"Authorised Signatory",portal:"GST",dscPresent:false}
-    ],
-    dscs:[
-      {holder:"Amit Mehta",portal:"GST",serial:"45A8-29F1-7C20",status:"Active",expiry:"15 Aug 2027",linked:true},
-      {holder:"Manish Verma",portal:"-",serial:"DSC-UNM-1021",status:"Active",expiry:"22 Jan 2028",linked:false}
-    ]
-  },
+const customers=[
+{id:"C001",name:"3 Aces Brand Solutions",pan:"AAACA1234A"},{id:"C002",name:"ABC Private Limited",pan:"AABCA1122B"},
+{id:"C003",name:"Sharma & Associates",pan:"ABFPS6789G"},{id:"C004",name:"Global Tax Solutions",pan:"AAACG7788L"},
+{id:"C005",name:"R K Enterprises",pan:"AFZPR4321K"},{id:"C006",name:"Vertex Business Solutions Pvt. Ltd.",pan:"AAACV7788P"},
+{id:"C007",name:"Nexus Technologies India Pvt. Ltd.",pan:"AABCN4455Q"}];
+let dscs=[
+{id:1,clientId:"C001",client:"3 Aces Brand Solutions",holder:"Ramesh Kumar",pan:"ABCDE1234F",org:"ABC & Associates",serial:"3AF12C9D00B4E721",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2025-05-12",expiry:"2027-05-11",make:"ePass",color:"Blue",status:"Active"},
+{id:2,clientId:"C002",client:"ABC Private Limited",holder:"Amit Mehta",pan:"ABCDE1111A",org:"ABC Private Limited",serial:"45A8-29F1-7C20",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2025-08-15",expiry:"2027-08-14",make:"ProxKey",color:"Red",status:"Active"},
+{id:3,clientId:"C004",client:"Global Tax Solutions",holder:"Karan Gupta",pan:"AAAPK3456M",org:"Global Tax Solutions",serial:"98BC-12EF-440A",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2025-12-20",expiry:"2026-12-18",make:"Watchdata",color:"Black",status:"Expiring Soon"},
+{id:4,clientId:"C004",client:"Global Tax Solutions",holder:"Simran Gupta",pan:"AAAPS7890N",org:"Global Tax Solutions",serial:"71AD-55CD-8831",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2024-11-18",expiry:"2025-11-17",make:"mToken",color:"Blue",status:"Expired"},
+{id:5,clientId:"C007",client:"Nexus Technologies India Pvt. Ltd.",holder:"Pooja Nair",pan:"AARPN5555G",org:"Nexus Technologies India Pvt. Ltd.",serial:"DSC-UNM-3098",issuer:"VSign 2025",cls:"Class 3",issue:"2026-05-04",expiry:"2028-05-03",make:"ePass",color:"Green",status:"Active"},
+{id:6,clientId:"C006",client:"Vertex Business Solutions Pvt. Ltd.",holder:"Old Authorised Signatory",pan:"AAXPO7777H",org:"Vertex Business Solutions Pvt. Ltd.",serial:"DSC-UNM-2210",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2024-02-13",expiry:"2025-02-12",make:"ProxKey",color:"Black",status:"Expired"}];
 
-  /* IMPORTANT MULTI-PORTAL CUSTOMER */
-  {
-    id:"C007",
-    name:"Vertex Business Solutions Pvt. Ltd.",
-    pan:"AAACV7788P", gstin:"27AAACV7788P1Z2", tan:"DELV7788P",
-    org:"Company", state:"Delhi", status:"Active",
-    authorisedSignatories:[
-      {id:"S011",name:"Arjun Kapoor",pan:"AAAPA1111A",designation:"Authorised Signatory",portal:"GST",dscPresent:false},
-      {id:"S012",name:"Meera Kapoor",pan:"AAAPM2222B",designation:"Authorised Signatory",portal:"TDS",dscPresent:false},
-      {id:"S013",name:"Vikram Shah",pan:"AAAPS3333C",designation:"Authorised Signatory",portal:"ITR",dscPresent:false}
-    ],
-    dscs:[
-      {holder:"Old Authorised Signatory",portal:"-",serial:"DSC-UNM-2210",status:"Expired",expiry:"12 Feb 2025",linked:false}
-    ]
-  },
-
-  /* Multi-portal customer where one portal signatory already has DSC */
-  {
-    id:"C008",
-    name:"Nexus Technologies India Pvt. Ltd.",
-    pan:"AABCN4455Q", gstin:"29AABCN4455Q1Z7", tan:"BLRN4455Q",
-    org:"Company", state:"Karnataka", status:"Active",
-    authorisedSignatories:[
-      {id:"S014",name:"Sanjay Rao",pan:"AARPS1111D",designation:"Director",portal:"GST",dscPresent:true},
-      {id:"S015",name:"Kavita Rao",pan:"AARPK2222E",designation:"Authorised Signatory",portal:"TDS",dscPresent:false},
-      {id:"S016",name:"Rohit Rao",pan:"AARPR3333F",designation:"Authorised Signatory",portal:"ITR",dscPresent:true}
-    ],
-    dscs:[
-      {holder:"Sanjay Rao",portal:"GST",serial:"GST-98BC-12EF",status:"Active",expiry:"20 Dec 2027",linked:true},
-      {holder:"Rohit Rao",portal:"ITR",serial:"ITR-71AD-55CD",status:"Expiring Soon",expiry:"18 Nov 2026",linked:true},
-      {holder:"Pooja Nair",portal:"-",serial:"DSC-UNM-3098",status:"Active",expiry:"04 May 2028",linked:false}
-    ]
-  },
-
-  {
-    id:"C003",
-    name:"Sharma & Associates",
-    pan:"ABFPS6789G", gstin:"-", tan:"-",
-    org:"Partnership Firm", state:"Delhi", status:"Active",
-    authorisedSignatories:[
-      {id:"S005",name:"Rakesh Sharma",pan:"ABCPR1234D",designation:"Partner",portal:"TDS",dscPresent:false}
-    ],
-    dscs:[]
-  },
-  {
-    id:"C004",
-    name:"Global Tax Solutions",
-    pan:"AAACG7788L", gstin:"27AAACG7788L1Z3", tan:"DELG7788L",
-    org:"Company", state:"Delhi", status:"Active",
-    authorisedSignatories:[
-      {id:"S006",name:"Karan Gupta",pan:"AAAPK3456M",designation:"Director",portal:"ITR",dscPresent:true},
-      {id:"S007",name:"Simran Gupta",pan:"AAAPS7890N",designation:"Authorised Signatory",portal:"GST",dscPresent:true}
-    ],
-    dscs:[
-      {holder:"Karan Gupta",portal:"ITR",serial:"98BC-12EF-440A",status:"Active",expiry:"20 Dec 2027"},
-      {holder:"Simran Gupta",portal:"GST",serial:"71AD-55CD-8831",status:"Expiring Soon",expiry:"18 Nov 2026"}
-    ]
-  },
-  {
-    id:"C005",
-    name:"R K Enterprises",
-    pan:"AFZPR4321K", gstin:"27AFZPR4321K1Z1", tan:"-",
-    org:"Proprietorship", state:"Gujarat", status:"Active",
-    authorisedSignatories:[
-      {id:"S008",name:"Rajesh Kumar",pan:"AFZPR4321K",designation:"Proprietor",portal:"GST",dscPresent:false}
-    ],
-    dscs:[]
-  }
-];
-
-/* Add dummy fully covered clients only to the total-client concept.
-   They are deliberately NOT shown in the missing-DSC list. */
-const totalClients = 154;
-
-function missingSignatories(client){
-  return client.authorisedSignatories.filter(s => !s.dscPresent);
-}
-
-function visibleClients(){
-  return clients.filter(c => missingSignatories(c).length > 0);
-}
-
-let filtered = visibleClients();
-let page = 1;
-let pageSize = 10;
-
-
-function linkedDscs(c){
-  return (c.dscs || []).filter(d => d.linked !== false);
-}
-function unmappedDscs(c){
-  return (c.dscs || []).filter(d => d.linked === false);
-}
-function totalUnmappedDscs(){
-  return visibleClients().reduce((n,c)=>n+unmappedDscs(c).length,0);
-}
-function allDscCount(c){
-  return (c.dscs || []).length;
-}
-
-function applyFilters(){
-  const q=document.getElementById("search").value.trim().toLowerCase();
-  const org=document.getElementById("org").value;
-  const state=document.getElementById("state").value;
-  const portal=document.getElementById("portal").value;
-  const status=document.getElementById("status").value;
-
-  filtered=visibleClients().filter(c=>{
-    const missing=missingSignatories(c);
-    const signatoryText=missing.map(s=>`${s.name} ${s.pan} ${s.portal}`).join(" ").toLowerCase();
-    const searchable=`${c.name} ${c.pan} ${c.gstin} ${c.tan} ${signatoryText}`.toLowerCase();
-    return (!q || searchable.includes(q))
-      && (org==="All" || c.org===org)
-      && (state==="All" || c.state===state)
-      && (portal==="All" || missing.some(s=>s.portal===portal))
-      && (status==="All" || c.status===status);
-  });
-
-  page=1;
-  renderTable();
-}
-
-
-function renderTable(){
-  const start=(page-1)*pageSize;
-  const pageClients=filtered.slice(start,start+pageSize);
-  const tbody=document.getElementById("tbody");
-
-  if(!pageClients.length){
-    tbody.innerHTML=`<tr><td colspan="10" class="px-5 py-12 text-center text-slate-500">No clients found.</td></tr>`;
-  } else {
-    let html="";
-    pageClients.forEach((client,index)=>{
-      const missing=missingSignatories(client);
-      missing.forEach((s,si)=>{
-        html += `
-        <tr class="hover:bg-blue-50/40">
-          ${si===0 ? `<td rowspan="${missing.length}" class="px-4 py-4 align-top text-slate-500">${start+index+1}</td>` : ""}
-          ${si===0 ? `
-          <td rowspan="${missing.length}" class="px-3 py-4 align-top">
-            <button onclick="openDetail('${client.id}')" class="font-semibold text-[#1261e8] hover:underline text-left">
-              ${client.name}
-            </button>
-            <div class="text-xs text-slate-400 mt-1">${client.gstin}</div>
-          </td>` : ""}
-          <td class="px-3 py-3">
-            <span class="px-2.5 py-1 rounded-full ${
-              s.portal==='GST'?'bg-blue-100 text-blue-700':
-              s.portal==='TDS'?'bg-purple-100 text-purple-700':
-              'bg-orange-100 text-orange-700'
-            } text-xs font-bold">${s.portal}</span>
-          </td>
-          <td class="px-3 py-3">
-            <div class="font-medium">${s.name}</div>
-            <div class="text-xs text-slate-500">${s.designation}</div>
-            <div class="text-[11px] text-slate-400 mt-1">Fetched from ${s.portal}</div>
-          </td>
-          <td class="px-3 py-3">${s.pan}</td>
-          ${si===0 ? `
-          <td rowspan="${missing.length}" class="px-3 py-4 align-top">${client.gstin}</td>
-          <td rowspan="${missing.length}" class="px-3 py-4 align-top">${client.org}</td>
-          <td rowspan="${missing.length}" class="px-3 py-4 align-top">${client.state}</td>` : ""}
-          <td class="px-3 py-3">
-            <span class="px-2.5 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">DSC Not Available</span>
-          </td>
-          <td class="px-3 py-3">
-            <button onclick="openAdd('${client.id}','${s.id}')" class="border border-[#1261e8] text-[#1261e8] hover:bg-blue-50 rounded-lg px-3 py-1.5 font-semibold text-xs">
-              ＋ Add DSC
-            </button>
-          </td>
-        </tr>`;
-      });
-    });
-    tbody.innerHTML=html;
-  }
-
-  const totalPages=Math.max(1,Math.ceil(filtered.length/pageSize));
-  document.getElementById("rangeText").textContent =
-    filtered.length ? `Showing ${start+1} - ${Math.min(start+pageSize,filtered.length)} of ${filtered.length} clients` : "No clients";
-
-  document.getElementById("pages").innerHTML=Array.from({length:Math.min(totalPages,7)},(_,i)=>`
-    <button onclick="goPage(${i+1})" class="w-9 h-9 rounded-lg border ${page===i+1?'bg-[#1261e8] text-white border-[#1261e8]':'border-slate-300 bg-white'}">${i+1}</button>
-  `).join("");
-
-  document.getElementById("prev").disabled=page===1;
-  document.getElementById("next").disabled=page===totalPages;
-  document.getElementById("missingClients").textContent=visibleClients().length;
-  document.getElementById("missingSignatories").textContent=visibleClients().reduce((n,c)=>n+missingSignatories(c).length,0);
-}
-
-function goPage(p){page=p;renderTable();}
-
-function openAdd(clientId,signatoryId){
-  const c=clients.find(x=>x.id===clientId);
-  const s=c.authorisedSignatories.find(x=>x.id===signatoryId);
-  document.getElementById("addClient").textContent=`Client: ${c.name}`;
-  document.getElementById("addSignatory").textContent=`Authorised Signatory: ${s.name}`;
-  document.getElementById("addModal").classList.add("open");
-}
-function closeAdd(){document.getElementById("addModal").classList.remove("open");}
-
-function openDetail(id){
-  const c=clients.find(x=>x.id===id);
-  document.getElementById("detailTitle").textContent=c.name;
-  document.getElementById("detailIdentifiers").textContent=`PAN: ${c.pan}   •   GSTIN: ${c.gstin}   •   TAN: ${c.tan}`;
-  const detailPortals=[...new Set(c.authorisedSignatories.map(s=>s.portal))];
-  document.getElementById("detailPortals").innerHTML=detailPortals.map(p=>`<span class="px-2.5 py-1 rounded-full text-xs font-bold ${p==="GST"?"bg-blue-100 text-blue-700":p==="TDS"?"bg-purple-100 text-purple-700":"bg-orange-100 text-orange-700"}">${p}</span>`).join("");
-
-  const active=c.dscs.filter(x=>x.status==="Active").length;
-  const expiring=c.dscs.filter(x=>x.status==="Expiring Soon").length;
-  const expired=c.dscs.filter(x=>x.status==="Expired").length;
-
-  document.getElementById("dTotal").textContent=c.dscs.length;
-  document.getElementById("dActive").textContent=active;
-  document.getElementById("dExpiring").textContent=expiring;
-  document.getElementById("dExpired").textContent=expired;
-
-  document.getElementById("fetchTime").textContent="Last fetched: 01 Oct 2026, 04:45 PM";
-
-  /* Fetched authorised signatory section, grouped by portal */
-  const portalOrder=["GST","TDS","ITR"];
-  const groups=portalOrder.map(p=>({
-    portal:p,
-    signatories:c.authorisedSignatories.filter(s=>s.portal===p)
-  })).filter(g=>g.signatories.length);
-
-  document.getElementById("signatoryCards").innerHTML=groups.map(g=>`
-    <div class="md:col-span-2 border rounded-xl overflow-hidden">
-      <div class="px-4 py-3 ${
-        g.portal==='GST'?'bg-blue-50 border-blue-100':
-        g.portal==='TDS'?'bg-purple-50 border-purple-100':
-        'bg-orange-50 border-orange-100'
-      } border-b flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="px-3 py-1 rounded-full text-xs font-bold ${
-            g.portal==='GST'?'bg-blue-100 text-blue-700':
-            g.portal==='TDS'?'bg-purple-100 text-purple-700':
-            'bg-orange-100 text-orange-700'
-          }">${g.portal}</span>
-          <span class="font-semibold">${g.portal==="GST"?"GST Portal":g.portal==="TDS"?"TDS Portal":"Income Tax / ITR Portal"}</span>
-        </div>
-        <span class="text-xs text-slate-500">${g.signatories.length} signatory${g.signatories.length>1?'ies':''}</span>
-      </div>
-      <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${g.signatories.map(s=>{
-          const has=s.dscPresent;
-          return `
-          <div class="border rounded-xl p-4 ${has?'border-emerald-200':'border-red-200'}">
-            <div class="flex justify-between items-start">
-              <div class="flex gap-3">
-                <div class="w-10 h-10 rounded-full bg-blue-50 text-[#1261e8] flex items-center justify-center font-bold">
-                  ${s.name.split(" ").map(x=>x[0]).slice(0,2).join("")}
-                </div>
-                <div>
-                  <div class="font-semibold">${s.name}</div>
-                  <div class="text-xs text-slate-500">${s.designation}</div>
-                </div>
-              </div>
-              <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${has?'bg-emerald-100 text-emerald-700':'bg-red-100 text-red-700'}">
-                ${has?'DSC Available':'DSC Not Available'}
-              </span>
-            </div>
-            <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
-              <div><div class="text-xs text-slate-400">PAN</div><div class="font-medium">${s.pan}</div></div>
-              <div><div class="text-xs text-slate-400">Portal</div><div class="font-medium">${s.portal}</div></div>
-            </div>
-            ${!has ? `<button onclick="closeDetail();openAdd('${c.id}','${s.id}')" class="mt-4 w-full border border-[#1261e8] text-[#1261e8] rounded-lg py-2 text-sm font-semibold">＋ Add DSC for ${s.name}</button>` : ""}
-          </div>`;
-        }).join("")}
-      </div>
-    </div>
-  `).join("");
-  /* DSCs already in DSC Management but not matched to any fetched portal signatory */
-  const unmapped = unmappedDscs(c);
-  const unmappedBlock = document.getElementById("unmappedDscs");
-  if(unmappedBlock){
-    unmappedBlock.innerHTML = unmapped.length ? `
-      <div class="mt-6 border border-amber-200 rounded-xl overflow-hidden">
-        <div class="px-4 py-3 bg-amber-50 border-b border-amber-100">
-          <div class="font-semibold text-amber-900">DSCs Available but Not Found in Portal Signatory List</div>
-          <div class="text-xs text-amber-700 mt-1">
-            These DSCs exist in DSC Management, but no matching GST / TDS / ITR signatory was returned.
-          </div>
-        </div>
-        <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-          ${unmapped.map(d=>`
-            <div class="border border-amber-200 rounded-xl p-4 bg-amber-50/30">
-              <div class="flex items-start justify-between">
-                <div>
-                  <div class="font-semibold">${d.holder}</div>
-                  <div class="text-xs text-slate-500 mt-1">Portal mapping: Unmapped</div>
-                </div>
-                <span class="text-xs font-semibold px-2.5 py-1 rounded-full ${
-                  d.status==="Active"?"bg-emerald-100 text-emerald-700":
-                  d.status==="Expired"?"bg-red-100 text-red-700":
-                  "bg-amber-100 text-amber-700"
-                }">${d.status}</span>
-              </div>
-              <div class="grid grid-cols-2 gap-4 mt-4 text-sm">
-                <div><div class="text-xs text-slate-400">Serial No.</div><div class="font-mono text-xs mt-1">${d.serial}</div></div>
-                <div><div class="text-xs text-slate-400">Expiry</div><div class="mt-1 font-medium">${d.expiry}</div></div>
-              </div>
-            </div>
-          `).join("")}
-        </div>
-      </div>
-    ` : "";
-  }
-
-
-  /* Current DSCs section */
-  if(!c.dscs.length){
-    document.getElementById("certificateArea").innerHTML=`
-      <div class="border-2 border-dashed border-slate-200 rounded-xl py-10 text-center">
-        <div class="w-12 h-12 mx-auto rounded-full bg-blue-50 text-[#1261e8] flex items-center justify-center text-xl">⌁</div>
-        <div class="font-semibold mt-3">No certificates added yet</div>
-        <div class="text-sm text-slate-400 mt-1">Add a digital signature certificate to start tracking its validity.</div>
-      </div>`;
-  } else {
-    document.getElementById("certificateArea").innerHTML=`
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        ${c.dscs.map(d=>`
-        <div class="border rounded-xl p-4">
-          <div class="flex justify-between">
-            <div>
-              <div class="font-semibold">${d.holder}</div>
-              <div class="text-xs text-slate-500 mt-1">${d.portal || "DSC Management"} &nbsp;•&nbsp; Serial: ${d.serial}</div>
-            </div>
-            <span class="text-xs px-2 py-1 rounded-full ${d.status==='Active'?'bg-emerald-100 text-emerald-700':d.status==='Expiring Soon'?'bg-amber-100 text-amber-700':'bg-red-100 text-red-700'}">${d.status}</span>
-          </div>
-          <div class="text-xs text-slate-500 mt-4">Expiry: <b>${d.expiry}</b></div>
-        </div>`).join("")}
-      </div>`;
-  }
-
-  document.getElementById("detailModal").classList.add("open");
-}
-
-function closeDetail(){document.getElementById("detailModal").classList.remove("open");}
-
-document.getElementById("applyBtn").onclick=applyFilters;
-document.getElementById("search").addEventListener("keyup",e=>{if(e.key==="Enter")applyFilters();});
-document.getElementById("globalSearch").addEventListener("keyup",e=>{
-  if(e.key==="Enter"){
-    document.getElementById("search").value=e.target.value;
-    applyFilters();
-  }
-});
-document.getElementById("clearBtn").onclick=()=>{
-  document.getElementById("search").value="";
-  document.getElementById("org").value="All";
-  document.getElementById("state").value="All";
-  document.getElementById("portal").value="All";
-  document.getElementById("status").value="Active";
-  applyFilters();
-};
-document.getElementById("pageSize").onchange=e=>{pageSize=+e.target.value;page=1;renderTable();};
-document.getElementById("prev").onclick=()=>{if(page>1)goPage(page-1)};
-document.getElementById("next").onclick=()=>{if(page<Math.ceil(filtered.length/pageSize))goPage(page+1)};
-
-document.getElementById("exportBtn").onclick=()=>{
-  const rows=[["Client Name","Portal","Authorised Signatory","PAN","GSTIN","Organisation Type","State","DSC Status"]];
-  filtered.forEach(c=>missingSignatories(c).forEach(s=>rows.push([c.name,s.portal,s.name,s.pan,c.gstin,c.org,c.state,"DSC Not Available"])));
-  const csv=rows.map(r=>r.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
-  const a=document.createElement("a");
-  a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
-  a.download="clients_with_no_dsc.csv";
-  a.click();
-};
-
-
-function openDemoData(){
-  refreshDemoClientSelect();
-  showDemoTab('client');
-  document.getElementById("demoModal").classList.add("open");
-}
-function closeDemoData(){document.getElementById("demoModal").classList.remove("open");}
-
-function showDemoTab(tab){
-  const client=document.getElementById("demoClientForm");
-  const sign=document.getElementById("demoSignatoryForm");
-  const tc=document.getElementById("tabClient");
-  const ts=document.getElementById("tabSignatory");
-  if(tab==="client"){
-    client.classList.remove("hidden"); sign.classList.add("hidden");
-    tc.className="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold";
-    ts.className="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold";
-  } else {
-    client.classList.add("hidden"); sign.classList.remove("hidden");
-    ts.className="demo-tab bg-[#1261e8] text-white rounded-lg py-2.5 text-sm font-semibold";
-    tc.className="demo-tab border border-slate-300 rounded-lg py-2.5 text-sm font-semibold";
-  }
-}
-
-function refreshDemoClientSelect(){
-  const select=document.getElementById("demoClientSelect");
-  select.innerHTML=clients.map(c=>`<option value="${c.id}">${c.name}</option>`).join("");
-}
-
-function addDemoClient(){
-  const name=document.getElementById("demoClientName").value.trim();
-  if(!name){alert("Please enter Client Name.");return;}
-  const id="DEMO"+String(Date.now()).slice(-6);
-  clients.push({
-    id,
-    name,
-    pan:document.getElementById("demoPan").value.trim() || "AABCD1234A",
-    gstin:document.getElementById("demoGstin").value.trim() || "-",
-    tan:document.getElementById("demoTan").value.trim() || "-",
-    org:document.getElementById("demoOrg").value,
-    state:document.getElementById("demoState").value,
-    status:"Active",
-    authorisedSignatories:[],
-    dscs:document.getElementById("demoUnmappedDsc").checked ? [{
-      holder:"Unmapped DSC Holder",
-      portal:"-",
-      serial:"DEMO-UNM-"+String(Date.now()).slice(-6),
-      status:"Active",
-      expiry:"10 Oct 2028",
-      linked:false
-    }] : []
-  });
-  filtered=visibleClients();
-  page=1;
-  renderTable();
-  refreshDemoClientSelect();
-  document.getElementById("demoClientName").value="";
-  alert("Dummy client added. Now use 'Add Signatory to Client' to add one or more authorised signatories.");
-  showDemoTab("signatory");
-}
-
-function addDemoSignatory(){
-  const clientId=document.getElementById("demoClientSelect").value;
-  const name=document.getElementById("demoSignatoryName").value.trim();
-  if(!clientId || !name){alert("Please select a client and enter the signatory name.");return;}
-  const c=clients.find(x=>x.id===clientId);
-  const sid="DEMO-S"+String(Date.now()).slice(-7);
-  c.authorisedSignatories.push({
-    id:sid,
-    name,
-    pan:document.getElementById("demoSignatoryPan").value.trim() || "ABCDE1234F",
-    designation:document.getElementById("demoDesignation").value.trim() || "Authorised Signatory",
-    portal:document.getElementById("demoPortal").value,
-    dscPresent:false
-  });
-  filtered=visibleClients();
-  page=1;
-  renderTable();
-  document.getElementById("demoSignatoryName").value="";
-  document.getElementById("demoSignatoryPan").value="";
-  alert("Authorised signatory added as 'DSC Not Available'. It will now appear in the list.");
-}
-
-function demoAddDSC(clientId, signatoryId){
-  const c=clients.find(x=>x.id===clientId);
-  const s=c.authorisedSignatories.find(x=>x.id===signatoryId);
-  s.dscPresent=true;
-  c.dscs.push({
-    holder:s.name,
-    portal:s.portal,
-    serial:"DEMO-"+Math.random().toString(16).slice(2,10).toUpperCase(),
-    status:"Active",
-    linked:true,
-    expiry:"01 Oct 2027"
-  });
-  filtered=visibleClients();
-  renderTable();
-  openDetail(clientId);
-}
-
-/* Make the mock Add DSC action actually demonstrate the data change. */
-const originalOpenAdd = openAdd;
-openAdd = function(clientId, signatoryId){
-  const c=clients.find(x=>x.id===clientId);
-  const s=c.authorisedSignatories.find(x=>x.id===signatoryId);
-  document.getElementById("addClient").textContent=`Client: ${c.name}`;
-  document.getElementById("addSignatory").textContent=`Authorised Signatory: ${s.name}`;
-  document.getElementById("addModal").classList.add("open");
-
-  const continueBtn=document.querySelector("#addModal button.bg-\\[\\#1261e8\\]");
-  continueBtn.onclick=function(){ demoAddDSC(clientId,signatoryId); closeAdd(); };
-};
-
-renderTable();
+function badge(s){return `<span class="px-2.5 py-1 rounded-full text-xs font-semibold ${s==="Active"?"bg-emerald-100 text-emerald-700":s==="Expired"?"bg-red-100 text-red-700":"bg-amber-100 text-amber-700"}">${s}</span>`}
+function render(){
+let q=search.value.toLowerCase().trim(),st=status.value,cl=cls.value,mk=make.value;
+let a=dscs.filter(d=>(!q||`${d.client} ${d.holder} ${d.pan} ${d.serial} ${d.issuer}`.toLowerCase().includes(q))&&(st==="All"||d.status===st)&&(cl==="All"||d.cls===cl)&&(mk==="All"||d.make===mk));
+body.innerHTML=a.length?a.map((d,i)=>`<tr class="hover:bg-blue-50/40"><td class="px-4 py-4">${i+1}</td><td class="px-3 py-4"><b class="text-blue-600">${d.client}</b><div class="text-xs text-slate-400">${d.org}</div></td><td class="px-3 py-4"><b>${d.holder}</b><div class="text-xs text-slate-500">${d.pan}</div></td><td class="px-3 py-4 font-mono text-xs">${d.serial}</td><td class="px-3 py-4">${d.cls}</td><td class="px-3 py-4">${d.issuer}</td><td class="px-3 py-4">${d.make}</td><td class="px-3 py-4">${d.color}</td><td class="px-3 py-4">${new Date(d.expiry+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}</td><td class="px-3 py-4">${badge(d.status)}</td></tr>`).join(""):`<tr><td colspan="10" class="px-5 py-12 text-center text-slate-500">No DSCs found.</td></tr>`;
+count.textContent=`Showing ${a.length} of ${dscs.length} DSCs`;total.textContent=dscs.length;active.textContent=dscs.filter(x=>x.status==="Active").length;expiring.textContent=dscs.filter(x=>x.status==="Expiring Soon").length;expired.textContent=dscs.filter(x=>x.status==="Expired").length}
+function populate(){customer.innerHTML=customers.map(c=>`<option value="${c.id}">${c.name} — ${c.pan}</option>`).join("")}
+function openAdd(){populate();modal.classList.add("open")}
+function closeAdd(){modal.classList.remove("open")}
+function save(){
+let req=[holder.value,serial.value,issuer.value,expiry.value,tokenMake.value,tokenColor.value];
+if(req.some(x=>!x)){alert("Please fill all mandatory fields.");return}
+let c=customers.find(x=>x.id===customer.value);
+dscs.unshift({id:Date.now(),clientId:c.id,client:c.name,holder:holder.value.trim(),pan:"-",org:org.value.trim()||c.name,serial:serial.value.trim(),issuer:issuer.value.trim(),cls:document.getElementById("class").value,issue:issue.value,expiry:expiry.value,make:tokenMake.value,color:tokenColor.value,status:"Active"});
+render();closeAdd();alert("DSC added successfully.");}
+function clearFilters(){search.value="";status.value="All";cls.value="All";make.value="All";render()}
+function exportCSV(){let rows=[["Client","Holder","PAN","Serial Number","DSC Class","Issued By","Token Make","Token Color","Expiry","Status"]];dscs.forEach(d=>rows.push([d.client,d.holder,d.pan,d.serial,d.cls,d.issuer,d.make,d.color,d.expiry,d.status]));let csv=rows.map(r=>r.map(x=>`"${String(x).replaceAll('"','""')}"`).join(",")).join("\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="all_dscs.csv";a.click()}
+[search,status,cls,make].forEach(x=>x.addEventListener(x===search?"keyup":"change",render));globalSearch.addEventListener("keyup",()=>{search.value=globalSearch.value;render()});render();
 </script>
-</body>
-</html>
+</body></html>
