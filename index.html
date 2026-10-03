@@ -65,13 +65,13 @@ body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;backgrou
       <div class="flex items-center justify-between">
         <div>
           <div class="flex items-center gap-3"><h2 class="font-bold text-lg">All Clients / DSC Reconciliation</h2><span id="allCount" class="badge bg-blue-100 text-blue-700">0</span></div>
-          <p class="text-xs text-slate-500 mt-1">Shows DSCs available in DSC Management and Authorised Signatories fetched from GST / TDS / ITR.</p>
+          <p class="text-xs text-slate-500 mt-1">Each client is shown under one heading with all of its DSCs and portal signatories together. DSCs without a portal signatory are categorised as Others.</p>
         </div>
         <button onclick="exportCSV()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold text-blue-600">Export</button>
       </div>
       <div class="grid grid-cols-[1.5fr_130px_130px_130px_auto] gap-3 mt-4">
         <div><label class="label">Search</label><input id="search" class="input" placeholder="Client / holder / PAN / serial"></div>
-        <div><label class="label">Portal</label><select id="portalFilter" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option></select></div>
+        <div><label class="label">Portal</label><select id="portalFilter" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option><option>Others</option></select></div>
         <div><label class="label">DSC Status</label><select id="dscStatusFilter" class="input"><option>All</option><option>Available</option><option>Not Available</option></select></div>
         <div><label class="label">Certificate</label><select id="certFilter" class="input"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Expired</option><option>Not Available</option></select></div>
         <button onclick="clearFilters()" class="h-10 border border-blue-600 text-blue-600 rounded-lg px-4 text-xs font-semibold mt-[16px]">Clear</button>
@@ -250,75 +250,27 @@ function buildRows(){
  const sf=document.getElementById("dscStatusFilter").value;
  const cf=document.getElementById("certFilter").value;
  const rows=[];
-
- // Every actual DSC in DSC Management
- dscs.forEach(d=>{
-   const c=client(d.clientId);
-   rows.push({
-     type:"actual",client:c,portal:d.portal||"—",holder:d.holder,pan:d.pan,dsc:"Available",
-     serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,
-     dscId:d.id,signatoryId:d.signatoryId
+ customers.forEach(c=>{
+   const ss=signatories.filter(s=>s.clientId===c.id);
+   const ds=dscs.filter(d=>d.clientId===c.id);
+   ss.forEach(s=>{
+     const d=linkedDscForSignatory(s);
+     rows.push({type:d?"matched":"missing",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:d?"Available":"Not Available",serial:d?d.serial:"—",expiry:d?d.expiry:"—",status:d?d.status:"Not Available",make:d?d.make:"—",color:d?d.color:"—",issuer:d?d.issuer:"—",dscId:d?d.id:null,signatoryId:s.id,designation:s.designation});
+   });
+   ds.filter(d=>!d.signatoryId).forEach(d=>{
+     rows.push({type:"other",client:c,portal:"Others",holder:d.holder,pan:d.pan,dsc:"Available",serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,dscId:d.id,signatoryId:null,designation:"DSC Holder"});
    });
  });
-
- // Every fetched authorised signatory is also represented.
- // If a DSC is linked, it is shown with the DSC details; otherwise it is shown as Not Available.
- signatories.forEach(s=>{
-   const c=client(s.clientId);
-   const d=linkedDscForSignatory(s);
-   if(d) {
-     // Do not duplicate if the exact DSC already exists in actual rows.
-     return;
-   }
-   rows.push({
-     type:"signatory",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:"Not Available",
-     serial:"—",expiry:"—",status:"Not Available",make:"—",color:"—",issuer:"—",
-     dscId:null,signatoryId:s.id,designation:s.designation
-   });
- });
-
- return rows.filter(r=>{
-   const text=`${r.client.name} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer}`.toLowerCase();
-   return (!q||text.includes(q))
-    && (pf==="All"||r.portal===pf)
-    && (sf==="All"||r.dsc===sf)
-    && (cf==="All"||r.status===cf);
- });
+ return rows.filter(r=>{const text=`${r.client.name} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer}`.toLowerCase();return (!q||text.includes(q))&&(pf==="All"||r.portal===pf)&&(sf==="All"||r.dsc===sf)&&(cf==="All"||r.status===cf);});
 }
 
 function renderAll(){
- const rows=buildRows();
- document.getElementById("allCount").textContent=rows.length;
- document.getElementById("allBody").innerHTML=rows.length?rows.map(r=>`
- <tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/30":""}">
-   <td class="px-4 py-3">
-     <button onclick="openDetail('${r.client.id}')" class="font-semibold text-blue-600 hover:underline text-left">${r.client.name}</button>
-     <div class="text-[10px] text-slate-400 mt-1">${r.client.pan}</div>
-   </td>
-   <td class="px-3 py-3">${r.portal==="—"?"<span class='text-slate-400'>—</span>":portalBadge(r.portal)}</td>
-   <td class="px-3 py-3">
-     <div class="font-semibold">${r.holder}</div>
-     ${r.designation?`<div class="text-[10px] text-slate-500">${r.designation}</div>`:""}
-     ${r.type==="actual"&&r.signatoryId?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:
-       r.type==="actual"?`<div class="text-[10px] text-amber-600 mt-1">DSC in DSC Management • No portal match</div>`:
-       `<div class="text-[10px] text-red-600 mt-1">Fetched signatory • DSC missing</div>`}
-   </td>
-   <td class="px-3 py-3">${r.pan}</td>
-   <td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td>
-   <td class="px-3 py-3">
-     <div class="font-mono text-[10px]">${r.serial}</div>
-     ${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}
-   </td>
-   <td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td>
-   <td class="px-3 py-3">
-     ${r.dsc==="Not Available"
-       ?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`
-       :`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}
-   </td>
- </tr>`).join("")
- :`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found.</td></tr>`;
-
- document.getElementById("allFooter").textContent=`Showing ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
+ const rows=buildRows(); const grouped={}; rows.forEach(r=>(grouped[r.client.id]??=[]).push(r));
+ const ids=Object.keys(grouped); document.getElementById("allCount").textContent=ids.length; document.getElementById("tabAllCount").textContent=customers.length;
+ let body=""; ids.forEach(id=>{const c=client(id),rs=grouped[id];
+ body+=`<tr class="bg-slate-100 border-t-2 border-slate-200"><td colspan="8" class="px-4 py-3"><div class="flex items-center justify-between"><div><button onclick="openDetail('${c.id}')" class="font-bold text-blue-700 hover:underline">${c.name}</button><span class="ml-2 text-[10px] text-slate-500">PAN: ${c.pan}</span><span class="ml-2 badge bg-slate-200 text-slate-700">${rs.length} record${rs.length===1?"":"s"}</span></div><div class="text-[10px] text-slate-500">${rs.filter(x=>x.dsc==="Available").length} Available • ${rs.filter(x=>x.dsc==="Not Available").length} Not Available</div></div></td></tr>`;
+ rs.forEach(r=>{body+=`<tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/20":""}"><td class="px-4 py-3 pl-8"><div class="text-[10px] text-slate-400">↳ ${c.name}</div></td><td class="px-3 py-3">${r.portal==="Others"?`<span class="badge bg-slate-100 text-slate-700">Others</span>`:portalBadge(r.portal)}</td><td class="px-3 py-3"><div class="font-semibold">${r.holder}</div><div class="text-[10px] text-slate-500">${r.designation}</div>${r.type==="matched"?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:r.type==="other"?`<div class="text-[10px] text-slate-500 mt-1">DSC available in DSC Management • No portal signatory</div>`:`<div class="text-[10px] text-red-600 mt-1">Portal signatory • DSC missing</div>`}</td><td class="px-3 py-3">${r.pan}</td><td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td><td class="px-3 py-3"><div class="font-mono text-[10px]">${r.serial}</div>${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}</td><td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td><td class="px-3 py-3">${r.dsc==="Not Available"?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`:`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}</td></tr>`});});
+ document.getElementById("allBody").innerHTML=body||`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found.</td></tr>`; document.getElementById("allFooter").textContent=`Showing ${ids.length} clients • ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
 }
 
 function renderMissing(){
