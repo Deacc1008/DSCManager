@@ -3,190 +3,99 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DSC Management</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>DSC Manager | Overview</title>
 <style>
-body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif;background:#f5f8fc}
-*{box-sizing:border-box}
-.input{width:100%;height:40px;border:1px solid #d7e0ec;border-radius:8px;padding:0 11px;outline:none;background:white;font-size:13px}
-.input:focus{border-color:#2868e8;box-shadow:0 0 0 3px rgba(40,104,232,.08)}
-.label{font-size:11px;font-weight:700;color:#64748b;display:block;margin-bottom:5px}
-.modal{display:none}.modal.open{display:flex}
-.badge{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+:root{--sidebar:#17191d;--sidebar-2:#202226;--ink:#17233b;--muted:#7d8eaa;--line:#e3e9f1;--page:#f7f9fc;--blue:#2454d5;--blue2:#3779f6;--green:#0dbd7d;--amber:#f4a51c;--red:#f66570}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:var(--page)}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b8cdfd;outline-offset:1px}
+.app-shell{min-height:100vh}.sidebar{position:fixed;left:0;top:0;bottom:0;width:243px;background:var(--sidebar);color:#f2f5fa;display:flex;flex-direction:column;z-index:20;border-right:1px solid #25272c}.brand{height:87px;display:flex;align-items:center;padding:9px 14px;border-bottom:1px solid #292b30;flex-shrink:0}.brand img{width:218px;height:72px;object-fit:contain;object-position:left center}.side-search{margin:19px 13px 12px;height:34px;border:1px solid #3a3d42;border-radius:10px;background:#222428;display:flex;align-items:center;gap:8px;padding:0 10px;color:#8c96a5}.side-search span{font-size:17px}.side-search input{border:0;outline:none;color:#e7ebf2;background:transparent;width:100%;font-size:11px}.side-search input::placeholder{color:#8a919e}.side-label{font-size:10px;letter-spacing:.08em;color:#8992a1;font-weight:800;padding:0 15px 9px}.sidebar-nav{padding:0 9px;display:grid;gap:5px;flex-shrink:0}.nav-item{width:100%;display:flex;gap:10px;align-items:center;padding:10px 10px;border-radius:11px;background:transparent;color:#e3e8f0;border:1px solid transparent;text-align:left;min-height:49px}.nav-item:hover{background:#22262d}.nav-item.active{background:#18233f;border-color:#2854a6}.nav-icon{width:33px;height:33px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#282b30;color:#aebbd0;font-size:14px}.nav-item.active .nav-icon{background:#214cce;color:white}.nav-item.needs .nav-icon{background:#3b321b;color:#ffc342}.nav-copy{min-width:0;flex:1}.nav-title{font-size:12px;font-weight:750;line-height:1.3}.nav-sub{font-size:10px;color:#778396;margin-top:3px;white-space:nowrap}.nav-count{font-size:10px;border-radius:12px;background:#3c2528;color:#ffb6b6;padding:3px 7px}.clients-head{display:flex;justify-content:space-between;align-items:center;padding:22px 15px 8px;font-size:10px;letter-spacing:.08em;color:#8d96a3;font-weight:800;flex-shrink:0}.client-list{overflow-y:auto;flex:1;padding:0 8px 10px;min-height:80px;scrollbar-color:#454950 #17191d;scrollbar-width:thin}.client-item{display:flex;align-items:center;gap:9px;width:100%;padding:8px 10px;min-height:51px;border:1px solid transparent;border-radius:10px;background:transparent;color:#f1f4f8;text-align:left;margin:1px 0}.client-item:hover{background:#22252b}.client-item.selected{background:#1d263b;border-color:#344e80}.client-avatar{width:33px;height:33px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:#292c31;color:#d5dce7;font-weight:750;font-size:12px}.client-copy{min-width:0;flex:1}.client-name{font-size:11px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.client-meta{font-size:9px;color:#788394;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.status-dot{height:7px;width:7px;border-radius:50%;background:#4e5969;flex-shrink:0}.status-dot.has-dsc{background:#12c883}.client-empty{font-size:11px;color:#8c96a7;padding:14px 10px}.profile-footer{height:69px;padding:9px 11px;border-top:1px solid #2a2c31;flex-shrink:0}.profile-card{height:50px;border:1px solid #34373c;border-radius:12px;padding:7px 10px;display:flex;align-items:center;gap:9px;background:#202226}.profile-avatar{height:34px;width:34px;border-radius:50%;background:#2860e6;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px}.profile-name{font-size:11px;font-weight:750}.profile-role{font-size:10px;color:#8490a2;margin-top:2px}
+.main{margin-left:243px;min-height:100vh}.topbar{height:60px;background:white;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;gap:18px;position:sticky;top:0;z-index:12}.page-title{font-size:14px;font-weight:800;color:#101c32;max-width:55vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}.page-subtitle{font-size:10px;color:#8495b0;margin-top:4px}.top-actions{display:flex;align-items:center;gap:10px}.search-top{height:34px;width:235px;border:1px solid #dfe7f2;border-radius:8px;padding:0 11px;display:flex;align-items:center;gap:8px;background:#fbfcfe;color:#91a3bd}.search-top input{width:100%;border:0;outline:0;background:transparent;font-size:11px;color:#233451}.search-top input::placeholder{color:#92a3bb}.primary-btn{border:0;color:white;background:linear-gradient(105deg,#2448c7,#397df7);box-shadow:0 3px 7px #1e55ca2a;border-radius:9px;height:36px;padding:0 16px;font-size:12px;font-weight:750;white-space:nowrap}.primary-btn:hover{filter:brightness(1.04)}.primary-btn .plus{font-size:17px;margin-right:6px;vertical-align:-1px}.content{padding:21px 22px 28px;max-width:1800px;margin:0 auto}.token-banner{min-height:60px;padding:10px 14px;display:flex;align-items:center;gap:11px;border:1px solid #bfd7ff;border-radius:16px;background:linear-gradient(100deg,#eef4ff,#f3f7ff);margin-bottom:17px}.token-icon{height:34px;width:34px;background:#2454ce;color:white;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}.token-copy{min-width:0;flex:1}.token-title{font-size:12px;font-weight:800;color:#15243e}.token-text{font-size:10px;color:#778cae;margin-top:4px}.token-review{border:0;border-radius:9px;background:linear-gradient(110deg,#2448c7,#397df7);height:34px;padding:0 14px;color:white;font-size:11px;font-weight:800;box-shadow:0 3px 7px #174bcc23;white-space:nowrap}.token-review span{padding-left:8px;font-size:16px;vertical-align:-1px}.stats-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px;margin-bottom:18px}.stat-card{height:137px;position:relative;overflow:hidden;border:0;border-radius:16px;padding:17px 20px;color:white;text-align:left;box-shadow:0 5px 12px #253b5518;transition:transform .15s ease,box-shadow .15s ease}.stat-card:hover{transform:translateY(-1px);box-shadow:0 8px 16px #253b5528}.stat-card.selected{outline:2px solid #fff;box-shadow:0 0 0 4px #5b83ffab,0 7px 16px #253b5520}.stat-total{background:linear-gradient(115deg,#858afa,#9280f5)}.stat-active{background:linear-gradient(115deg,#31cfa5,#18cbd5)}.stat-soon{background:linear-gradient(115deg,#ffb529,#ff8d34)}.stat-expired{background:linear-gradient(115deg,#fb737b,#fa6b83)}.stat-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:1}.stat-icon{width:36px;height:36px;border-radius:11px;background:#ffffff34;display:flex;align-items:center;justify-content:center;font-size:17px}.stat-label{font-size:9px;font-weight:850;letter-spacing:.02em}.stat-value{font-size:31px;font-weight:850;letter-spacing:-.03em;line-height:1;margin-top:12px;position:relative;z-index:1}.stat-caption{font-size:10px;font-weight:700;margin-top:6px;position:relative;z-index:1}.stat-deco{position:absolute;right:5px;bottom:-18px;font-size:84px;line-height:1;color:#ffffff22;font-weight:200;transform:rotate(-8deg);pointer-events:none}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.status-tabs{display:inline-flex;align-items:center;padding:4px;background:white;border:1px solid #dfe6f0;border-radius:9px;box-shadow:0 1px 3px #273c5c08;gap:3px}.status-tab{height:29px;border:0;border-radius:6px;padding:0 12px;background:transparent;color:#70819d;font-size:10px;font-weight:750;white-space:nowrap}.status-tab.active{color:#fff;background:#172137;box-shadow:0 1px 3px #17213725}.tab-count{display:inline-block;margin-left:4px;font-weight:800}.toolbar-right{display:flex;align-items:center;gap:10px}.result-count{font-size:10px;color:#8a9bb6;white-space:nowrap}.filter-btn{height:31px;padding:0 11px;border:1px solid #dce4ef;border-radius:8px;background:white;color:#576c8a;font-size:10px;font-weight:750;white-space:nowrap}.filter-btn.active{border-color:#9cbcff;background:#eff5ff;color:#2454d5}.filter-panel{display:none;background:white;border:1px solid #e1e8f2;border-radius:10px;padding:13px;margin:0 0 11px;grid-template-columns:repeat(4,minmax(120px,1fr)) auto;gap:11px}.filter-panel.open{display:grid}.filter-panel label,.form-label{font-size:10px;font-weight:750;color:#7586a0;display:block;margin-bottom:5px}.filter-select{height:33px;width:100%;border:1px solid #dce5f0;border-radius:7px;padding:0 8px;font-size:11px;color:#334460;background:white;outline:none}.clear-btn{height:33px;align-self:end;padding:0 13px;border:1px solid #2d62db;border-radius:7px;background:white;color:#2454d5;font-size:10px;font-weight:750;white-space:nowrap}
+.table-wrap{background:#fff;border:1px solid #dfe6f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px #3045650a}.table-scroll{overflow:auto;max-height:calc(100vh - 390px);min-height:150px}.inventory-table{width:100%;border-collapse:collapse;min-width:740px}.inventory-table thead{background:#f9fbfd}.inventory-table th{height:34px;padding:0 14px;border-bottom:1px solid #e8edf4;color:#91a3bd;font-size:9px;font-weight:850;letter-spacing:.03em;text-transform:uppercase;text-align:left;white-space:nowrap}.inventory-table td{padding:14px;border-bottom:1px solid #edf1f6;font-size:11px;vertical-align:middle}.inventory-table tbody tr:last-child td{border-bottom:0}.inventory-table tbody tr.data-row{cursor:pointer}.inventory-table tbody tr.data-row:hover{background:#fbfdff}.cert-cell{display:flex;align-items:center;gap:13px;min-width:270px}.cert-dot{width:8px;height:8px;border-radius:50%;background:#16c47f;flex-shrink:0}.cert-dot.soon{background:#f2a51a}.cert-dot.expired{background:#f05c6c}.cert-primary{font-size:12px;font-weight:750;color:#17253d;max-width:370px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cert-secondary{font-size:10px;color:#8a9dbb;margin-top:4px;max-width:380px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.issuer-cell{color:#8396b5;font-size:10px;max-width:230px}.expiry-cell{text-align:right;white-space:nowrap;color:#364761;font-weight:650;font-size:10px}.expiry-help{font-size:9px;color:#10a567;margin-top:4px}.expiry-help.warn{color:#dc9a14}.expiry-help.bad{color:#e65a66}.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;border:1px solid transparent;padding:5px 9px;font-size:10px;font-weight:750;white-space:nowrap}.badge:before{content:"";width:5px;height:5px;border-radius:50%;background:currentColor}.badge.active{background:#ecfdf6;border-color:#b5f0d5;color:#0aa973}.badge.soon{background:#fff8e8;border-color:#ffe3a6;color:#c58a0d}.badge.expired{background:#fff0f1;border-color:#ffcbd0;color:#df4e5e}.row-open{border:0;background:transparent;color:#bdcde2;font-size:20px;line-height:1;padding:4px}.row-open:hover{color:#265de0}.table-footer{height:40px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-top:1px solid #e7edf4;background:#fff;font-size:10px;color:#8b9cb5}.empty-row{text-align:center;padding:52px 16px!important;color:#8595ad;font-size:12px!important}.selected-client-panel{margin-top:14px;padding:16px}.selected-missing-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}.selected-missing-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid #edf1f6}.selected-missing-row:first-child{border-top:0}.missing-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:3px 0 14px}.section-heading{font-size:17px;font-weight:850;color:#17253c}.section-subtitle{font-size:11px;color:#8394ae;margin-top:5px;line-height:1.55}.missing-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.missing-card{background:#fff;border:1px solid #e0e7f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px #30456508}.missing-card-head{padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#fbfcfe;border-bottom:1px solid #edf1f6}.missing-client-name{font-size:12px;font-weight:800;color:#17253d}.missing-client-meta{font-size:10px;color:#8b9cb4;margin-top:4px}.missing-count{font-size:9px;font-weight:800;padding:4px 8px;color:#c44f5f;background:#fff0f1;border:1px solid #ffd8dc;border-radius:999px;white-space:nowrap}.missing-row{display:flex;align-items:center;gap:10px;padding:13px 15px;border-bottom:1px solid #f0f3f7}.missing-row:last-child{border-bottom:0}.missing-person{flex:1;min-width:0}.missing-person-name{font-size:11px;font-weight:750;color:#263750}.missing-person-meta{font-size:10px;color:#8a9ab2;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.portal-chip{display:inline-flex;border-radius:5px;padding:3px 6px;font-size:9px;font-weight:800;background:#eaf1ff;color:#2a5bd1}.portal-chip.TDS{background:#f1eaff;color:#7650c8}.portal-chip.ITR{background:#fff1df;color:#b97813}.outline-btn{height:29px;border:1px solid #c9d8f7;background:#f7faff;color:#2658cc;border-radius:7px;padding:0 10px;font-size:10px;font-weight:800;white-space:nowrap}.outline-btn:hover{background:#eaf1ff}.own-empty{margin-top:10px;min-height:230px;border:1px dashed #d4deeb;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;text-align:center;padding:28px}.own-empty-icon{height:54px;width:54px;margin:0 auto 12px;border-radius:16px;background:#edf3ff;color:#3264dc;display:flex;align-items:center;justify-content:center;font-size:24px}.own-empty h3{font-size:14px;margin:0;color:#1a2a45}.own-empty p{font-size:11px;color:#8192ad;max-width:390px;line-height:1.65;margin:8px auto 16px}
+.modal-backdrop{display:none;position:fixed;inset:0;background:#10192b80;z-index:50;align-items:center;justify-content:center;padding:18px}.modal-backdrop.open{display:flex}.modal-box{background:white;border-radius:17px;width:min(680px,100%);max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px #10224242}.modal-head{padding:18px 21px;background:linear-gradient(110deg,#16223b,#233b70);color:#fff;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.modal-head h2{font-size:16px;margin:0;font-weight:850}.modal-head p{font-size:10px;line-height:1.5;color:#c1d1f4;margin:5px 0 0}.modal-close{border:0;background:#ffffff1c;color:white;width:30px;height:30px;border-radius:8px;font-size:19px;flex-shrink:0}.modal-body{padding:20px;overflow:auto}.modal-footer{padding:14px 20px;border-top:1px solid #e9eef5;display:flex;align-items:center;justify-content:space-between;gap:10px;background:#fbfcfe}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}.form-field{min-width:0}.form-label{margin-bottom:6px}.required{color:#e24d5d}.form-input{width:100%;height:37px;border:1px solid #dce5f0;border-radius:8px;padding:0 10px;font-size:11px;color:#2e405d;background:white;outline:none}.form-input:focus{border-color:#6290f3;box-shadow:0 0 0 3px #e9f0ff}.form-section{font-size:10px;letter-spacing:.07em;text-transform:uppercase;font-weight:850;color:#91a0b8;display:flex;align-items:center;gap:10px;margin:17px 0 10px}.form-section:after{content:"";height:1px;background:#e8edf4;flex:1}.demo-note{font-size:10px;line-height:1.6;padding:10px 12px;border-radius:9px;background:#eff5ff;border:1px solid #d7e5ff;color:#4d6897;margin-top:14px}.secondary-btn{height:35px;border:1px solid #dbe4ef;border-radius:8px;background:white;color:#536883;padding:0 13px;font-size:11px;font-weight:750}.scan-btn{height:33px;border:1px solid #c8d9ff;border-radius:8px;background:#f6f9ff;color:#2557cf;padding:0 11px;font-size:10px;font-weight:850;white-space:nowrap}.details-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.details-kpi{border:1px solid #e4eaf2;border-radius:10px;padding:11px}.details-kpi span{font-size:9px;color:#8b9bb2}.details-kpi b{display:block;font-size:20px;margin-top:5px;color:#23334e}.detail-block{margin-top:19px}.detail-block-title{font-size:10px;letter-spacing:.06em;color:#8292a9;font-weight:850;text-transform:uppercase;margin-bottom:9px}.detail-person{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px;border:1px solid #e8edf4;border-radius:9px;margin-top:7px}.detail-name{font-size:11px;font-weight:800}.detail-meta{font-size:10px;color:#8797b0;margin-top:4px}.token-item{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #e1e8f2;border-radius:10px;padding:13px;margin-bottom:9px}.token-item:last-child{margin-bottom:0}.token-item-name{font-size:11px;font-weight:800}.token-item-meta{font-size:10px;line-height:1.5;color:#8797af;margin-top:4px}.toast{position:fixed;right:22px;bottom:22px;z-index:90;transform:translateY(12px);opacity:0;pointer-events:none;background:#14213a;color:white;padding:12px 15px;border-radius:10px;box-shadow:0 8px 28px #10203a3d;font-size:11px;font-weight:700;transition:all .2s}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1180px){.sidebar{width:218px}.main{margin-left:218px}.brand img{width:195px}.content{padding:17px}.stats-grid{gap:9px}.stat-card{padding:14px 15px}.search-top{width:205px}.filter-panel{grid-template-columns:repeat(3,minmax(120px,1fr))}.missing-groups{grid-template-columns:1fr}}
+@media(max-width:850px){.sidebar{width:72px}.brand{padding:8px}.brand img{width:58px;object-fit:cover;object-position:left;height:64px}.side-search{margin:12px 8px;padding:0;justify-content:center}.side-search span{display:block}.side-search input,.side-label,.nav-copy,.nav-count,.clients-head,.client-copy,.client-item .status-dot,.profile-name,.profile-role{display:none}.sidebar-nav{padding:0 8px}.nav-item{justify-content:center;padding:7px}.nav-icon{height:35px;width:35px}.client-list{padding:0 8px}.client-item{justify-content:center;padding:7px 0;min-height:42px}.client-avatar{height:34px;width:34px}.profile-footer{padding:8px}.profile-card{justify-content:center;padding:4px}.main{margin-left:72px}.topbar{padding:0 14px}.page-title{max-width:34vw}.search-top{width:165px}.content{padding:14px}.stats-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.stat-card{height:120px}.table-scroll{max-height:none}.filter-panel{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.topbar{height:auto;min-height:66px;align-items:flex-start;padding:12px;flex-wrap:wrap}.top-actions{width:100%;justify-content:space-between}.search-top{flex:1}.content{padding:10px}.token-banner{align-items:flex-start;border-radius:12px}.token-icon{display:none}.token-text{line-height:1.5}.token-review{height:31px;padding:0 9px}.stats-grid{gap:8px}.stat-card{height:110px;padding:12px}.stat-value{font-size:26px;margin-top:8px}.stat-caption{font-size:9px}.toolbar{align-items:flex-start;flex-direction:column}.toolbar-right{width:100%;justify-content:space-between}.status-tabs{max-width:100%;overflow:auto}.status-tab{padding:0 9px}.form-grid{grid-template-columns:1fr}.details-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.modal-backdrop{padding:8px}.modal-body{padding:14px}.modal-head{padding:15px}.modal-footer{padding:11px 14px}.filter-panel{grid-template-columns:1fr 1fr}.missing-row{padding:11px}.missing-client-name{max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 </style>
 </head>
-<body class="text-slate-800">
-
-<header class="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-30">
-  <div class="flex items-center gap-3">
-    <div class="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold">K</div>
-    <div>
-      <div class="font-bold text-slate-800">DSC Management</div>
-      <div class="text-[11px] text-slate-500">Customer DSC & Portal Signatory Reconciliation</div>
+<body>
+<div class="app-shell">
+ <aside class="sidebar">
+  <div class="brand"><img src="assets/dsc-manager-logo.png" alt="DSC Manager"></div>
+  <div class="side-label" style="padding-top:14px">CLIENTS</div>
+  <div class="side-search"><span>⌕</span><input id="clientSearch" placeholder="Search clients…" autocomplete="off"></div>
+  <nav class="sidebar-nav" aria-label="DSC navigation">
+   <button id="navAll" class="nav-item active" onclick="showAllClients()"><span class="nav-icon">▦</span><span class="nav-copy"><div class="nav-title">All Clients</div><div class="nav-sub" id="navAllSub">25 certificates</div></span></button>
+   <button id="navMissing" class="nav-item needs" onclick="showMissingClients()"><span class="nav-icon">♙</span><span class="nav-copy"><div class="nav-title">Clients with No DSC</div><div class="nav-sub" id="navMissingSub">6 clients need DSC</div></span><span id="navMissingCount" class="nav-count">6</span></button>
+   <button id="navOwn" class="nav-item" onclick="showOwnDscs()"><span class="nav-icon">♙</span><span class="nav-copy"><div class="nav-title">My Own DSCs</div><div class="nav-sub">0 DSCs · Personal</div></span><span class="status-dot"></span></button>
+  </nav>
+  <div class="clients-head"><span>CLIENTS · <span id="sideClientCount">15</span></span><span>▾</span></div>
+  <div class="client-list" id="clientList"></div>
+  <div class="profile-footer"><div class="profile-card"><div class="profile-avatar">KS</div><div><div class="profile-name">Kdk Software</div><div class="profile-role">Vinod</div></div><span style="margin-left:auto;color:#737c8c">⌄</span></div></div>
+ </aside>
+ <main class="main">
+  <header class="topbar">
+   <div style="min-width:0"><div class="page-title" id="pageTitle">Overview</div><div class="page-subtitle" id="pageSubtitle">25 certificates · 15 clients</div></div>
+   <div class="top-actions"><label class="search-top"><span>⌕</span><input id="globalSearch" placeholder="Search DSCs…" autocomplete="off"></label><button class="primary-btn" onclick="openAdd()"><span class="plus">＋</span>Add DSC</button></div>
+  </header>
+  <div class="content">
+   <div class="token-banner" id="tokenBanner"><div class="token-icon">⚿</div><div class="token-copy"><div class="token-title" id="tokenTitle">2 sample certificates ready to review</div><div class="token-text">Demo token scan — review and save sample certificate details into your inventory.</div></div><button class="token-review" onclick="openTokenReview()">Review <span>›</span></button></div>
+   <div id="inventoryShell">
+    <div class="stats-grid" id="statsGrid">
+     <button class="stat-card stat-total selected" id="cardAll" onclick="selectStatus('All')"><div class="stat-top"><span class="stat-icon">▱</span><span class="stat-label">TOTAL</span></div><div class="stat-value" id="totalValue">25</div><div class="stat-caption" id="totalCaption">across 15 clients</div><span class="stat-deco">▤</span></button>
+     <button class="stat-card stat-active" id="cardActive" onclick="selectStatus('Active')"><div class="stat-top"><span class="stat-icon">✓</span><span class="stat-label">ACTIVE</span></div><div class="stat-value" id="activeValue">0</div><div class="stat-caption">valid certificates</div><span class="stat-deco">◇</span></button>
+     <button class="stat-card stat-soon" id="cardSoon" onclick="selectStatus('Expiring Soon')"><div class="stat-top"><span class="stat-icon">⚠</span><span class="stat-label">EXPIRING SOON</span></div><div class="stat-value" id="soonValue">0</div><div class="stat-caption">within 90 days</div><span class="stat-deco">◷</span></button>
+     <button class="stat-card stat-expired" id="cardExpired" onclick="selectStatus('Expired')"><div class="stat-top"><span class="stat-icon">⊗</span><span class="stat-label">EXPIRED</span></div><div class="stat-value" id="expiredValue">0</div><div class="stat-caption">require renewal</div><span class="stat-deco">⊘</span></button>
     </div>
+    <div class="toolbar"><div class="status-tabs" id="statusTabs"><button class="status-tab active" data-status="All" onclick="selectStatus('All')">All <span class="tab-count" id="countAll">0</span></button><button class="status-tab" data-status="Active" onclick="selectStatus('Active')">Active <span class="tab-count" id="countActive">0</span></button><button class="status-tab" data-status="Expiring Soon" onclick="selectStatus('Expiring Soon')">Expiring Soon <span class="tab-count" id="countSoon">0</span></button><button class="status-tab" data-status="Expired" onclick="selectStatus('Expired')">Expired <span class="tab-count" id="countExpired">0</span></button></div><div class="toolbar-right"><span class="result-count" id="resultCount">25 results</span><button class="filter-btn" id="filterToggle" onclick="toggleFilters()">☷ Filters</button></div></div>
+    <div class="filter-panel" id="filterPanel">
+     <div><label for="portalFilter">Portal</label><select class="filter-select" id="portalFilter"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option><option>Others</option></select></div>
+     <div><label for="issuerFilter">Issuing CA</label><select class="filter-select" id="issuerFilter"><option value="All">All issuers</option></select></div>
+     <div><label for="makeFilter">Token Make</label><select class="filter-select" id="makeFilter"><option value="All">All makes</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
+     <div><label for="colorFilter">Token Color</label><select class="filter-select" id="colorFilter"><option value="All">All colors</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div>
+     <button class="clear-btn" onclick="clearFilters()">Clear filters</button>
+    </div>
+    <section id="inventoryView" class="table-wrap">
+     <div class="table-scroll"><table class="inventory-table"><thead><tr><th>Certificate · Client</th><th>Issuing CA</th><th style="text-align:right">Expiry ↑</th><th>Status</th><th style="width:32px"></th></tr></thead><tbody id="inventoryBody"></tbody></table></div>
+     <div class="table-footer"><span id="tableShowing">Showing 25 certificates</span><span id="tableContext">All clients</span></div>
+    </section>
+    <section id="selectedClientMissing" class="table-wrap selected-client-panel" style="display:none"><div class="selected-missing-head"><div><div class="section-heading" id="selectedClientMissingTitle">Portal signatories missing a linked DSC</div><div class="section-subtitle" id="selectedClientMissingSub">Add a DSC for any unmatched portal signatory.</div></div><button class="filter-btn" onclick="openClientDetail(selectedClientId)">Client details ↗</button></div><div id="selectedClientMissingRows"></div></section>
+   </div>
+   <section id="missingView" style="display:none">
+    <div class="missing-intro"><div><div class="section-heading">Clients with No DSC</div><div class="section-subtitle">Only authorised signatories from GST, TDS or ITR who do not have a linked DSC are shown below. Add a DSC against the relevant signatory to reconcile the record.</div></div><div class="missing-count" id="missingPageCount">6 clients need DSC</div></div>
+    <div class="filter-panel open" style="grid-template-columns:minmax(180px,1fr) minmax(220px,2fr) auto;margin-bottom:14px"><div><label for="missingPortal">Portal</label><select class="filter-select" id="missingPortal"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option></select></div><div><label for="missingSearch">Search client / signatory</label><input class="filter-select" id="missingSearch" placeholder="Type a client or signatory name"></div><button class="clear-btn" onclick="clearMissingFilters()">Clear filters</button></div>
+    <div class="missing-groups" id="missingGroups"></div>
+   </section>
+   <section id="ownView" style="display:none"><div class="section-heading">My Own DSCs</div><div class="section-subtitle">Personal certificates are kept separate from client certificates.</div><div class="own-empty"><div><div class="own-empty-icon">♙</div><h3>No personal DSCs in this demo</h3><p>This prototype contains sample client certificates only. Personal DSCs would appear here after a personal-token integration is configured.</p><button class="secondary-btn" onclick="openTokenReview()">Review sample scan</button></div></div></section>
   </div>
-  <div class="flex items-center gap-4">
-    <div class="relative">
-      <input id="globalSearch" class="input w-[310px]" placeholder="Search client, holder, PAN, serial...">
-    </div>
-    <div class="w-9 h-9 rounded-full bg-slate-200 flex items-center justify-center text-sm font-bold">SK</div>
-  </div>
-</header>
-
-<main class="p-5 max-w-[1700px] mx-auto">
-  <div class="flex items-end justify-between mb-4">
-    <div>
-      <div class="text-xs text-slate-500 mb-1">Office Management › DSC Management</div>
-      <h1 class="text-2xl font-bold text-[#10295c]">DSC Management</h1>
-      <p class="text-xs text-slate-500 mt-1">
-        All DSCs available for customers and portal-wise Authorised Signatories without DSC.
-      </p>
-    </div>
-    <button onclick="openAdd()" class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2.5 text-sm font-semibold">
-      ＋ Add DSC
-    </button>
-  </div>
-
-  
-<div class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
-  <div class="border-b border-slate-200 px-5 pt-4">
-    <div class="flex items-center gap-1">
-      <button id="tabAll" onclick="switchTab('all')" class="px-5 py-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600">
-        All Clients <span id="tabAllCount" class="ml-2 badge bg-blue-100 text-blue-700">0</span>
-      </button>
-      <button id="tabMissing" onclick="switchTab('missing')" class="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500">
-        Clients with No DSC <span id="tabMissingCount" class="ml-2 badge bg-red-100 text-red-700">0</span>
-      </button>
-    </div>
-  </div>
-
-  <section id="allTab">
-    <div class="px-5 py-4 border-b border-slate-200">
-      <div class="flex items-center justify-between">
-        <div>
-          <div class="flex items-center gap-3"><h2 class="font-bold text-lg">All Clients / DSC Reconciliation</h2><span id="allCount" class="badge bg-blue-100 text-blue-700">0</span></div>
-          <p class="text-xs text-slate-500 mt-1">Each client is shown under one heading with all of its DSCs and portal signatories together. DSCs without a portal signatory are categorised as Others.</p>
-        </div>
-        <button onclick="exportCSV()" class="border border-slate-300 rounded-lg px-3 py-2 text-xs font-semibold text-blue-600">Export</button>
-      </div>
-      <div class="grid grid-cols-[1.5fr_130px_130px_130px_auto] gap-3 mt-4">
-        <div><label class="label">Search</label><input id="search" class="input" placeholder="Client / holder / PAN / serial"></div>
-        <div><label class="label">Portal</label><select id="portalFilter" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option><option>Others</option></select></div>
-        <div><label class="label">DSC Status</label><select id="dscStatusFilter" class="input"><option>All</option><option>Available</option><option>Not Available</option></select></div>
-        <div><label class="label">Certificate</label><select id="certFilter" class="input"><option>All</option><option>Active</option><option>Expiring Soon</option><option>Expired</option><option>Not Available</option></select></div>
-        <button onclick="clearFilters()" class="h-10 border border-blue-600 text-blue-600 rounded-lg px-4 text-xs font-semibold mt-[16px]">Clear</button>
-      </div>
-    </div>
-    <div class="overflow-auto max-h-[calc(100vh-315px)]">
-      <table class="w-full text-xs">
-        <thead class="bg-slate-50 sticky top-0 z-10 border-b">
-          <tr><th class="px-4 py-3 text-left">Client</th><th class="px-3 py-3 text-left">Portal</th><th class="px-3 py-3 text-left">Authorised Signatory / DSC Holder</th><th class="px-3 py-3 text-left">PAN</th><th class="px-3 py-3 text-left">DSC</th><th class="px-3 py-3 text-left">Serial / Token</th><th class="px-3 py-3 text-left">Expiry</th><th class="px-3 py-3 text-left">Action</th></tr>
-        </thead>
-        <tbody id="allBody" class="divide-y divide-slate-100"></tbody>
-      </table>
-    </div>
-    <div id="allFooter" class="px-5 py-3 border-t bg-slate-50 text-xs text-slate-500"></div>
-  </section>
-
-  <section id="missingTab" class="hidden">
-    <div class="px-5 py-4 border-b bg-red-50/30">
-      <div class="flex items-center justify-between">
-        <div><h2 class="font-bold text-lg">Clients with No DSC</h2><p class="text-xs text-slate-500 mt-1">Only clients having one or more GST / TDS / ITR Authorised Signatories for whom a DSC is not available.</p></div>
-        <span id="missingClientCount" class="badge bg-red-100 text-red-700">0</span>
-      </div>
-      <div class="grid grid-cols-[180px_1fr_auto] gap-3 mt-4">
-        <div><label class="label">Portal</label><select id="missingPortal" class="input"><option>All</option><option>GST</option><option>TDS</option><option>ITR</option></select></div>
-        <div><label class="label">Search Client</label><input id="missingSearch" class="input" placeholder="Search client name..."></div>
-        <button onclick="clearMissingFilters()" class="h-10 border border-blue-600 text-blue-600 rounded-lg px-4 text-xs font-semibold mt-[16px]">Clear</button>
-      </div>
-    </div>
-    <div id="missingList" class="p-5 grid grid-cols-2 gap-4 max-h-[calc(100vh-315px)] overflow-y-auto"></div>
-  </section>
-</div>
-</main>
-
-<!-- CLIENT DETAIL -->
-<div id="detailModal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
-  <div class="bg-white w-full max-w-[850px] max-h-[92vh] rounded-2xl overflow-hidden shadow-2xl">
-    <div class="bg-[#152754] text-white px-6 py-5 flex items-start justify-between">
-      <div>
-        <div class="text-xs text-blue-200">Client Details</div>
-        <h2 id="detailName" class="text-xl font-bold mt-1"></h2>
-        <div id="detailIds" class="text-xs text-blue-100 mt-1"></div>
-      </div>
-      <button onclick="closeDetail()" class="w-8 h-8 rounded-lg bg-white/10 text-xl">×</button>
-    </div>
-    <div class="p-6 overflow-y-auto max-h-[calc(92vh-100px)]">
-      <div id="detailSummary" class="grid grid-cols-4 gap-3"></div>
-      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-slate-500 uppercase">Portal-wise Authorised Signatories</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div id="detailSignatories" class="mt-3 space-y-3"></div>
-      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-slate-500 uppercase">DSCs Available in DSC Management</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div id="detailDscs" class="mt-3"></div>
-      <div class="flex items-center gap-3 mt-6"><span class="text-xs font-bold text-amber-600 uppercase">DSCs Not Matched to Portal Signatory</span><div class="h-px bg-amber-200 flex-1"></div></div>
-      <div id="detailUnmatched" class="mt-3"></div>
-    </div>
-  </div>
+ </main>
 </div>
 
-<!-- ADD DSC -->
-<div id="addModal" class="modal fixed inset-0 bg-slate-950/55 z-50 items-center justify-center p-4">
-  <div class="w-full max-w-[560px] max-h-[94vh] overflow-hidden rounded-[22px] bg-white shadow-2xl">
-    <div class="bg-gradient-to-r from-[#152754] to-[#223e82] text-white px-6 pt-5 pb-4 relative">
-      <button onclick="closeAdd()" class="absolute right-5 top-5 w-8 h-8 rounded-lg bg-white/10 text-xl">×</button>
-      <div class="flex items-center justify-between gap-3 pr-10">
-        <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center">⚿</div>
-          <div><div class="font-bold">Add DSC</div><div class="text-xs text-blue-200">Digital Signature Certificate</div></div>
-        </div>
-        <button onclick="scanDemoDsc()" class="bg-white text-blue-800 rounded-lg px-3 py-2 text-xs font-bold shadow-sm hover:bg-blue-50">⌁ Scan DSC</button>
-      </div>
-      <div class="flex items-center mt-5 text-xs">
-        <div class="w-7 h-7 rounded-full bg-white text-blue-800 flex items-center justify-center font-bold">1</div><b class="ml-2">Certificate</b>
-        <div class="h-px bg-white/30 flex-1 mx-3"></div>
-        <div class="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center">2</div><span class="ml-2 opacity-60">Done</span>
-      </div>
-    </div>
-    <div class="p-6 overflow-y-auto max-h-[calc(94vh-112px)]">
-      <h2 class="text-lg font-bold">Enter certificate details</h2>
-      <p class="text-sm text-slate-500 mt-1">Capture only the information required for DSC inventory and reconciliation.</p>
+<!-- Add DSC modal -->
+<div id="addModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="addTitle"><div class="modal-box">
+ <div class="modal-head"><div><h2 id="addTitle">Add DSC</h2><p>Enter certificate details or populate the form using the demo scan.</p></div><div style="display:flex;gap:8px;align-items:flex-start"><button class="scan-btn" onclick="scanDemoDsc()">⌁ Scan DSC</button><button class="modal-close" onclick="closeAdd()">×</button></div></div>
+ <div class="modal-body"><div class="form-section" style="margin-top:0">Certificate holder</div><div class="form-grid">
+  <div class="form-field"><label class="form-label" for="fHolder">Holder Name <span class="required">*</span></label><input class="form-input" id="fHolder" placeholder="Enter holder name"></div>
+  <div class="form-field"><label class="form-label" for="fOrg">Organisation</label><input class="form-input" id="fOrg" placeholder="Organisation (optional)"></div>
+  <div class="form-field"><label class="form-label" for="fCustomer">Customer <span class="required">*</span></label><select class="form-input" id="fCustomer"></select></div>
+  <div class="form-field"><label class="form-label" for="fSignatory">Map to Portal Signatory</label><select class="form-input" id="fSignatory"><option value="">Unmatched DSC (Others)</option></select></div>
+  <div class="form-field"><label class="form-label" for="fSerial">Serial Number <span class="required">*</span></label><input class="form-input" id="fSerial" placeholder="Certificate serial number"></div>
+  <div class="form-field"><label class="form-label" for="fIssuer">Issued By <span class="required">*</span></label><input class="form-input" id="fIssuer" placeholder="Certificate authority"></div>
+  <div class="form-field"><label class="form-label" for="fClass">DSC Class <span class="required">*</span></label><select class="form-input" id="fClass"><option>Class 3</option><option>Class 2</option></select></div>
+  <div class="form-field"><label class="form-label" for="fIssue">Issue Date</label><input class="form-input" id="fIssue" type="date"></div>
+ </div><div class="form-section">Validity</div><div class="form-grid"><div class="form-field"><label class="form-label" for="fExpiry">Expiry Date <span class="required">*</span></label><input class="form-input" id="fExpiry" type="date"></div><div class="form-field"><label class="form-label" for="fMake">Token Make <span class="required">*</span></label><select class="form-input" id="fMake"><option value="">Select make</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div><div class="form-field"><label class="form-label" for="fColor">Token Color <span class="required">*</span></label><select class="form-input" id="fColor"><option value="">Select color</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div></div>
+ <div class="demo-note">Scan DSC is simulated in this prototype. It fills the form with sample certificate data; it does not read a physical USB token or connect to a live certificate API.</div></div>
+ <div class="modal-footer"><button class="secondary-btn" onclick="closeAdd()">Cancel</button><button class="primary-btn" onclick="saveDsc()">Save DSC</button></div>
+</div></div>
 
-      <div class="mt-5 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Holder</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div class="col-span-2"><label class="label">Holder Name <span class="text-red-500">*</span></label><input id="fHolder" class="input" placeholder="Ramesh Kumar"></div>
-        <div><label class="label">Organisation</label><input id="fOrg" class="input" placeholder="ABC & Associates"></div>
-        <div><label class="label">Customer <span class="text-red-500">*</span></label><select id="fCustomer" class="input"></select></div>
-      </div>
+<!-- Token review modal -->
+<div id="tokenReviewModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="tokenReviewTitle"><div class="modal-box" style="max-width:590px"><div class="modal-head"><div><h2 id="tokenReviewTitle">Review detected certificates</h2><p>Sample token scan · choose which demo certificates to add.</p></div><button class="modal-close" onclick="closeTokenReview()">×</button></div><div class="modal-body"><div class="demo-note" style="margin:0 0 13px">No physical token is being read. These are example certificates to demonstrate the review-and-save flow.</div><div id="tokenItems"></div></div><div class="modal-footer"><button class="secondary-btn" onclick="closeTokenReview()">Close</button><span style="font-size:10px;color:#8393aa">Imported certificates appear in All Clients.</span></div></div></div>
 
-      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Certificate Information</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div class="col-span-2"><label class="label">Serial Number <span class="text-red-500">*</span></label><input id="fSerial" class="input" placeholder="3AF12C9D00B4E721"></div>
-        <div class="col-span-2"><label class="label">Issued By <span class="text-red-500">*</span></label><input id="fIssuer" class="input" placeholder="eMudhra Consumer CA 5"></div>
-        <div><label class="label">DSC Class <span class="text-red-500">*</span></label><select id="fClass" class="input"><option>Class 3</option><option>Class 2</option></select></div>
-      </div>
+<!-- Certificate detail modal -->
+<div id="certificateModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="certificateTitle"><div class="modal-box" style="max-width:590px"><div class="modal-head"><div><h2 id="certificateTitle">Certificate Details</h2><p id="certificateSubtitle"></p></div><button class="modal-close" onclick="closeCertificate()">×</button></div><div class="modal-body" id="certificateDetails"></div><div class="modal-footer"><button class="secondary-btn" onclick="closeCertificate()">Close</button><button class="primary-btn" id="viewClientBtn" onclick="viewCertificateClient()">View Client</button></div></div></div>
 
-      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Validity</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div><label class="label">Issue Date</label><input id="fIssue" type="date" class="input"></div>
-        <div><label class="label">Expiry Date <span class="text-red-500">*</span></label><input id="fExpiry" type="date" class="input"></div>
-      </div>
-
-      <div class="mt-6 flex items-center gap-3"><span class="text-[11px] font-bold text-slate-400 uppercase">Token / Hardware</span><div class="h-px bg-slate-200 flex-1"></div></div>
-      <div class="grid grid-cols-2 gap-3 mt-3">
-        <div><label class="label">Token Make <span class="text-red-500">*</span></label><select id="fMake" class="input"><option value="">Select Make</option><option>ePass</option><option>ProxKey</option><option>Watchdata</option><option>mToken</option><option>Other</option></select></div>
-        <div><label class="label">Token Color <span class="text-red-500">*</span></label><select id="fColor" class="input"><option value="">Select Color</option><option>Blue</option><option>Red</option><option>Black</option><option>White</option><option>Green</option><option>Orange</option><option>Other</option></select></div>
-      </div>
-
-      <div class="mt-5 bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-800">
-        Email, Postal Code, State and Purpose are intentionally not captured because they are not required for this DSC inventory workflow.
-      </div>
-
-      <div class="flex justify-between mt-6 pt-4 border-t">
-        <button onclick="closeAdd()" class="border rounded-lg px-4 py-2.5 text-sm font-semibold">Cancel</button>
-        <button onclick="saveDsc()" class="bg-blue-600 text-white rounded-lg px-6 py-2.5 text-sm font-semibold">Save DSC</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Client detail modal -->
+<div id="clientModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="clientDetailTitle"><div class="modal-box" style="max-width:790px"><div class="modal-head"><div><h2 id="clientDetailTitle">Client Details</h2><p id="clientDetailIds"></p></div><button class="modal-close" onclick="closeClientDetail()">×</button></div><div class="modal-body"><div id="clientDetailKpis" class="details-kpis"></div><div class="detail-block"><div class="detail-block-title">Portal-wise authorised signatories</div><div id="clientSignatories"></div></div><div class="detail-block"><div class="detail-block-title">DSCs in DSC Management</div><div id="clientDscList"></div></div><div class="detail-block"><div class="detail-block-title">Unmatched / Others DSCs</div><div id="clientOtherDscs"></div></div></div><div class="modal-footer"><button class="secondary-btn" onclick="closeClientDetail()">Close</button><button class="primary-btn" id="addForClientBtn" onclick="addDscForCurrentClient()">＋ Add DSC</button></div></div></div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
 const customers = [
@@ -274,213 +183,191 @@ let dscs = [
  {id:25,clientId:"C015",holder:"Mansi Sharma",pan:"AABPS2828R",serial:"DSC-C015-002",issuer:"VSign 2025",cls:"Class 3",expiry:"2027-07-23",make:"mToken",color:"White",status:"Active",portal:"ITR",signatoryId:"S031"}
 ];
 
+
+// Additions made in the demo persist in this browser using localStorage.
+const STORAGE_KEY = 'dscManagerV13AddedCertificates';
+const __initialSeedDscSerials = new Set(dscs.map(d => String(d.serial)));
+try {
+  const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  if (Array.isArray(saved)) {
+    const existing = new Set(dscs.map(d => String(d.serial).toLowerCase()));
+    saved.forEach(d => { if (d && d.serial && !existing.has(String(d.serial).toLowerCase())) dscs.push(d); });
+  }
+} catch (e) { /* localStorage may be disabled; the prototype still works in memory */ }
+
+let activeView = 'all';
+let selectedClientId = null;
+let selectedStatus = 'All';
+let currentCertificateId = null;
+let currentDetailClientId = null;
+let demoScanIndex = 0;
+let toastTimer = null;
+const signatoryPan = id => signatories.find(s => s.id === id)?.pan || '-';
+function esc(value){return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
 function client(id){return customers.find(c=>c.id===id)}
 function linkedDscForSignatory(s){return dscs.find(d=>d.signatoryId===s.id)}
 function missingSignatories(){return signatories.filter(s=>!linkedDscForSignatory(s))}
-function statusBadge(s){
- return `<span class="badge ${s==="Active"?"bg-emerald-100 text-emerald-700":s==="Expired"?"bg-red-100 text-red-700":"bg-amber-100 text-amber-700"}">${s}</span>`;
+function missingByClient(){const map=new Map();missingSignatories().forEach(s=>{if(!map.has(s.clientId))map.set(s.clientId,[]);map.get(s.clientId).push(s)});return [...map.entries()].map(([clientId,items])=>({client:client(clientId),items})).filter(g=>g.client)}
+function clientDscs(id){return dscs.filter(d=>d.clientId===id)}
+function portalName(d){return d.portal || 'Others'}
+function certificateStatus(d){
+ const exp=new Date(String(d.expiry||'')+'T00:00:00'); if(!d.expiry||Number.isNaN(exp.getTime()))return 'Active';
+ const today=new Date(); today.setHours(0,0,0,0); const days=Math.ceil((exp-today)/86400000);
+ return days<0?'Expired':days<=90?'Expiring Soon':'Active';
 }
-function portalBadge(p){
- const cls=p==="GST"?"bg-blue-100 text-blue-700":p==="TDS"?"bg-purple-100 text-purple-700":"bg-orange-100 text-orange-700";
- return `<span class="badge ${cls}">${p}</span>`;
+function daysToExpiry(d){const exp=new Date(String(d.expiry||'')+'T00:00:00');if(!d.expiry||Number.isNaN(exp.getTime()))return null;const today=new Date();today.setHours(0,0,0,0);return Math.ceil((exp-today)/86400000)}
+function formatDate(value){if(!value)return '—';const d=new Date(value+'T00:00:00');if(Number.isNaN(d.getTime()))return '—';return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function timeLeft(d){const days=daysToExpiry(d);if(days===null)return '—';if(days<0)return 'Expired '+Math.abs(days)+' days ago';if(days>=365){const months=Math.floor(days/30.4375);return months>=12?`${Math.floor(months/12)}y ${months%12?months%12+'mo':''} left`.replace('  left',' left'):`${months}mo left`}if(days>=60)return `${Math.round(days/30)}mo left`;return `${days} day${days===1?'':'s'} left`}
+function statusClass(status){return status==='Active'?'active':status==='Expired'?'expired':'soon'}
+function statusBadge(status){return `<span class="badge ${statusClass(status)}">${esc(status)}</span>`}
+function initials(name){const words=String(name||'').trim().split(/\s+/);if(!words.length)return '?';return words[0].slice(0,1).toUpperCase()}
+function customerType(c){const n=c.name.toLowerCase();if(n.includes('pvt.')||n.includes('private limited')||n.includes('limited')||n.includes('ventures'))return 'Company';if(n.includes('llp')||n.includes('associates')||n.includes('advisors')||n.includes('enterprises')||n.includes('works'))return 'Firm';return 'Individual'}
+function safeTextMatch(value,q){return String(value??'').toLowerCase().includes(q)}
+function showToast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),2700)}
+function saveAddedToStorage(){try{const seedSerials=new Set(seedDscSerials);const added=dscs.filter(d=>!seedSerials.has(String(d.serial)));localStorage.setItem(STORAGE_KEY,JSON.stringify(added));}catch(e){/* In-memory additions remain usable. */}}
+const seedDscSerials = __initialSeedDscSerials;
+function inventoryContext(){return selectedClientId?clientDscs(selectedClientId):dscs}
+function renderClientList(){
+ const q=document.getElementById('clientSearch').value.trim().toLowerCase();
+ const list=customers.filter(c=>safeTextMatch(c.name,q)||safeTextMatch(c.pan,q)||safeTextMatch(c.gstin,q)||safeTextMatch(c.tan,q));
+ document.getElementById('sideClientCount').textContent=customers.length;
+ document.getElementById('clientList').innerHTML=list.length?list.map(c=>{
+  const ds=clientDscs(c.id),has=ds.length>0,selected=selectedClientId===c.id&&activeView==='all';
+  return `<button class="client-item ${selected?'selected':''}" onclick="selectClient('${c.id}')" title="${esc(c.name)}"><span class="client-avatar">${esc(initials(c.name))}</span><span class="client-copy"><div class="client-name">${esc(c.name)}</div><div class="client-meta">${esc(customerType(c))} · ${ds.length} DSC${ds.length===1?'':'s'}</div></span><span class="status-dot ${has?'has-dsc':''}"></span></button>`;
+ }).join(''):`<div class="client-empty">No clients match your search.</div>`;
 }
-
-function buildRows(){
- const q=document.getElementById("search").value.toLowerCase().trim();
- const pf=document.getElementById("portalFilter").value;
- const sf=document.getElementById("dscStatusFilter").value;
- const cf=document.getElementById("certFilter").value;
- const rows=[];
- customers.forEach(c=>{
-   const ss=signatories.filter(x=>x.clientId===c.id);
-   const ds=dscs.filter(x=>x.clientId===c.id);
-   ss.forEach(s=>{const d=linkedDscForSignatory(s); rows.push({type:d?"matched":"missing",client:c,portal:s.portal,holder:s.name,pan:s.pan,dsc:d?"Available":"Not Available",serial:d?d.serial:"—",expiry:d?d.expiry:"—",status:d?d.status:"Not Available",make:d?d.make:"—",color:d?d.color:"—",issuer:d?d.issuer:"—",dscId:d?d.id:null,signatoryId:s.id,designation:s.designation});});
-   ds.filter(d=>!d.signatoryId).forEach(d=>rows.push({type:"other",client:c,portal:"Others",holder:d.holder,pan:d.pan,dsc:"Available",serial:d.serial,expiry:d.expiry,status:d.status,make:d.make,color:d.color,issuer:d.issuer,dscId:d.id,signatoryId:null,designation:"DSC Holder"}));
- });
- return rows.filter(r=>{
-   const text=`${r.client.name} ${r.client.pan} ${r.holder} ${r.pan} ${r.serial} ${r.portal} ${r.issuer} ${r.make} ${r.color}`.toLowerCase();
-   return (!q||text.includes(q)) && (pf==="All"||r.portal===pf) && (sf==="All"||r.dsc===sf) && (cf==="All"||r.status===cf);
- });
+function updateNavigation(){
+ document.getElementById('navAll').classList.toggle('active',activeView==='all');
+ document.getElementById('navMissing').classList.toggle('active',activeView==='missing');
+ document.getElementById('navOwn').classList.toggle('active',activeView==='own');
+ const missingCount=missingByClient().length;
+ document.getElementById('navAllSub').textContent=`${dscs.length} certificates`;
+ document.getElementById('navMissingSub').textContent=`${missingCount} clients need DSC`;
+ document.getElementById('navMissingCount').textContent=missingCount;
+ document.getElementById('navMissingCount').style.display=missingCount?'inline-flex':'none';
 }
-function renderAll(){
- const rows=buildRows(), grouped={};
- rows.forEach(r=>{(grouped[r.client.id]??=[]).push(r);});
- const ids=Object.keys(grouped);
- document.getElementById("allCount").textContent=ids.length;
- document.getElementById("tabAllCount").textContent=customers.length;
- let body="";
- ids.forEach(id=>{const c=client(id),rs=grouped[id]; body+=`<tr class="bg-slate-100 border-t-2 border-slate-200"><td colspan="8" class="px-4 py-3"><div class="flex items-center justify-between"><div><button onclick="openDetail('${c.id}')" class="font-bold text-blue-700 hover:underline text-left">${c.name}</button><span class="ml-2 text-[10px] text-slate-500">PAN: ${c.pan}</span><span class="ml-2 badge bg-slate-200 text-slate-700">${rs.length} record${rs.length===1?"":"s"}</span></div><div class="text-[10px] text-slate-500">${rs.filter(x=>x.dsc==="Available").length} Available • ${rs.filter(x=>x.dsc==="Not Available").length} Not Available</div></div></td></tr>`; rs.forEach(r=>{body+=`<tr class="hover:bg-blue-50/40 ${r.dsc==="Not Available"?"bg-red-50/20":""}"><td class="px-4 py-3 pl-8"><div class="text-[10px] text-slate-400">↳ ${c.name}</div></td><td class="px-3 py-3">${r.portal==="Others"?`<span class="badge bg-slate-100 text-slate-700">Others</span>`:portalBadge(r.portal)}</td><td class="px-3 py-3"><div class="font-semibold">${r.holder}</div><div class="text-[10px] text-slate-500">${r.designation}</div>${r.type==="matched"?`<div class="text-[10px] text-emerald-600 mt-1">Matched with portal signatory</div>`:r.type==="other"?`<div class="text-[10px] text-slate-500 mt-1">DSC available in DSC Management • No portal signatory</div>`:`<div class="text-[10px] text-red-600 mt-1">Portal signatory • DSC missing</div>`}</td><td class="px-3 py-3">${r.pan}</td><td class="px-3 py-3">${r.dsc==="Available"?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<span class="badge bg-red-100 text-red-700">DSC Not Available</span>`}</td><td class="px-3 py-3"><div class="font-mono text-[10px]">${r.serial}</div>${r.make!=="—"?`<div class="text-[10px] text-slate-500 mt-1">${r.make} • ${r.color}</div>`:""}</td><td class="px-3 py-3">${r.expiry==="—"?"—":formatDate(r.expiry)}</td><td class="px-3 py-3">${r.dsc==="Not Available"?`<button onclick="openAddFor('${r.client.id}','${r.signatoryId}')" class="border border-blue-600 text-blue-600 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`:`<button onclick="openDetail('${r.client.id}')" class="border border-slate-300 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold">View</button>`}</td></tr>`;});});
- document.getElementById("allBody").innerHTML=body||`<tr><td colspan="8" class="px-5 py-12 text-center text-slate-500">No records found for the selected filters.</td></tr>`;
- document.getElementById("allFooter").textContent=`Showing ${ids.length} clients • ${rows.length} records • ${dscs.length} DSCs in DSC Management • ${missingSignatories().length} portal signatories without DSC`;
+function renderPageHeader(){
+ const title=document.getElementById('pageTitle'),sub=document.getElementById('pageSubtitle');
+ if(activeView==='missing'){title.textContent='Clients with No DSC';sub.textContent=`${missingByClient().length} clients · ${missingSignatories().length} signatories awaiting DSC`;return}
+ if(activeView==='own'){title.textContent='My Own DSCs';sub.textContent='Personal certificate inventory';return}
+ if(selectedClientId){const c=client(selectedClientId);title.textContent=c?c.name:'Overview';sub.textContent=`${clientDscs(selectedClientId).length} certificates · Client inventory`;return}
+ title.textContent='Overview';sub.textContent=`${dscs.length} certificates · ${customers.length} clients`;
 }
+function renderStats(){
+ const list=inventoryContext(),counts={'All':list.length,'Active':0,'Expiring Soon':0,'Expired':0};
+ list.forEach(d=>counts[certificateStatus(d)]++);
+ document.getElementById('totalValue').textContent=counts.All;document.getElementById('activeValue').textContent=counts.Active;document.getElementById('soonValue').textContent=counts['Expiring Soon'];document.getElementById('expiredValue').textContent=counts.Expired;
+ document.getElementById('totalCaption').textContent=selectedClientId?`in ${client(selectedClientId).name}`:`across ${customers.length} clients`;
+ document.getElementById('countAll').textContent=counts.All;document.getElementById('countActive').textContent=counts.Active;document.getElementById('countSoon').textContent=counts['Expiring Soon'];document.getElementById('countExpired').textContent=counts.Expired;
+ document.querySelectorAll('.status-tab').forEach(b=>b.classList.toggle('active',b.dataset.status===selectedStatus));
+ document.getElementById('cardAll').classList.toggle('selected',selectedStatus==='All');document.getElementById('cardActive').classList.toggle('selected',selectedStatus==='Active');document.getElementById('cardSoon').classList.toggle('selected',selectedStatus==='Expiring Soon');document.getElementById('cardExpired').classList.toggle('selected',selectedStatus==='Expired');
+}
+function fillIssuerOptions(){const sel=document.getElementById('issuerFilter');const previous=sel.value;const issuers=[...new Set(dscs.map(d=>d.issuer).filter(Boolean))].sort();sel.innerHTML='<option value="All">All issuers</option>'+issuers.map(v=>`<option value="${esc(v)}">${esc(v)}</option>`).join('');sel.value=issuers.includes(previous)?previous:'All'}
+function getVisibleDscs(){
+ const q=document.getElementById('globalSearch').value.trim().toLowerCase();const portal=document.getElementById('portalFilter').value;const issuer=document.getElementById('issuerFilter').value;const make=document.getElementById('makeFilter').value;const color=document.getElementById('colorFilter').value;
+ return inventoryContext().filter(d=>{
+  const c=client(d.clientId)||{};const st=certificateStatus(d);const searchBlob=[d.holder,d.pan,d.serial,d.issuer,d.make,d.color,d.cls,d.portal||'Others',c.name,c.pan,c.gstin,c.tan].join(' ').toLowerCase();
+  return (selectedStatus==='All'||st===selectedStatus)&&(!q||searchBlob.includes(q))&&(portal==='All'||portalName(d)===portal)&&(issuer==='All'||d.issuer===issuer)&&(make==='All'||d.make===make)&&(color==='All'||d.color===color);
+ }).slice().sort((a,b)=>String(a.expiry).localeCompare(String(b.expiry)));
+}
+function renderInventory(){
+ const rows=getVisibleDscs();const body=document.getElementById('inventoryBody');
+ if(!rows.length){body.innerHTML='<tr><td class="empty-row" colspan="5">No certificates match the selected search and filters.</td></tr>'}
+ else body.innerHTML=rows.map(d=>{
+  const c=client(d.clientId)||{name:'Unknown client'};const st=certificateStatus(d);const days=daysToExpiry(d);const subStatus=st==='Expired'?'bad':st==='Expiring Soon'?'warn':'';const left=st==='Expired'?'Expired':timeLeft(d);
+  return `<tr class="data-row" onclick="openCertificate(${Number(d.id)})"><td><div class="cert-cell"><span class="cert-dot ${st==='Expired'?'expired':st==='Expiring Soon'?'soon':''}"></span><div style="min-width:0"><div class="cert-primary">${esc(d.holder)}</div><div class="cert-secondary">${esc(c.name)} · ${esc(portalName(d))}</div></div></div></td><td><div class="issuer-cell" title="${esc(d.issuer)}">${esc(shortIssuer(d.issuer))}</div></td><td><div class="expiry-cell">${esc(formatDate(d.expiry))}<div class="expiry-help ${subStatus}">${esc(left)}</div></div></td><td>${statusBadge(st)}</td><td><button class="row-open" aria-label="Open certificate details" onclick="event.stopPropagation();openCertificate(${Number(d.id)})">›</button></td></tr>`;
+ }).join('');
+ document.getElementById('resultCount').textContent=`${rows.length} result${rows.length===1?'':'s'}`;document.getElementById('tableShowing').textContent=`Showing ${rows.length} of ${inventoryContext().length} certificate${inventoryContext().length===1?'':'s'}`;document.getElementById('tableContext').textContent=selectedClientId?'Selected client': 'All clients';
+ renderStats();renderSelectedClientMissing();
+}
+function renderSelectedClientMissing(){
+ const panel=document.getElementById('selectedClientMissing');if(!selectedClientId){panel.style.display='none';return}
+ const c=client(selectedClientId);const list=signatories.filter(s=>s.clientId===selectedClientId&&!linkedDscForSignatory(s));panel.style.display='block';
+ document.getElementById('selectedClientMissingTitle').textContent=`Portal signatories missing a linked DSC · ${c.name}`;document.getElementById('selectedClientMissingSub').textContent=list.length?`${list.length} signatory${list.length===1?'':'ies'} need a DSC. Add one against the correct portal record.`:'All portal signatories currently have a linked DSC.';
+ document.getElementById('selectedClientMissingRows').innerHTML=list.length?list.map(s=>`<div class="selected-missing-row"><div><div class="missing-person-name">${esc(s.name)}</div><div class="missing-person-meta">${esc(s.portal)} · ${esc(s.designation)} · ${esc(s.pan)}</div></div><button class="outline-btn" onclick="openAddFor('${c.id}','${s.id}')">＋ Add DSC</button></div>`).join(''):`<div class="selected-missing-row"><div class="missing-person-meta">No missing DSC action is required for this client.</div></div>`;
+}
+function shortIssuer(issuer){if(!issuer)return '—';return issuer.replace(' Consumer CA 5','').replace(' CA 2024','').replace(' 2025','')}
 function renderMissing(){
- const pf=document.getElementById("missingPortal").value;
- const q=document.getElementById("missingSearch").value.toLowerCase().trim();
- const groups={};
- missingSignatories().filter(s=>{
-   const c=client(s.clientId);
-   return (pf==="All"||s.portal===pf)&&(!q||c.name.toLowerCase().includes(q));
- }).forEach(s=>{if(!groups[s.clientId])groups[s.clientId]=[];groups[s.clientId].push(s);});
- const ids=Object.keys(groups);
- document.getElementById("missingClientCount").textContent=ids.length;
- document.getElementById("tabMissingCount").textContent=ids.length;
- document.getElementById("missingList").innerHTML=ids.length?ids.map(id=>{
-   const c=client(id), ss=groups[id];
-   return `<div class="border border-red-200 rounded-xl overflow-hidden bg-white">
-     <div class="px-4 py-3 bg-red-50 flex items-start justify-between">
-       <div><button onclick="openDetail('${c.id}')" class="font-bold text-blue-600 hover:underline text-left">${c.name}</button><div class="text-[10px] text-slate-500 mt-1">${c.pan} • ${c.gstin}</div></div>
-       <span class="badge bg-red-100 text-red-700">${ss.length} missing</span>
-     </div>
-     <div class="divide-y">${ss.map(s=>`<div class="px-4 py-3 flex items-start justify-between gap-3">
-       <div><div class="font-semibold text-sm">${s.name}</div><div class="text-[10px] text-slate-500 mt-1">${s.designation} • PAN ${s.pan}</div><div class="mt-2">${portalBadge(s.portal)}</div></div>
-       <button onclick="openAddFor('${c.id}','${s.id}')" class="border border-blue-600 text-blue-600 rounded-lg px-3 py-1.5 text-[10px] font-semibold whitespace-nowrap">＋ Add DSC</button>
-     </div>`).join("")}</div>
-   </div>`;
- }).join(""):`<div class="col-span-2 py-16 text-center text-slate-500 text-sm">No clients with missing DSC.</div>`;
+ const pf=document.getElementById('missingPortal').value;const q=document.getElementById('missingSearch').value.trim().toLowerCase();
+ const groups=missingByClient().map(g=>({...g,items:g.items.filter(s=>(pf==='All'||s.portal===pf)&&(!q||[g.client.name,g.client.pan,s.name,s.pan,s.designation,s.portal].join(' ').toLowerCase().includes(q)))})).filter(g=>g.items.length);
+ const count=groups.length;document.getElementById('missingPageCount').textContent=`${count} client${count===1?'':'s'} need DSC`;
+ document.getElementById('missingGroups').innerHTML=groups.length?groups.map(g=>`<div class="missing-card"><div class="missing-card-head"><div style="min-width:0"><div class="missing-client-name">${esc(g.client.name)}</div><div class="missing-client-meta">PAN ${esc(g.client.pan)} · ${g.items.length} missing signatory${g.items.length===1?'':'ies'}</div></div><span class="missing-count">${g.items.length} missing</span></div>${g.items.map(s=>`<div class="missing-row"><div class="missing-person"><div class="missing-person-name">${esc(s.name)}</div><div class="missing-person-meta">${esc(s.designation)} · ${esc(s.pan)} <span class="portal-chip ${esc(s.portal)}" style="margin-left:5px">${esc(s.portal)}</span></div></div><button class="outline-btn" onclick="openAddFor('${g.client.id}','${s.id}')">＋ Add DSC</button></div>`).join('')}</div>`).join(''):`<div class="own-empty" style="grid-column:1/-1"><div><div class="own-empty-icon">✓</div><h3>No missing DSCs found</h3><p>No client signatories match the selected search and portal filter.</p></div></div>`;
 }
-function switchTab(tab){
- const all=document.getElementById("allTab"), missing=document.getElementById("missingTab");
- const allBtn=document.getElementById("tabAll"), missingBtn=document.getElementById("tabMissing");
- if(tab==="all"){
-   all.classList.remove("hidden"); missing.classList.add("hidden");
-   allBtn.className="px-5 py-3 text-sm font-bold border-b-2 border-blue-600 text-blue-600";
-   missingBtn.className="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500";
- }else{
-   all.classList.add("hidden"); missing.classList.remove("hidden");
-   missingBtn.className="px-5 py-3 text-sm font-bold border-b-2 border-red-600 text-red-600";
-   allBtn.className="px-5 py-3 text-sm font-bold border-b-2 border-transparent text-slate-500";
- }
+function renderUI(){
+ updateNavigation();renderClientList();renderPageHeader();
+ const all=activeView==='all',missing=activeView==='missing',own=activeView==='own';
+ document.getElementById('tokenBanner').style.display=all?'flex':'none';document.getElementById('inventoryShell').style.display=all?'block':'none';document.getElementById('missingView').style.display=missing?'block':'none';document.getElementById('ownView').style.display=own?'block':'none';
+ if(all){fillIssuerOptions();renderInventory();}
+ if(missing)renderMissing();
 }
-function clearMissingFilters(){document.getElementById("missingPortal").value="All";document.getElementById("missingSearch").value="";renderMissing();}
+function selectStatus(status){selectedStatus=status;activeView='all';document.getElementById('inventoryShell').style.display='block';document.getElementById('missingView').style.display='none';document.getElementById('ownView').style.display='none';renderUI()}
+function showAllClients(){activeView='all';selectedClientId=null;selectedStatus='All';renderUI()}
+function showMissingClients(){activeView='missing';selectedClientId=null;renderUI()}
+function showOwnDscs(){activeView='own';selectedClientId=null;renderUI()}
+function selectClient(id){activeView='all';selectedClientId=id;selectedStatus='All';renderUI()}
+function toggleFilters(){const panel=document.getElementById('filterPanel');panel.classList.toggle('open');document.getElementById('filterToggle').classList.toggle('active',panel.classList.contains('open'))}
+function clearFilters(){document.getElementById('globalSearch').value='';document.getElementById('portalFilter').value='All';document.getElementById('issuerFilter').value='All';document.getElementById('makeFilter').value='All';document.getElementById('colorFilter').value='All';selectedStatus='All';renderUI()}
+function clearMissingFilters(){document.getElementById('missingPortal').value='All';document.getElementById('missingSearch').value='';renderMissing()}
 
-function openDetail(id){
- const c=client(id);
- const ss=signatories.filter(s=>s.clientId===id);
- const ds=dscs.filter(d=>d.clientId===id);
- const matched=ds.filter(d=>d.signatoryId);
- const unmatched=ds.filter(d=>!d.signatoryId);
-
- document.getElementById("detailName").textContent=c.name;
- document.getElementById("detailIds").textContent=`PAN: ${c.pan} • GSTIN: ${c.gstin} • TAN: ${c.tan}`;
-
- document.getElementById("detailSummary").innerHTML=`
- <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Total DSCs</div><div class="text-xl font-bold mt-1">${ds.length}</div></div>
- <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Signatories</div><div class="text-xl font-bold mt-1">${ss.length}</div></div>
- <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">DSC Missing</div><div class="text-xl font-bold text-red-600 mt-1">${ss.filter(s=>!linkedDscForSignatory(s)).length}</div></div>
- <div class="border rounded-xl p-3"><div class="text-[10px] text-slate-400">Unmatched DSC</div><div class="text-xl font-bold text-amber-600 mt-1">${unmatched.length}</div></div>`;
-
- const portals=["GST","TDS","ITR"];
- document.getElementById("detailSignatories").innerHTML=portals.map(p=>{
-   const arr=ss.filter(s=>s.portal===p);
-   if(!arr.length)return "";
-   return `<div class="border rounded-xl overflow-hidden">
-     <div class="px-4 py-2.5 bg-slate-50 border-b flex justify-between">${portalBadge(p)}<span class="text-[10px] text-slate-500">${arr.length} signatory</span></div>
-     ${arr.map(s=>{
-       const d=linkedDscForSignatory(s);
-       return `<div class="px-4 py-3 border-b last:border-b-0 flex items-center justify-between">
-         <div><div class="font-semibold text-sm">${s.name}</div><div class="text-[10px] text-slate-500">${s.designation} • ${s.pan}</div></div>
-         ${d?`<span class="badge bg-emerald-100 text-emerald-700">DSC Available</span>`:`<button onclick="closeDetail();openAddFor('${c.id}','${s.id}')" class="border border-blue-600 text-blue-600 rounded-lg px-3 py-1.5 text-[11px] font-semibold">＋ Add DSC</button>`}
-       </div>`;
-     }).join("")}
-   </div>`;
- }).join("");
-
- document.getElementById("detailDscs").innerHTML=ds.length?`<div class="border rounded-xl overflow-hidden"><table class="w-full text-xs"><thead class="bg-slate-50"><tr><th class="p-3 text-left">Holder</th><th class="p-3 text-left">Portal</th><th class="p-3 text-left">Serial</th><th class="p-3 text-left">Make / Color</th><th class="p-3 text-left">Status</th></tr></thead><tbody>${ds.map(d=>`<tr class="border-t"><td class="p-3">${d.holder}</td><td class="p-3">${d.portal?portalBadge(d.portal):"—"}</td><td class="p-3 font-mono">${d.serial}</td><td class="p-3">${d.make} / ${d.color}</td><td class="p-3">${statusBadge(d.status)}</td></tr>`).join("")}</tbody></table></div>`:`<div class="border rounded-xl p-5 text-sm text-slate-500">No DSC is currently stored for this client.</div>`;
-
- document.getElementById("detailUnmatched").innerHTML=unmatched.length?`<div class="border border-amber-200 bg-amber-50/50 rounded-xl p-4">${unmatched.map(d=>`<div class="flex justify-between items-center ${unmatched.indexOf(d)>0?"border-t border-amber-200 pt-3 mt-3":""}"><div><div class="font-semibold text-sm">${d.holder}</div><div class="text-[10px] text-slate-500">Serial ${d.serial} • ${d.make} • ${d.color}</div></div><span class="badge bg-amber-100 text-amber-700">No Portal Match</span></div>`).join("")}</div>`:`<div class="text-sm text-slate-400">No unmatched DSCs for this client.</div>`;
-
- document.getElementById("detailModal").classList.add("open");
+function openAdd(){resetAddForm();populateCustomers();const preferred=selectedClientId||customers[0]?.id||'';document.getElementById('fCustomer').value=preferred;populateSignatories();document.getElementById('addModal').classList.add('open')}
+function closeAdd(){document.getElementById('addModal').classList.remove('open')}
+function resetAddForm(){['fHolder','fOrg','fSerial','fIssuer','fIssue','fExpiry'].forEach(id=>document.getElementById(id).value='');document.getElementById('fClass').value='Class 3';document.getElementById('fMake').value='';document.getElementById('fColor').value='';document.getElementById('fSignatory').innerHTML='<option value="">Unmatched DSC (Others)</option>';}
+function populateCustomers(){document.getElementById('fCustomer').innerHTML=customers.map(c=>`<option value="${c.id}">${esc(c.name)} — ${esc(c.pan)}</option>`).join('')}
+function populateSignatories(preferred=''){
+ const cid=document.getElementById('fCustomer').value;const list=signatories.filter(s=>s.clientId===cid);const sel=document.getElementById('fSignatory');sel.innerHTML='<option value="">Unmatched DSC (Others)</option>'+list.map(s=>`<option value="${s.id}">${esc(s.portal)} · ${esc(s.name)} · ${esc(s.pan)}${linkedDscForSignatory(s)?' (already has DSC)':' (missing DSC)'}</option>`).join('');sel.value=list.some(s=>s.id===preferred)?preferred:'';
 }
-
-function openAddFor(clientId,signatoryId){
- openAdd();
- document.getElementById("fCustomer").value=clientId;
- const s=signatories.find(x=>x.id===signatoryId);
- if(s){
-   document.getElementById("fHolder").value=s.name;
-   document.getElementById("fHolder").dataset.signatoryId=s.id;
-   document.getElementById("fOrg").value=client(clientId).name;
- }
-}
-function closeDetail(){document.getElementById("detailModal").classList.remove("open")}
-
-function populateCustomers(){
- document.getElementById("fCustomer").innerHTML=customers.map(c=>`<option value="${c.id}">${c.name} — ${c.pan}</option>`).join("");
-}
-function resetAddForm(){
- ["fHolder","fOrg","fSerial","fIssuer","fIssue","fExpiry"].forEach(id=>document.getElementById(id).value="");
- document.getElementById("fClass").value="Class 3";
- document.getElementById("fMake").value="";
- document.getElementById("fColor").value="";
- document.getElementById("fHolder").dataset.signatoryId="";
-}
-function openAdd(){populateCustomers();resetAddForm();document.getElementById("fCustomer").value=customers[0]?.id||"";document.getElementById("addModal").classList.add("open")}
-function closeAdd(){document.getElementById("addModal").classList.remove("open")}
-
-const demoScanDscs=[
- {holder:"Demo DSC Holder 01",org:"Demo Industries Pvt. Ltd.",clientId:"C008",serial:"SCAN-DEMO-1001",issuer:"eMudhra Consumer CA 5",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"ePass",color:"Blue"},
- {holder:"Demo DSC Holder 02",org:"Demo Tax Associates",clientId:"C011",serial:"SCAN-DEMO-1002",issuer:"Capricorn CA 2024",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"ProxKey",color:"Red"},
- {holder:"Demo DSC Holder 03",org:"Demo Compliance Services",clientId:"C014",serial:"SCAN-DEMO-1003",issuer:"VSign 2025",cls:"Class 3",issue:"2026-10-03",expiry:"2028-10-03",make:"mToken",color:"Black"}
-];
-let demoScanIndex=0;
+function openAddFor(clientId,signatoryId){openAdd();document.getElementById('fCustomer').value=clientId;populateSignatories(signatoryId);const s=signatories.find(x=>x.id===signatoryId);if(s){document.getElementById('fHolder').value=s.name;document.getElementById('fOrg').value=client(clientId)?.name||'';}}
 function scanDemoDsc(){
- const d=demoScanDscs[demoScanIndex%demoScanDscs.length]; demoScanIndex++;
- document.getElementById("fHolder").value=d.holder;
- document.getElementById("fOrg").value=d.org;
- document.getElementById("fCustomer").value=d.clientId;
- document.getElementById("fSerial").value=d.serial;
- document.getElementById("fIssuer").value=d.issuer;
- document.getElementById("fClass").value=d.cls;
- document.getElementById("fIssue").value=d.issue;
- document.getElementById("fExpiry").value=d.expiry;
- document.getElementById("fMake").value=d.make;
- document.getElementById("fColor").value=d.color;
- document.getElementById("fHolder").dataset.signatoryId="";
- alert("Demo DSC scanned successfully. Dummy certificate details have been populated.");
+ const examples=[
+  {holder:'Rakesh Sharma',clientId:'C003',signatoryId:'S005',issuer:'eMudhra Consumer CA 5',cls:'Class 3',issue:'2026-10-01',expiry:'2028-10-01',make:'ePass',color:'Blue',prefix:'RKS'},
+  {holder:'Rajesh Kumar',clientId:'C005',signatoryId:'S008',issuer:'Capricorn CA 2024',cls:'Class 3',issue:'2026-09-18',expiry:'2028-09-18',make:'ProxKey',color:'Red',prefix:'RJK'},
+  {holder:'Rahul Sharma',clientId:'C001',signatoryId:'S001',issuer:'VSign 2025',cls:'Class 3',issue:'2026-08-23',expiry:'2028-08-23',make:'Watchdata',color:'Black',prefix:'RHL'}
+ ];
+ const x=examples[demoScanIndex%examples.length];demoScanIndex++;
+ document.getElementById('fCustomer').value=x.clientId;populateSignatories(x.signatoryId);document.getElementById('fHolder').value=x.holder;document.getElementById('fOrg').value=client(x.clientId)?.name||'';document.getElementById('fSerial').value=`SCAN-${x.prefix}-${String(1000+demoScanIndex)}`;document.getElementById('fIssuer').value=x.issuer;document.getElementById('fClass').value=x.cls;document.getElementById('fIssue').value=x.issue;document.getElementById('fExpiry').value=x.expiry;document.getElementById('fMake').value=x.make;document.getElementById('fColor').value=x.color;showToast('Sample certificate details populated. Review and save to add it.');
 }
-
 function saveDsc(){
- const holder=document.getElementById("fHolder").value.trim();
- const serial=document.getElementById("fSerial").value.trim();
- const issuer=document.getElementById("fIssuer").value.trim();
- const expiry=document.getElementById("fExpiry").value;
- const make=document.getElementById("fMake").value;
- const color=document.getElementById("fColor").value;
- const clientId=document.getElementById("fCustomer").value;
- if(!holder||!serial||!issuer||!expiry||!make||!color){alert("Please fill all mandatory fields.");return}
- const c=client(clientId);
- const sid=document.getElementById("fHolder").dataset.signatoryId || null;
+ const holder=document.getElementById('fHolder').value.trim(),serial=document.getElementById('fSerial').value.trim(),issuer=document.getElementById('fIssuer').value.trim(),expiry=document.getElementById('fExpiry').value,make=document.getElementById('fMake').value,color=document.getElementById('fColor').value,clientId=document.getElementById('fCustomer').value,sid=document.getElementById('fSignatory').value||null;
+ if(!holder||!serial||!issuer||!expiry||!make||!color||!clientId){showToast('Please complete all mandatory fields.');return}
+ if(dscs.some(d=>String(d.serial).toLowerCase()===serial.toLowerCase())){showToast('This serial number already exists. Please check the certificate.');return}
  const sig=sid?signatories.find(s=>s.id===sid):null;
- dscs.unshift({
-   id:Date.now(),clientId,holder,pan:sig?sig.pan:"-",serial,issuer,
-   cls:document.getElementById("fClass").value,expiry,make,color,
-   status:"Active",portal:sig?sig.portal:null,signatoryId:sid
- });
- delete document.getElementById("fHolder").dataset.signatoryId;
- closeAdd();renderAll();renderMissing();
- alert("DSC added successfully.");
+ const rec={id:Date.now(),clientId,holder,pan:sig?sig.pan:'-',serial,issuer,cls:document.getElementById('fClass').value,issue:document.getElementById('fIssue').value||'',expiry,make,color,status:'Active',portal:sig?sig.portal:null,signatoryId:sid};
+ dscs.unshift(rec);saveAddedToStorage();selectedClientId=clientId;activeView='all';selectedStatus='All';document.getElementById('globalSearch').value='';clearFilterValuesOnly();closeAdd();renderUI();showToast('DSC added to the inventory.');
 }
+function clearFilterValuesOnly(){document.getElementById('portalFilter').value='All';document.getElementById('issuerFilter').value='All';document.getElementById('makeFilter').value='All';document.getElementById('colorFilter').value='All'}
 
-function formatDate(v){return v==="—"?"—":new Date(v+"T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short",year:"numeric"})}
-function clearFilters(){document.getElementById("search").value="";document.getElementById("globalSearch").value="";document.getElementById("portalFilter").value="All";document.getElementById("dscStatusFilter").value="All";document.getElementById("certFilter").value="All";renderAll();}
-function exportCSV(){
- const rows=[["Client","Portal","Authorised Signatory / DSC Holder","PAN","DSC Status","Serial","Expiry","Token Make","Token Color","Certificate Status"]];
- buildRows().forEach(r=>rows.push([r.client.name,r.portal,r.holder,r.pan,r.dsc,r.serial,r.expiry,r.make,r.color,r.status]));
- const csv=rows.map(x=>x.map(v=>`"${String(v).replaceAll('"','""')}"`).join(",")).join("\n");
- const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="DSC_Management.csv";a.click();
-}
+document.getElementById('fCustomer').addEventListener('change',()=>populateSignatories());
+document.getElementById('fSignatory').addEventListener('change',()=>{const s=signatories.find(x=>x.id===document.getElementById('fSignatory').value);if(s){document.getElementById('fHolder').value=s.name;document.getElementById('fOrg').value=client(s.clientId)?.name||'';}});
 
-document.getElementById("search").addEventListener("input",renderAll);
-document.getElementById("portalFilter").addEventListener("change",renderAll);
-document.getElementById("dscStatusFilter").addEventListener("change",renderAll);
-document.getElementById("certFilter").addEventListener("change",renderAll);
-document.getElementById("missingPortal").addEventListener("change",renderMissing);
-document.getElementById("missingSearch").addEventListener("input",renderMissing);
-document.getElementById("globalSearch").addEventListener("input",e=>{document.getElementById("search").value=e.target.value;renderAll();});
-populateCustomers();
-renderAll();
-renderMissing();
-switchTab("all");
+const tokenDemoItems=[
+ {holder:'Rakesh Sharma',clientId:'C003',signatoryId:'S005',serial:'TOKEN-DEMO-3001',issuer:'eMudhra Consumer CA 5',cls:'Class 3',issue:'2026-10-01',expiry:'2028-10-01',make:'ePass',color:'Blue'},
+ {holder:'Rajesh Kumar',clientId:'C005',signatoryId:'S008',serial:'TOKEN-DEMO-5001',issuer:'Capricorn CA 2024',cls:'Class 3',issue:'2026-09-18',expiry:'2028-09-18',make:'ProxKey',color:'Red'}
+];
+function openTokenReview(){renderTokenItems();document.getElementById('tokenReviewModal').classList.add('open')}
+function closeTokenReview(){document.getElementById('tokenReviewModal').classList.remove('open')}
+function renderTokenItems(){document.getElementById('tokenTitle').textContent=`${tokenDemoItems.filter(x=>!dscs.some(d=>d.serial===x.serial)).length} sample certificates ready to review`;document.getElementById('tokenItems').innerHTML=tokenDemoItems.map((x,i)=>{const added=dscs.some(d=>d.serial===x.serial);return `<div class="token-item"><div style="min-width:0"><div class="token-item-name">${esc(x.holder)}</div><div class="token-item-meta">${esc(client(x.clientId)?.name||'')}<br>Serial ${esc(x.serial)} · ${esc(x.issuer)} · Expires ${esc(formatDate(x.expiry))}</div></div>${added?'<span class="badge active">Added</span>':`<button class="outline-btn" onclick="importTokenDemo(${i})">Add certificate</button>`}</div>`}).join('')}
+function importTokenDemo(i){const x=tokenDemoItems[i];if(!x||dscs.some(d=>d.serial===x.serial)){showToast('This demo certificate is already added.');renderTokenItems();return}const s=signatories.find(y=>y.id===x.signatoryId);dscs.unshift({...x,id:Date.now()+i,clientId:x.clientId,pan:s?.pan||'-',portal:s?.portal||null,signatoryId:x.signatoryId,status:'Active'});saveAddedToStorage();selectedClientId=x.clientId;activeView='all';selectedStatus='All';document.getElementById('globalSearch').value='';closeTokenReview();renderUI();showToast('Sample scanned certificate added.');}
+
+function openCertificate(id){const d=dscs.find(x=>Number(x.id)===Number(id));if(!d)return;currentCertificateId=d.id;const c=client(d.clientId)||{name:'Unknown client',pan:'-',gstin:'-',tan:'-'};const st=certificateStatus(d);document.getElementById('certificateTitle').textContent=d.holder;document.getElementById('certificateSubtitle').textContent=`${c.name} · ${portalName(d)}`;document.getElementById('certificateDetails').innerHTML=`<div class="details-kpis"><div class="details-kpi"><span>Certificate Status</span><b style="font-size:13px">${statusBadge(st)}</b></div><div class="details-kpi"><span>Expiry Date</span><b style="font-size:13px">${esc(formatDate(d.expiry))}</b></div><div class="details-kpi"><span>Token Make</span><b style="font-size:13px">${esc(d.make||'—')}</b></div><div class="details-kpi"><span>Token Color</span><b style="font-size:13px">${esc(d.color||'—')}</b></div></div><div class="detail-block"><div class="detail-block-title">Certificate information</div>${detailField('Customer',c.name)}${detailField('DSC Holder',d.holder)}${detailField('PAN',d.pan||'-')}${detailField('Portal',portalName(d))}${detailField('Serial Number',d.serial)}${detailField('Issuing CA',d.issuer)}${detailField('DSC Class',d.cls||'Class 3')}${detailField('Issue Date',formatDate(d.issue))}</div>`;document.getElementById('viewClientBtn').textContent='View Client';document.getElementById('certificateModal').classList.add('open')}
+function detailField(label,value){return `<div class="detail-person"><span class="detail-meta" style="margin:0">${esc(label)}</span><strong style="font-size:11px;text-align:right;overflow-wrap:anywhere">${esc(value||'—')}</strong></div>`}
+function closeCertificate(){document.getElementById('certificateModal').classList.remove('open')}
+function viewCertificateClient(){const d=dscs.find(x=>Number(x.id)===Number(currentCertificateId));if(!d)return;closeCertificate();openClientDetail(d.clientId)}
+function openClientDetail(id){const c=client(id);if(!c)return;currentDetailClientId=id;const ss=signatories.filter(s=>s.clientId===id),ds=clientDscs(id),unmatched=ds.filter(d=>!d.signatoryId),missing=ss.filter(s=>!linkedDscForSignatory(s));document.getElementById('clientDetailTitle').textContent=c.name;document.getElementById('clientDetailIds').textContent=`PAN ${c.pan} · GSTIN ${c.gstin} · TAN ${c.tan}`;document.getElementById('clientDetailKpis').innerHTML=[['Total DSCs',ds.length],['Signatories',ss.length],['DSC Missing',missing.length],['Unmatched DSC',unmatched.length]].map(([a,b])=>`<div class="details-kpi"><span>${a}</span><b>${b}</b></div>`).join('');
+ document.getElementById('clientSignatories').innerHTML=ss.length?ss.map(s=>{const d=linkedDscForSignatory(s);return `<div class="detail-person"><div><div class="detail-name">${esc(s.name)}</div><div class="detail-meta">${esc(s.portal)} · ${esc(s.designation)} · ${esc(s.pan)}</div></div>${d?statusBadge('Active'.replace('Active',certificateStatus(d))):`<button class="outline-btn" onclick="closeClientDetail();openAddFor('${c.id}','${s.id}')">＋ Add DSC</button>`}</div>`}).join(''):'<div class="detail-meta">No portal signatories found.</div>';
+ document.getElementById('clientDscList').innerHTML=ds.length?ds.map(d=>`<div class="detail-person"><div style="min-width:0"><div class="detail-name">${esc(d.holder)}</div><div class="detail-meta">${esc(d.serial)} · ${esc(d.issuer)} · ${esc(d.make)} / ${esc(d.color)}</div></div><div style="text-align:right">${statusBadge(certificateStatus(d))}<div class="detail-meta">${esc(portalName(d))}</div></div></div>`).join(''):'<div class="detail-meta">No DSC records are currently stored for this client.</div>';
+ document.getElementById('clientOtherDscs').innerHTML=unmatched.length?unmatched.map(d=>`<div class="detail-person"><div><div class="detail-name">${esc(d.holder)}</div><div class="detail-meta">${esc(d.serial)} · ${esc(d.make)} / ${esc(d.color)}</div></div><span class="portal-chip">Others</span></div>`).join(''):'<div class="detail-meta">No unmatched DSCs.</div>';
+ document.getElementById('addForClientBtn').onclick=()=>{closeClientDetail();openAdd();document.getElementById('fCustomer').value=id;populateSignatories()};document.getElementById('clientModal').classList.add('open')}
+function closeClientDetail(){document.getElementById('clientModal').classList.remove('open')}
+function addDscForCurrentClient(){if(currentDetailClientId){const id=currentDetailClientId;closeClientDetail();openAdd();document.getElementById('fCustomer').value=id;populateSignatories()}}
+
+// Events and initial rendering
+document.getElementById('clientSearch').addEventListener('input',renderClientList);
+document.getElementById('globalSearch').addEventListener('input',()=>{if(activeView!=='all'){activeView='all';renderUI()}else renderInventory()});
+['portalFilter','issuerFilter','makeFilter','colorFilter'].forEach(id=>document.getElementById(id).addEventListener('change',renderInventory));
+document.getElementById('missingPortal').addEventListener('change',renderMissing);document.getElementById('missingSearch').addEventListener('input',renderMissing);
+document.querySelectorAll('.modal-backdrop').forEach(backdrop=>backdrop.addEventListener('click',e=>{if(e.target===backdrop)backdrop.classList.remove('open')}));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>m.classList.remove('open'))});
+renderUI();
 </script>
 </body>
 </html>
